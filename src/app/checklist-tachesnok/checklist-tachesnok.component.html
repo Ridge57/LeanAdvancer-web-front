@@ -1,0 +1,105 @@
+
+<!-- Page Wrapper -->
+<div id="wrapper">
+
+    <!-- Sidebar -->
+    <app-side-navigation></app-side-navigation>
+    <!-- End of Sidebar -->
+
+    <!-- Content Wrapper -->
+    <div id="content-wrapper" class="d-flex flex-column">
+
+        <!-- Main Content -->
+        <div id="content ">
+
+            <!-- Topbar -->
+            <app-top-navigation></app-top-navigation>
+            <!-- End of Topbar -->
+            <div class="container-fluid">
+                <!-- Page Heading -->
+                <div class="mb-4">
+                  <h3 class="h3 mb-0 text-gray-800">Gestion des checklists | <small>tâches nok à traiter</small></h3>
+              </div>
+                <app-checklist-tabmenu></app-checklist-tabmenu>
+                <p-toast></p-toast>
+               
+                <div id="carouselExampleIndicators" style="width: 100%;background-color: #F4F4F4;" 
+                class="carousel card shadow pb-4 mb-4" data-ride="carousel">
+                    <ol class="carousel-indicators" >
+                        <span class="badge">2 sur 5</span>
+                    </ol>
+                    <div class="carousel-inner">
+                      <div class="carousel-item active" >
+                        <div class="container">
+                            <div class="row mx-5 my-2 d-flex justify-content-around ">
+                              <div class="col-sm-3">
+                                <div class="row d-flex justify-content-center text-muted"><h6 >Photo du standard</h6></div>
+                                <div class="row" data-toggle="modal" data-target="#imageModal"><img src="../../assets/img/3.jpg" class="d-block w-100 rounded border border-dark" alt="..."></div>
+                              </div>
+                              <div class="col-sm-3 ">
+                                <div class="row d-flex justify-content-center text-muted">
+                                    Description du standard
+                                </div>
+                                <div class="row" style="font-size:small;">
+                                    <div class="col-sm-12 my-1"><span style="font-weight: bold;">Titre : </span> <br/><span class="text-muted">Vérifier la pression du compresseur</span></div>
+                                    <div class="col-sm-12 my-1"><span style="font-weight: bold;">Description : </span> <br/><span class="text-muted">vérifier que la pression est dans la plage verte de l'afficheur</span></div>
+                                    <div class="col-sm-12 my-1"><span style="font-weight: bold;">Zone : </span> <br/><span class="text-muted"> Asemblage</span></div>
+                                </div>
+                              </div>
+                              <div class="col-sm-3 ">
+                                <div class="row d-flex justify-content-center text-muted">
+                                    Emetteur
+                                </div>
+                                <div class="row" style="font-size:small;">
+                                    <div class="col-sm-12 my-1"><span style="font-weight: bold;">Contrôle effectué par : </span> <br/><span class="text-muted">Fabrice LUCKY</span></div>
+                                    <div class="col-sm-12 my-1"><span style="font-weight: bold;">Date : </span> <br/><span class="text-muted">16/06/2020</span></div>
+                                    <div class="col-sm-12 my-1"><span style="font-weight: bold;">Commentaires laissé : </span> <br/> <span class="text-muted">La pression affichée est au dessus de la plage verte</span></div>
+                                </div>
+                              </div>
+                              <div class="col-sm-2" style="text-align: center;">
+                                <div class="col-sm-12 my-1 text-success" style="font-size:small;">
+                                    Solder la tâche en cliquant içi
+                                </div>
+                                <button class="btn btn-success"  (click)="showSuccess()" type="button">
+                                    Traité
+                                </button>
+                                
+                              </div>
+                            </div>
+                          </div>
+                      </div>
+                     
+                    </div>
+                    <a class="carousel-control-prev rounded-circle border-0 bg-primary my-auto ml-2" href="#carouselExampleIndicators" role="button" style="width: 40px;height: 40px;" data-slide="prev">
+                      <span class="carousel-control-prev-icon"  aria-hidden="true"></span>
+                      <span class="sr-only">Previous</span>
+                    </a>
+                    <a class="carousel-control-next rounded-circle border-0 bg-primary my-auto mr-2" href="#carouselExampleIndicators" role="button" style="width: 40px;height: 40px;" data-slide="next">
+                      <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                      <span class="sr-only">Next</span>
+                    </a>
+                  </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+  <!-- Modal -->
+  <div class="modal fade" id="imageModal" tabindex="-1" role="dialog" aria-labelledby="imageModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="imageModalLabel">Photo du standard</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+            <img src="../../assets/img/3.jpg" class="d-block w-100 rounded border border-dark" alt="...">
+        </div>
+        <div class="modal-footer">
+          <button style="width: 100px;" type="button" class="btn btn-danger d-flex align-items-center justify-content-between" data-dismiss="modal"><div>Fermer</div> <i class="pi pi-times-circle" style="font-size: 1em"></i></button>
+        </div>
+      </div>
+    </div>
+  </div>

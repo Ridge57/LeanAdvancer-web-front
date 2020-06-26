@@ -1,0 +1,65 @@
+
+<!-- Page Wrapper -->
+<div id="wrapper">
+
+    <!-- Sidebar -->
+    <app-side-navigation></app-side-navigation>
+    <!-- End of Sidebar -->
+
+    <!-- Content Wrapper -->
+    <div id="content-wrapper" class="d-flex flex-column">
+
+        <!-- Main Content -->
+        <div id="content ">
+
+            <!-- Topbar -->
+            <app-top-navigation></app-top-navigation>
+            <!-- End of Topbar -->
+            <div class="container-fluid">
+                <!-- Page Heading -->
+                <div class="mb-4">
+                    <h3 class="h3 mb-0 text-gray-800">Gestion des standards | <small>ajouter un standard</small></h3>
+                </div>
+                <app-standard-tabmenu></app-standard-tabmenu>
+    
+                <p-toast [style]="{marginTop: '130px'}"></p-toast>
+                <form class="card shadow">
+                <div class="p-3 row">
+                <div class="col">
+                    <div class="form-group">
+                      <label>quel est le titre du standard ?</label>
+                      <input type="text" class="form-control" placeholder="exemple : vérifier la pression du compresseur">
+                    </div>
+                    <div class="form-group">
+                      <label>à quelle zone le standard est-il attaché ?</label>
+                      <select class="form-control">
+                        <option>1</option>
+                        <option>2</option>
+                        <option>3</option>
+                        <option>4</option>
+                        <option>5</option>
+                      </select>
+                    </div>
+                    <div class="form-group input-group">
+                        <div class="custom-file">
+                          <input type="file" class="form-control custom-file-input" (change)="fileChange($event)">
+                          <label class="custom-file-label" >{{uploadedFile ? uploadedFile : 'choisir le fichier'}}</label>
+                        </div>
+                    </div>
+                    </div>
+                    <div class="col d-flex justify-content-around align-items-center">
+                        <button type="button" (click)="upload()" class="btn btn-success d-flex justify-content-around align-items-center" style="width: 40%;height: 30%;">
+                            <i class="pi pi-upload" style="font-size: 3em"></i>
+                            sauvegarder
+                        </button>
+                        <button type="button" (click)="annuler()" class="btn btn-warning d-flex justify-content-around align-items-center" style="width: 40%;height: 30%;">
+                            <i class="pi pi-replay" style="font-size: 3em"></i>
+                            annuler
+                        </button>
+                    </div>
+                     </div>
+                  </form>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,125 @@
+
+<!-- Page Wrapper -->
+<div id="wrapper">
+
+    <!-- Sidebar -->
+    <app-side-navigation></app-side-navigation>
+    <!-- End of Sidebar -->
+
+    <!-- Content Wrapper -->
+    <div id="content-wrapper" class="d-flex flex-column">
+
+        <!-- Main Content -->
+        <div id="content ">
+
+            <!-- Topbar -->
+            <app-top-navigation></app-top-navigation>
+            <!-- End of Topbar -->
+            <div class="container-fluid">
+                <p-toast [style]="{marginTop: '130px'}"></p-toast>
+                <!-- Page Heading -->
+                <div class="mb-4">
+                    <h3 class="h3 mb-0 text-gray-800">Catégories</h3>
+                </div>
+                <div class="container">
+
+                
+                <div class="row mb-4 d-flex justify-content-around align-items-center " style="height: 80px;">
+                    <div class="card shadow col-sm-3 card shadow px-0" style="height: 90%;" >
+                        <button type="button" class="btn btn-success d-flex justify-content-around align-items-center" style="height: 100%;font-size: 1.2em;" data-toggle="modal" data-target="#ajoutModal">
+                            <i class="pi pi-plus-circle" style="font-size: 1.5em"></i>
+                            ajouter
+                        </button>
+                    </div>
+                    <div class="col-sm-3 card shadow px-0" style="height: 90%;" >
+                        <button type="button" class="btn btn-warning d-flex justify-content-around align-items-center" style="height: 100%;font-size: 1.2em;" data-toggle="modal" data-target="#modifierModal">
+                            <i class="pi pi-pencil" style="font-size: 1.5em"></i>
+                            modifier
+                        </button>
+                    </div>
+                    <div class="col-sm-3 card shadow px-0" style="height: 90%;" >
+                        <button type="button" class="btn btn-danger d-flex justify-content-around align-items-center" style="height: 100%;font-size: 1.2em;">
+                            <i class="pi pi-times-circle" style="font-size: 1.5em"></i>
+                            supprimer
+                        </button>
+                    </div>
+                </div>
+                <p-table [columns]="cols" [value]="cars1" selectionMode="single" class="mb-4 card shadow" [paginator]="true" [rows]="10" [showCurrentPageReport]="true"
+                currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries">
+                    <ng-template pTemplate="header" let-columns>
+                        <tr>
+                            <th *ngFor="let col of columns" [pSortableColumn]="col.field">
+                                {{col.header}}
+                                <p-sortIcon [field]="col.field" ariaLabel="Activate to sort" ariaLabelDesc="Activate to sort in descending order" ariaLabelAsc="Activate to sort in ascending order"></p-sortIcon>
+                            </th>
+                            <th>
+                               voir
+                            </th>
+                        </tr>
+                    </ng-template>
+                    <ng-template pTemplate="body" let-rowData let-columns="columns">
+                        <tr [pSelectableRow]="rowData">
+                            <td *ngFor="let col of columns">
+                                {{rowData[col.field]}}
+                            </td>
+                            <td class="d-flex justify-content-around" >
+                                <button type="button" class="btn btn-info">
+                                    <i class="pi pi-search" style="font-size: 1.2em;"></i>
+                                </button>
+                             </td>
+                        </tr>
+                    </ng-template>
+                </p-table>
+            </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal Ajouter-->
+<div class="modal fade" id="ajoutModal" tabindex="-1" role="dialog" aria-labelledby="ajoutModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="ajoutModalLabel">ajouter une nouvelle zone</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+            <div class="form-group">
+                <label>nom de la zone</label>
+                <input type="text" class="form-control">
+            </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-danger" data-dismiss="modal">fermer</button>
+          <button type="button" class="btn btn-success">ajouter</button>
+        </div>
+      </div>
+    </div>
+</div>
+
+<!-- Modal Modifier-->
+<div class="modal fade" id="modifierModal" tabindex="-1" role="dialog" aria-labelledby="modifierModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="modifierModalLabel">modifier la zone</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+            <div class="form-group">
+                <label>nom de la zone</label>
+                <input type="text" class="form-control" value="oo">
+            </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-danger" data-dismiss="modal">fermer</button>
+          <button type="button" class="btn btn-success">modifier</button>
+        </div>
+      </div>
+    </div>
+</div>

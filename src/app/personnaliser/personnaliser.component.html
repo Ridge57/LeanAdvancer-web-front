@@ -1,0 +1,59 @@
+<!-- Page Wrapper -->
+<div id="wrapper">
+   
+    <!-- Sidebar -->
+    <app-side-navigation></app-side-navigation>
+    <!-- End of Sidebar -->
+
+    <!-- Content Wrapper -->
+    <div id="content-wrapper" class="d-flex flex-column">
+
+      <!-- Main Content -->
+      <div id="content">
+
+        <!-- Topbar -->
+        <app-top-navigation></app-top-navigation>
+        <!-- End of Topbar -->
+
+        <div class="container-fluid">
+
+            <!-- Page Heading -->
+            
+            <div class="row sm-col-12 d-flex justify-content-around">
+                <div class="col col-sm-5">
+                    <div class="d-sm-flex align-items-center justify-content-between mb-4">
+                        <h1 class="h3 mb-0 text-gray-800">Vous souhaitez personnaliser votre produit?</h1>
+                      </div>
+                      <div class="d-sm-flex align-items-center justify-content-between mb-4">
+                          <h1 class="h5 mb-0 text-warning">créons ensemble le produit qui vous ira... comme un gant</h1>
+                      </div>
+                    <img src="../../assets/img/gloves.webp" class="d-block w-100 rounded border border-warning" alt="...">
+                </div>
+                <div class="col col-sm-5 card shadow py-3">
+                    <form>
+                        <div class="form-group">
+                        <label for="exampleFormControlInput1">address email</label>
+                        <input type="email" class="form-control" id="exampleFormControlInput1" placeholder="name@example.com">
+                        </div>
+                        
+                        <div class="form-group">
+                        <label for="exampleFormControlTextarea1">description</label>
+                        <textarea class="form-control" id="exampleFormControlTextarea1" rows="3"></textarea>
+                        </div>
+    
+                        <div class="form-group input-group">
+                            <div class="custom-file">
+                            <input type="file" class="form-control custom-file-input" (change)="fileChange($event)">
+                            <label class="custom-file-label" >{{uploadedFile ? uploadedFile : 'ajouter un fichier (dessin, schéma, etc..)'}}</label>
+                            </div>
+                        </div>
+                        <button type="button" style="width: 200px;height: 50px;" class="btn btn-outline-warning d-flex align-items-center justify-content-center">
+                            <i class="fas fa-envelope mx-3"  style="font-size: 2em"></i> envoyer
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+      </div>
+    </div>
+</div>
