@@ -16,8 +16,8 @@ export class StandardTabmenuComponent implements OnInit {
     this.items2 = [
       {label: 'afficher', icon: 'pi pi-fw pi-calendar',routerLink:'/standardVoir'},
       {label: 'ajouter', icon: 'pi pi-fw pi-home',routerLink:'/standardAjouter'},
-      {label: 'rectifications', icon: 'pi pi-fw pi-file',routerLink:'/standardRectifier'},
-      {label: 'statistiques', icon: 'pi pi-fw pi-cog'}
+      //{label: 'rectifications', icon: 'pi pi-fw pi-file',routerLink:'/standardRectifier'},
+      //{label: 'statistiques', icon: 'pi pi-fw pi-cog'}
   ];
   }
 

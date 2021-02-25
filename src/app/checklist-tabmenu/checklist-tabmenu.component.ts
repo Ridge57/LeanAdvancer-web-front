@@ -16,8 +16,7 @@ export class ChecklistTabmenuComponent implements OnInit {
     this.items2 = [
       {label: 'tâches nok', icon: 'pi pi-fw pi-home',routerLink:'/checklistTachesNok'},
       {label: 'historique', icon: 'pi pi-fw pi-calendar',routerLink:'/checklistHistorique'},
-      {label: 'afficher/modifier', icon: 'pi pi-fw pi-file',routerLink:'/checklistVoir'},
-      {label: 'statistiques', icon: 'pi pi-fw pi-cog'}
+      {label: 'afficher/modifier', icon: 'pi pi-fw pi-file',routerLink:'/checklistVoir'}
   ];
   
   }

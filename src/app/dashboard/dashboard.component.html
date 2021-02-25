@@ -20,7 +20,7 @@
             <!-- Page Heading -->
             <div class="d-sm-flex align-items-center justify-content-between mb-4">
               <h1 class="h3 mb-0 text-gray-800">Tableau de bord</h1>
-              <a href="#" class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm"><i class="fas fa-download fa-sm text-white-50"></i> Télécharger le rapport</a>
+              <a (click)="generateDB()" class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm text-white"><i class="fas fa-download fa-sm text-white-50"></i> Télécharger les données</a>
             </div>
   
             <!-- Content Row -->
@@ -28,15 +28,15 @@
   
               <!-- Earnings (Monthly) Card Example -->
               <div class="col-xl-3 col-md-6 mb-4">
-                <div class="card border-left-primary shadow h-100 py-2">
+                <div class="card {{borderTypeTachesATraiter}} shadow h-100 py-2">
                   <div class="card-body">
                     <div class="row no-gutters align-items-center">
                       <div class="col mr-2">
-                        <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">Résultats checklist</div>
-                        <div class="h5 mb-0 font-weight-bold text-gray-800">12 controls nok</div>
+                        <div class="text-xs font-weight-bold {{textColorTachesATraiter}} text-uppercase mb-1">Résultats checklist</div>
+                        <div class="h5 mb-0 font-weight-bold text-gray-800">{{nombreTachesATraiter}} tâches à traiter</div>
                       </div>
                       <div class="col-auto">
-                        <i class="fas fa-calendar fa-2x text-gray-300"></i>
+                        <i class="fas {{emojiTachesATraiter}} fa-2x"></i>
                       </div>
                     </div>
                   </div>
@@ -45,24 +45,24 @@
   
               <!-- Earnings (Monthly) Card Example -->
               <div class="col-xl-3 col-md-6 mb-4">
-                <div class="card border-left-success shadow h-100 py-2">
+                <div class="card {{borderTypeIrritant}} shadow h-100 py-2">
                   <div class="card-body">
                     <div class="row no-gutters align-items-center">
                       <div class="col mr-2">
-                        <div class="text-xs font-weight-bold text-info text-uppercase mb-1">Traitement des Irritants</div>
+                        <div class="text-xs font-weight-bold {{textColorIrritant}} text-uppercase mb-1">Traitement des Irritants</div>
                         <div class="row no-gutters align-items-center">
                           <div class="col-auto">
-                            <div class="h5 mb-0 mr-3 font-weight-bold text-gray-800">68%</div>
+                            <div class="h5 mb-0 mr-3 font-weight-bold text-gray-800">{{processingRateIrritant}}%</div>
                           </div>
                           <div class="col">
                             <div class="progress progress-sm mr-2">
-                              <div class="progress-bar bg-info" role="progressbar" style="width: 68%" aria-valuenow="50" aria-valuemin="0" aria-valuemax="100"></div>
+                              <div class="progress-bar {{bgColorTypeIrritant}}" role="progressbar" style="width:{{processingRateIrritant}}%" aria-valuenow="50" aria-valuemin="0" aria-valuemax="100"></div>
                             </div>
                           </div>
                         </div>
                       </div>
                       <div class="col-auto">
-                        <i class="fas fa-dollar-sign fa-2x text-gray-300"></i>
+                        <i class="fas {{emojiIrritant}} fa-2x"></i>
                       </div>
                     </div>
                   </div>
@@ -71,24 +71,24 @@
   
               <!-- Earnings (Monthly) Card Example -->
               <div class="col-xl-3 col-md-6 mb-4">
-                <div class="card border-left-info shadow h-100 py-2">
+                <div class="card {{borderTypeSuggestion}} shadow h-100 py-2">
                   <div class="card-body">
                     <div class="row no-gutters align-items-center">
                       <div class="col mr-2">
-                        <div class="text-xs font-weight-bold text-info text-uppercase mb-1">Traitements suggestions</div>
+                        <div class="text-xs font-weight-bold {{textColorSuggestion}} text-uppercase mb-1">Traitements suggestions</div>
                         <div class="row no-gutters align-items-center">
                           <div class="col-auto">
-                            <div class="h5 mb-0 mr-3 font-weight-bold text-gray-800">50%</div>
+                            <div class="h5 mb-0 mr-3 font-weight-bold text-gray-800">{{suggestionProcessingRate}}%</div>
                           </div>
                           <div class="col">
                             <div class="progress progress-sm mr-2">
-                              <div class="progress-bar bg-info" role="progressbar" style="width: 50%" aria-valuenow="50" aria-valuemin="0" aria-valuemax="100"></div>
+                              <div class="progress-bar {{bgColorTypeSuggestion}}" role="progressbar" style="width: {{suggestionProcessingRate}}%" aria-valuenow="50" aria-valuemin="0" aria-valuemax="100"></div>
                             </div>
                           </div>
                         </div>
                       </div>
                       <div class="col-auto">
-                        <i class="fas fa-clipboard-list fa-2x text-gray-300"></i>
+                        <i class="fas {{emojiSuggestion}} fa-2x"></i>
                       </div>
                     </div>
                   </div>
@@ -97,15 +97,15 @@
   
               <!-- Pending Requests Card Example -->
               <div class="col-xl-3 col-md-6 mb-4">
-                <div class="card border-left-warning shadow h-100 py-2">
+                <div class="card {{borderTypeStandards}} shadow h-100 py-2">
                   <div class="card-body">
                     <div class="row no-gutters align-items-center">
                       <div class="col mr-2">
-                        <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">Standards publiés</div>
-                        <div class="h5 mb-0 font-weight-bold text-gray-800">18</div>
+                        <div class="text-xs font-weight-bold {{textColorStandards}} text-uppercase mb-1">Standards publiés ce mois</div>
+                        <div class="h5 mb-0 font-weight-bold text-gray-800">{{nombreStandards}}</div>
                       </div>
                       <div class="col-auto">
-                        <i class="fas fa-comments fa-2x text-gray-300"></i>
+                        <i class="fas {{emojiStandards}} fa-2x"></i>
                       </div>
                     </div>
                   </div>
@@ -113,12 +113,19 @@
               </div>
             </div>
   
-            <!-- Content Row -->
+            
+            <div class="form-group col-sm-4">
+              <select (change)="selectYear($event.target.value)" class="form-control">
+                <option *ngFor="let annee of anneesList" value={{annee}}>{{annee}}</option>
+              </select>
+            </div>
 
+
+            <!-- IRRITANTS -->
             <div class="row">
                 <div class="col-xl-8 col-lg-7">
                     <div class="card shadow mb-4">
-                        <div class="card-header">Evolution mensuelle des irritants</div>
+                        <div class="card-header">Evolution mensuelle des irritants sur l'année</div>
                         <div class="card-body" style="height:20rem"><canvas #irritantAreaChart></canvas></div>
                     </div>
                 </div>
@@ -129,18 +136,58 @@
                         <div class="mt-4 text-center small">
                             <span class="mr-2">
                               <i class="fas fa-circle" style="color: #4e73df;"></i> A traiter
+                            </span> 
+                            <span class="mr-2">
+                              <i class="fas fa-circle" style="color: #36b9cc;;"></i> En cours
                             </span>
                             <span class="mr-2">
-                              <i class="fas fa-circle" style="color: #1cc88a;"></i> En cours
+                              <i class="fas fa-circle" style="color:#1cc88a;"></i> Soldés
                             </span>
-                            <span class="mr-2">
-                              <i class="fas fa-circle" style="color: #36b9cc;"></i> Soldés
-                            </span>
-                          </div>
+                        </div>
                     </div>
                 </div>
             </div>
+            
 
+              <!-- TOP IRRITANTS ZONES -->
+              <div class="row">
+                  <div class="col-xl-8 col-lg-7">
+                      <div class="card shadow mb-4">
+                          <div class="card-header">Top 5 des zones par nombre d'irritants remontés</div>
+                          <div class="card-body" style="height:20rem"><canvas #zonesIrritantAreaChart></canvas></div>
+                      </div>
+                  </div>
+                  <div class="col-xl-4 col-lg-5">
+                      <div class="card shadow mb-4">
+                          <div class="card-header">Top 5 des motifs d'irritants</div>
+                          <div class="card-body pt-4 pb-2" style="height:calc(20rem - 43px)!important">
+                            <ul>
+                              <li>
+                                <p class="text-muted"> <span class="badge bg-danger text-light">{{valeurs[0]}}</span> {{motifs[0]}} </p>
+                              </li>
+                              <li>
+                                <p class="text-muted"> <span class="badge bg-danger text-light">{{valeurs[1]}}</span> {{motifs[1]}} </p>
+                              </li>
+                              <li>
+                                <p class="text-muted"> <span class="badge bg-danger text-light">{{valeurs[2]}}</span> {{motifs[2]}}</p>
+                              </li>
+                              <li>
+                                <p class="text-muted"> <span class="badge bg-danger text-light">{{valeurs[3]}}</span> {{motifs[3]}}</p>
+                              </li>
+                              <li>
+                                <p class="text-muted"> <span class="badge bg-danger text-light">{{valeurs[4]}}</span> {{motifs[4]}}</p>
+                              </li>
+                            </ul>
+                          </div>
+                          
+                          <div class="mt-4 text-center small">
+                              <span class="mr-2">
+                                <i class="fas fa-circle" style="color: #ffffff;"></i>
+                              </span> 
+                          </div>
+                      </div>
+                  </div>
+              </div>
             
             <!-- SUGGESTIONS -->
             <div class="row">
@@ -159,11 +206,16 @@
                             <i class="fas fa-circle" style="color: #4e73df;"></i> A traiter
                             </span>
                             <span class="mr-2">
-                            <i class="fas fa-circle" style="color: #1cc88a;"></i> En cours
+                            <i class="fas fa-circle" style="color: #36b9cc;"></i> En étude
                             </span>
                             <span class="mr-2">
-                            <i class="fas fa-circle" style="color: #36b9cc;"></i> Soldés
+                            <i class="fas fa-circle" style="color: #1cc88a;"></i> Acceptée
                             </span>
+                        </div>
+                        <div class="text-center">
+                        
+                            <p class="text-muted"> <span class="badge bg-danger text-light">{{nbIdeesNonRetenues}}</span> Non retenue(s) </p>
+                          
                         </div>
                     </div>
                 </div>

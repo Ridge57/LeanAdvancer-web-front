@@ -1,36 +1,80 @@
 import { Component, OnInit } from '@angular/core';
-import { MessageService } from 'primeng/api';
+import { FormBuilder, FormGroup } from '@angular/forms';
 import { SortEvent } from 'primeng/api';
+import { ZoneService } from 'src/services/zone.service';
 
 @Component({
   selector: 'app-zones',
   templateUrl: './zones.component.html',
   styleUrls: ['./zones.component.css'],
-  providers: [MessageService]
 })
-export class ZonesComponent implements OnInit {
-  cars1: any[];
-  cols: any[];
-  constructor(private messageService: MessageService) { }
+export class ZonesComponent implements OnInit { 
+  zones:any
+  cols: any[]
+  nouvelleZone:any
+  selectedZone:any
+  actionButtonIsVisible:boolean
+  formZone:FormGroup;
+
+  constructor(private zoneService: ZoneService, private formBuilder: FormBuilder) { }
 
   ngOnInit(): void {
-    this.cars1 =[
-      {zone:'na',date:'22',auteur:'nks',resultat:'bcbc'},
-      {zone:'np',date:'32',auteur:'bcn',resultat:'rre'},
-      {zone:'ns',date:'12',auteur:'ops',resultat:'az'}
-  ]
+  this.getAllZones()
+  this.initForm()
   this.cols = [
-    { field: 'zone', header: 'Zone' },
-    { field: 'date', header: 'Date' },
-    { field: 'auteur', header: 'Fait par' },
-    { field: 'resultat', header: 'Résultat' }
-];
+    { field: 'nomZone', header: 'Zone' }];
   }
-  upload() {
-    this.messageService.add({severity: 'success', summary: 'File Uploaded', detail: ''});
+  
+getAllZones(){
+  this.zoneService.getAllZones().subscribe((data)=>{
+    this.zones = data
+  })
 }
-annuler() {
-  this.messageService.add({severity: 'warn', summary: 'annulé', detail: ''});
+
+initForm() {
+  this.formZone = this.formBuilder.group({
+    idZone:'',
+    nomZone:''
+  })
+}
+
+getSelectedZone(zone:any){
+  this.selectedZone=zone
+}
+
+saisie(val:any){
+   
+  if(val!=="" && val.replace(/\s/g, '').length>0){
+    this.nouvelleZone=val
+    this.formZone.get('nomZone').setValue(val)
+    this.actionButtonIsVisible=true
+  }else{
+    this.actionButtonIsVisible=false
+  }
+}
+
+ajouter(){
+  this.zoneService.saveZone(this.formZone.value).subscribe(()=>{
+    this.formZone.reset()
+    this.nouvelleZone=""
+    document.location.reload()
+  })
+}
+
+modifier(){
+  this.formZone.get('idZone').setValue(this.selectedZone.idZone)
+  this.ajouter()
+}
+
+fermer(){
+  this.formZone.reset()
+  this.nouvelleZone=""
+}
+
+deleteZone(){
+  this.zoneService.deleteZone(this.selectedZone.idZone).subscribe(()=>{
+    document.location.reload()
+  })
 }
 
 customSort(event: SortEvent) {
@@ -53,5 +97,4 @@ customSort(event: SortEvent) {
       return (event.order * result);
   });
 }
-
 }

@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { SortEvent } from 'primeng/api';
+import { ChecklistService } from 'src/services/checklist.service';
 
 @Component({
   selector: 'app-checklist-historique',
@@ -9,24 +10,44 @@ import { SortEvent } from 'primeng/api';
 export class ChecklistHistoriqueComponent implements OnInit {
   cars1: any[];
   cols: any[];
+  defaultImg="src\assets\img\no-image.png"
+  AllHistoriqChecklist:any
+  selectedHistoriqChecklistID:number
+  selectedHistoriqChecklist:any
+  historiqTachesForHistoriqChecklist:any
 
-  constructor() { }
+  constructor(private checklistService : ChecklistService) { }
 
   ngOnInit(): void {
-    this.cars1 =[
-      {zone:'na',date:'22',auteur:'nks',resultat:'bcbc'},
-      {zone:'np',date:'32',auteur:'bcn',resultat:'rre'},
-      {zone:'ns',date:'12',auteur:'ops',resultat:'az'}
-  ]
-
+    this.getAllHistoriqChecklist()
     this.cols = [
-      { field: 'zone', header: 'Zone' },
+      { field: 'zone', subfield: 'nomZone', header: 'Zone' },
       { field: 'date', header: 'Date' },
-      { field: 'auteur', header: 'Fait par' },
-      { field: 'resultat', header: 'Résultat' }
+      { field: 'user', subfield: 'userName', header: 'Fait par' }
   ];
   }
+
+  getAllHistoriqChecklist(){
+    this.checklistService.getAllHistoriqCheckList().subscribe((data)=>{
+      this.AllHistoriqChecklist = data
+    })
+  }
+
+  /*
+  getAssociatedHistoriqTache()
+  cette fonction réccupère toutes les taches éffectuées lors de cette checklist
+  ainsi que le résultat (ok/nok) de chacune des taches
+  */
+ getAssociatedHistoriqTache(historiqChecklist:any){
+    this.selectedHistoriqChecklist = historiqChecklist
+    this.selectedHistoriqChecklistID = historiqChecklist.idHistoriqChecklist
+    this.checklistService.getHistoriqTachesByHistoriqChecklist(historiqChecklist).subscribe((data)=>{
+    this.historiqTachesForHistoriqChecklist=data
+    })
+ }
   customSort(event: SortEvent) {
+    console.log(event);
+    
     event.data.sort((data1, data2) => {
         let value1 = data1[event.field];
         let value2 = data2[event.field];

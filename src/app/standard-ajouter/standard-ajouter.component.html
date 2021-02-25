@@ -24,41 +24,35 @@
     
                 <p-toast [style]="{marginTop: '130px'}"></p-toast>
                 <form class="card shadow">
-                <div class="p-3 row">
-                <div class="col">
-                    <div class="form-group">
-                      <label>quel est le titre du standard ?</label>
-                      <input type="text" class="form-control" placeholder="exemple : vérifier la pression du compresseur">
-                    </div>
-                    <div class="form-group">
-                      <label>à quelle zone le standard est-il attaché ?</label>
-                      <select class="form-control">
-                        <option>1</option>
-                        <option>2</option>
-                        <option>3</option>
-                        <option>4</option>
-                        <option>5</option>
-                      </select>
-                    </div>
-                    <div class="form-group input-group">
-                        <div class="custom-file">
-                          <input type="file" class="form-control custom-file-input" (change)="fileChange($event)">
-                          <label class="custom-file-label" >{{uploadedFile ? uploadedFile : 'choisir le fichier'}}</label>
+                    <div class="p-3 row">
+                        <div class="col">
+                            <form>
+                            <div class="mb-3 col-sm-6 row d-flex justify-content-around">
+                                <button type="button" class="btn btn-primary btn-sm col-sm-4 d-flex justify-content-around align-items-center" (click)="ajouter()"><i class="fas fa-plus-circle"></i>ajouter un standard</button>
+                                <button type="button" class="btn btn-warning btn-sm col-sm-3 d-flex justify-content-around align-items-center" *ngIf="step>0" (click)="annuler()"><i class="fas fa-save"></i>annuler</button>
+                                <button type="button" class="btn btn-success btn-sm col-sm-3 d-flex justify-content-around align-items-center" *ngIf="step>2" (click)="sauvegarder()"><i class="fas fa-undo"></i>sauvegarder</button>
+                            </div>
+                            <div class="form-group col-sm-6" *ngIf="step>0">
+                                <label>Titre du standard</label>
+                                <input type="text" class="form-control" (input)="titleChange($event.target.value)" placeholder="exemple : vérifier la pression du compresseur">
+                            </div>
+                            <div class="form-group col-sm-6" *ngIf="step>0">
+                                <label>Zone </label>
+                                <select class="form-control" (change)="zoneChange($event.target.value)">
+                                    <option disabled selected value class="font-italic"> -- selectionner une zone -- </option>
+                                    <option *ngFor='let zone of zones'value={{zone.idZone}}>{{zone.nomZone}}</option>
+                                </select>
+                            </div>
+                            <div class="form-group input-group col-sm-6" *ngIf="step>1">
+                                <div class="custom-file">
+                                <input type="file" class="form-control custom-file-input" (change)="fileChange($event)">
+                                <label class="custom-file-label" >{{uploadedFile ? uploadedFile : 'choisir le fichier'}}</label>
+                                </div>
+                            </div>
+                            </form>
                         </div>
                     </div>
-                    </div>
-                    <div class="col d-flex justify-content-around align-items-center">
-                        <button type="button" (click)="upload()" class="btn btn-success d-flex justify-content-around align-items-center" style="width: 40%;height: 30%;">
-                            <i class="pi pi-upload" style="font-size: 3em"></i>
-                            sauvegarder
-                        </button>
-                        <button type="button" (click)="annuler()" class="btn btn-warning d-flex justify-content-around align-items-center" style="width: 40%;height: 30%;">
-                            <i class="pi pi-replay" style="font-size: 3em"></i>
-                            annuler
-                        </button>
-                    </div>
-                     </div>
-                  </form>
+                </form>
             </div>
         </div>
     </div>

@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { SortEvent } from 'primeng/api';
+import {IrritantService} from 'src/services/irritant.service';
 
 @Component({
   selector: 'app-irritant-atraiter',
@@ -9,22 +10,53 @@ import { SortEvent } from 'primeng/api';
 export class IrritantAtraiterComponent implements OnInit {
   cars1: any[];
   cols: any[];
-  constructor() { }
+  irritants:any;
+  selectedIrritant:any
+  selectedIrritantID:number
+  statusList:any
+  displaySaveButton=false
+  constructor(private irritantService : IrritantService) { }
 
   ngOnInit(): void {
-    this.cars1 =[
-      {categorie:'na',zone:'22',date:'nkdss',emetteur:'Jean ERAS'},
-      {categorie:'xwa',zone:'221',date:'wqnks',emetteur:'Tomas VALDO'},
-      {categorie:'ncsa',zone:'432',date:'aqnks',emetteur:'Richard BRUNO'}
-     
-  ]
+    this.initialization()
 
     this.cols = [
-      { field: 'categorie', header: 'catégorie' },
-      { field: 'zone', header: 'zone' },
-      { field: 'date', header: 'date de saisie' },
-      { field: 'emetteur', header: 'emetteur' }
-  ];
+    { field: 'zone', subfield: 'nomZone', header: 'Zone' },
+    { field: 'categorie', subfield: 'nomCat', header: 'Catégorie' },
+    { field: 'date',header:'Date'},
+    { field: 'user',subfield: 'userName', header:'User'}]
+
+  }
+
+  getIrritantsATraiter(status:any){
+    this.irritantService.findByStatus(status).subscribe((data)=>{
+      this.irritants = data   
+    })
+  }
+
+  initialization(){
+    this.irritantService.getStatusList().subscribe((data)=>{
+      this.statusList = data
+      
+      this.getIrritantsATraiter(this.statusList[0])
+    })
+  }
+
+  setStatus(status:any){
+      this.selectedIrritant.status=status
+      this.displaySaveButton=true
+  }
+
+  getSelectedIrritant(irritant:any){
+    this.selectedIrritant=irritant
+    this.selectedIrritantID=irritant.idIrritant
+    this.displaySaveButton=false
+  }
+
+  saveChanges(){
+    this.irritantService.updateIrritantStatus(this.selectedIrritant).subscribe(()=>{
+      document.location.reload()
+    })
   }
   
   customSort(event: SortEvent) {

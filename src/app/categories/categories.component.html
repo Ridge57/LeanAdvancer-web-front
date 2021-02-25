@@ -16,10 +16,10 @@
             <app-top-navigation></app-top-navigation>
             <!-- End of Topbar -->
             <div class="container-fluid">
-                <p-toast [style]="{marginTop: '130px'}"></p-toast>
+                
                 <!-- Page Heading -->
                 <div class="mb-4">
-                    <h3 class="h3 mb-0 text-gray-800">Catégories</h3>
+                    <h3 class="h3 mb-0 text-gray-800">Gestion des motifs des irritants (catégories)</h3>
                 </div>
                 <div class="container">
 
@@ -38,13 +38,13 @@
                         </button>
                     </div>
                     <div class="col-sm-3 card shadow px-0" style="height: 90%;" >
-                        <button type="button" class="btn btn-danger d-flex justify-content-around align-items-center" style="height: 100%;font-size: 1.2em;">
+                        <button type="button" class="btn btn-danger d-flex justify-content-around align-items-center" style="height: 100%;font-size: 1.2em;" data-toggle="modal" data-target="#supprimerModal">
                             <i class="pi pi-times-circle" style="font-size: 1.5em"></i>
                             supprimer
                         </button>
                     </div>
                 </div>
-                <p-table [columns]="cols" [value]="cars1" selectionMode="single" class="mb-4 card shadow" [paginator]="true" [rows]="10" [showCurrentPageReport]="true"
+                <p-table [columns]="cols" [value]="categories" selectionMode="single" class="mb-4 card shadow col-sm-5 col-xs-10"  [paginator]="true" [rows]="10" [showCurrentPageReport]="true"
                 currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries">
                     <ng-template pTemplate="header" let-columns>
                         <tr>
@@ -52,21 +52,13 @@
                                 {{col.header}}
                                 <p-sortIcon [field]="col.field" ariaLabel="Activate to sort" ariaLabelDesc="Activate to sort in descending order" ariaLabelAsc="Activate to sort in ascending order"></p-sortIcon>
                             </th>
-                            <th>
-                               voir
-                            </th>
                         </tr>
                     </ng-template>
                     <ng-template pTemplate="body" let-rowData let-columns="columns">
-                        <tr [pSelectableRow]="rowData">
+                        <tr [pSelectableRow]="rowData" (click)="getSelectedCat(rowData)">
                             <td *ngFor="let col of columns">
                                 {{rowData[col.field]}}
                             </td>
-                            <td class="d-flex justify-content-around" >
-                                <button type="button" class="btn btn-info">
-                                    <i class="pi pi-search" style="font-size: 1.2em;"></i>
-                                </button>
-                             </td>
                         </tr>
                     </ng-template>
                 </p-table>
@@ -81,45 +73,68 @@
     <div class="modal-dialog">
       <div class="modal-content">
         <div class="modal-header">
-          <h5 class="modal-title" id="ajoutModalLabel">ajouter une nouvelle zone</h5>
+          <h5 class="modal-title" id="ajoutModalLabel">ajouter un nouveau motif</h5>
           <button type="button" class="close" data-dismiss="modal" aria-label="Close">
             <span aria-hidden="true">&times;</span>
           </button>
         </div>
         <div class="modal-body">
             <div class="form-group">
-                <label>nom de la zone</label>
-                <input type="text" class="form-control">
+                <label>nom du motif</label>
+                <input type="text" class="form-control" (input)="saisie($event.target.value)">
             </div>
         </div>
         <div class="modal-footer">
-          <button type="button" class="btn btn-danger" data-dismiss="modal">fermer</button>
-          <button type="button" class="btn btn-success">ajouter</button>
+          <button type="button" class="btn btn-warning" data-dismiss="modal" (click)="fermer()">fermer</button>
+          <button type="button" class="btn btn-success" (click)="ajouter()" [disabled]="!actionButtonIsVisible">ajouter</button>
         </div>
       </div>
     </div>
 </div>
 
 <!-- Modal Modifier-->
-<div class="modal fade" id="modifierModal" tabindex="-1" role="dialog" aria-labelledby="modifierModalLabel" aria-hidden="true">
+<div *ngIf="selectedCat" class="modal fade" id="modifierModal" tabindex="-1" role="dialog" aria-labelledby="modifierModalLabel" aria-hidden="true">
     <div class="modal-dialog">
       <div class="modal-content">
         <div class="modal-header">
-          <h5 class="modal-title" id="modifierModalLabel">modifier la zone</h5>
+          <h5 class="modal-title" id="modifierModalLabel">modifier le motif</h5>
           <button type="button" class="close" data-dismiss="modal" aria-label="Close">
             <span aria-hidden="true">&times;</span>
           </button>
         </div>
         <div class="modal-body">
             <div class="form-group">
-                <label>nom de la zone</label>
-                <input type="text" class="form-control" value="oo">
+                <label>nom du motif</label>
+                <input type="text" class="form-control" value="{{selectedCat.nomCat}}" (input)="saisie($event.target.value)">
             </div>
         </div>
         <div class="modal-footer">
-          <button type="button" class="btn btn-danger" data-dismiss="modal">fermer</button>
-          <button type="button" class="btn btn-success">modifier</button>
+          <button type="button" class="btn btn-danger" data-dismiss="modal" (click)="fermer()">fermer</button>
+          <button type="button" class="btn btn-success" (click)="modifier()" [disabled]="!actionButtonIsVisible">modifier</button>
         </div>
       </div>
     </div>
 </div>
+
+
+  <!-- Confirmation Modal -->
+  <div *ngIf="selectedCat" class="modal fade" id="supprimerModal" tabindex="-1" role="dialog" aria-labelledby="supprimerModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+         
+          <h5 class="modal-title d-flex justify-content-around align-items-center" id="supprimerModalLabel"> <span style="color: #df4759;"><i class="fas fa-exclamation-circle mx-2"></i></span>Demande de confirmation</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          Confirmer la suppression du motif : {{selectedCat.nomCat}}?
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-warning" data-dismiss="modal">Annuler</button>
+          <button type="button" (click)=deleteCat() class="btn btn-danger" data-dismiss="modal">Oui, supprimer</button>
+        </div>
+      </div>
+    </div>
+  </div>

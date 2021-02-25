@@ -16,8 +16,7 @@ export class SuggestionTabmenuComponent implements OnInit {
     this.items2 = [
       {label: 'à traiter', icon: 'pi pi-fw pi-home',routerLink:'/suggestionATraiter'},
       {label: 'en cours', icon: 'pi pi-fw pi-calendar',routerLink:'/suggestionEnCours'},
-      {label: 'soldés', icon: 'pi pi-fw pi-file',routerLink:'/suggestionSoldes'},
-      {label: 'statistiques', icon: 'pi pi-fw pi-cog'}
+      {label: 'soldés', icon: 'pi pi-fw pi-file',routerLink:'/suggestionSoldes'}
   ];
   }
 }

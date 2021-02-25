@@ -1,6 +1,8 @@
 import { Component, OnInit } from '@angular/core';
+import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
 import { MessageService } from 'primeng/api';
 import { SortEvent } from 'primeng/api';
+import { UserService } from 'src/services/user.service';
 
 @Component({
   selector: 'app-users',
@@ -9,30 +11,72 @@ import { SortEvent } from 'primeng/api';
   providers: [MessageService]
 })
 export class UsersComponent implements OnInit {
+  users:any
+  cols: any[]
+  nouveauUser:any
+  selectedUser:any
+  actionButtonIsVisible:boolean
+  formUser:FormGroup;
 
-  
-  cars1: any[];
-  cols: any[];
-  constructor(private messageService: MessageService) { }
+  constructor(private userService: UserService, private formBuilder: FormBuilder) { }
 
   ngOnInit(): void {
-    this.cars1 =[
-      {zone:'na',date:'22',auteur:'nks',resultat:'bcbc'},
-      {zone:'np',date:'32',auteur:'bcn',resultat:'rre'},
-      {zone:'ns',date:'12',auteur:'ops',resultat:'az'}
-  ]
+  this.getAllUsers()
+  this.initForm()
   this.cols = [
-    { field: 'zone', header: 'Zone' },
-    { field: 'date', header: 'Date' },
-    { field: 'auteur', header: 'Fait par' },
-    { field: 'resultat', header: 'Résultat' }
-];
+    { field: 'userName', header: 'Utilisateur' }];
   }
-  upload() {
-    this.messageService.add({severity: 'success', summary: 'File Uploaded', detail: ''});
+  
+getAllUsers(){
+  this.userService.getAllUsers().subscribe((data)=>{
+    this.users = data
+  })
 }
-annuler() {
-  this.messageService.add({severity: 'warn', summary: 'annulé', detail: ''});
+
+initForm() {
+  this.formUser = this.formBuilder.group({
+    idUser:'',
+    userName:''
+  })
+}
+
+getSelectedUser(user:any){
+  this.selectedUser=user
+}
+
+saisie(val:any){
+   
+  if(val!=="" && val.replace(/\s/g, '').length>0){
+    this.nouveauUser=val
+    this.formUser.get('userName').setValue(val)
+    this.actionButtonIsVisible=true
+  }else{
+    this.actionButtonIsVisible=false
+  }
+}
+
+ajouter(){
+  this.userService.saveUser(this.formUser.value).subscribe(()=>{
+    this.formUser.reset()
+    this.nouveauUser=""
+    document.location.reload()
+  })
+}
+
+modifier(){
+  this.formUser.get('idUser').setValue(this.selectedUser.idUser)
+  this.ajouter()
+}
+
+fermer(){
+  this.formUser.reset()
+  this.nouveauUser=""
+}
+
+deleteZone(){
+  this.userService.deleteUser(this.selectedUser.idUser).subscribe(()=>{
+    document.location.reload()
+  })
 }
 
 customSort(event: SortEvent) {

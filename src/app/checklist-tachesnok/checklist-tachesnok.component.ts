@@ -1,61 +1,58 @@
 import { Component, OnInit } from '@angular/core';
-import { SortEvent } from 'primeng/api';
-import {MessageService} from 'primeng/api';
+import {ChecklistService} from 'src/services/checklist.service';
 
 @Component({
   selector: 'app-checklist-tachesnok',
   templateUrl: './checklist-tachesnok.component.html',
   styleUrls: ['./checklist-tachesnok.component.css'],
-  providers: [MessageService]
 })
 export class ChecklistTachesnokComponent implements OnInit {
-  cars1: any[];
-  cols: any[];
-  images: any[];
-  imgSource :String;
+  noImgSource :String
+  taches : any
+  cols:any
+  selectedTask:any
+  statusTasks;any
+  displaySaveButton:boolean=false
   
-  constructor(private messageService: MessageService) { 
-    this.imgSource = "../../assets/img/3.jpg"
+  constructor(private checklistService : ChecklistService) { 
+    this.noImgSource = "../../assets/img/no-image.png"
   }
 
   ngOnInit(): void {
-    
-    this.cars1 =[
-      {zone:'na',date:'22',auteur:'nks',resultat:'bcbc'},
-      {zone:'np',date:'32',auteur:'bcn',resultat:'rre'},
-      {zone:'ns',date:'12',auteur:'ops',resultat:'az'}
-  ]
-
+    this.getTachesATraiter()
+    this.getTraitementTachesStatusAtraiterEtSolde()
     this.cols = [
-      { field: 'zone', header: 'Zone' },
-      { field: 'date', header: 'Date' },
-      { field: 'auteur', header: 'Fait par' },
-      { field: 'resultat', header: 'Résultat' }
-  ];
+     { field: 'titre', header: 'Titre de la tâche' },
+     { field: 'historiqChecklist', subfield: 'date', header: 'Date' },
+     { field: 'status',header:'Status'}]
   }
 
-  showSuccess() {
-    this.messageService.add({severity:'success', summary: 'Traitée', detail:'La tâche a été retirée de la liste.'});
-}
-  customSort(event: SortEvent) {
-    event.data.sort((data1, data2) => {
-        let value1 = data1[event.field];
-        let value2 = data2[event.field];
-        let result = null;
+  getTachesATraiter(){
+    this.checklistService.getTachesATraiter().subscribe((data)=>{
+      this.taches = data
+    })
+  }
 
-        if (value1 == null && value2 != null)
-            result = -1;
-        else if (value1 != null && value2 == null)
-            result = 1;
-        else if (value1 == null && value2 == null)
-            result = 0;
-        else if (typeof value1 === 'string' && typeof value2 === 'string')
-            result = value1.localeCompare(value2);
-        else
-            result = (value1 < value2) ? -1 : (value1 > value2) ? 1 : 0;
+  showTaskDetails(data:any){
+    this.selectedTask=data
+    this.displaySaveButton=false
+  }
 
-        return (event.order * result);
-    });
-}
+  setResolution(res:any){
+    this.selectedTask.traitement=res
+    this.displaySaveButton=true
+  }
 
+  getTraitementTachesStatusAtraiterEtSolde(){
+    this.checklistService.getTraitementTachesStatusAtraiterEtSolde().subscribe((data)=>{
+      this.statusTasks=data
+    })
+  }
+
+  saveChanges(){
+    this.checklistService.updateHistoriqTache(this.selectedTask).subscribe(()=>{
+      console.log('ok');
+      document.location.reload()
+    })
+  }
 }

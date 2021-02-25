@@ -1,37 +1,82 @@
 import { Component, OnInit } from '@angular/core';
-import { MessageService } from 'primeng/api';
+import { FormBuilder, FormGroup } from '@angular/forms';
 import { SortEvent } from 'primeng/api';
+import {IrritantService} from 'src/services/irritant.service';
 
 
 @Component({
   selector: 'app-categories',
   templateUrl: './categories.component.html',
-  styleUrls: ['./categories.component.css'],
-  providers: [MessageService]
+  styleUrls: ['./categories.component.css']
 })
 export class CategoriesComponent implements OnInit {
-  cars1: any[];
-  cols: any[];
-  constructor(private messageService: MessageService) { }
+  categories:any
+  cols: any[]
+  nouveauMotfif:any
+  selectedCat:any
+  actionButtonIsVisible:boolean
+  formCat:FormGroup;
+
+  constructor(private irritantService: IrritantService, private formBuilder: FormBuilder) { }
 
   ngOnInit(): void {
-    this.cars1 =[
-      {zone:'na',date:'22',auteur:'nks',resultat:'bcbc'},
-      {zone:'np',date:'32',auteur:'bcn',resultat:'rre'},
-      {zone:'ns',date:'12',auteur:'ops',resultat:'az'}
-  ]
+  this.getAllCategories()
+  this.initForm()
   this.cols = [
-    { field: 'zone', header: 'Zone' },
-    { field: 'date', header: 'Date' },
-    { field: 'auteur', header: 'Fait par' },
-    { field: 'resultat', header: 'Résultat' }
-];
+    { field: 'nomCat', header: 'Motif Irritant' }];
   }
-  upload() {
-    this.messageService.add({severity: 'success', summary: 'File Uploaded', detail: ''});
+  
+getAllCategories(){
+  this.irritantService.getCategories().subscribe((data)=>{
+    this.categories = data
+  })
 }
-annuler() {
-  this.messageService.add({severity: 'warn', summary: 'annulé', detail: ''});
+
+initForm() {
+  this.formCat = this.formBuilder.group({
+    idCat:'',
+    nomCat:''
+  })
+}
+
+getSelectedCat(cat:any){
+  this.selectedCat=cat
+}
+
+saisie(val:any){
+   
+  if(val!=="" && val.replace(/\s/g, '').length>0){
+    this.nouveauMotfif=val
+    this.formCat.get('nomCat').setValue(val)
+    this.actionButtonIsVisible=true
+  }else{
+    this.actionButtonIsVisible=false
+  }
+}
+
+ajouter(){
+  this.irritantService.addCategorie(this.formCat.value).subscribe(()=>{
+    this.formCat.reset()
+    this.nouveauMotfif=""
+    document.location.reload()
+  })
+}
+
+modifier(){
+  this.formCat.get('idCat').setValue(this.selectedCat.idCat)
+  //this.formCat.get('nomCat').setValue(this.selectedCat.nomCat)
+  this.ajouter()
+}
+
+fermer(){
+  this.formCat.reset()
+  this.nouveauMotfif=""
+}
+
+deleteCat(){
+  this.irritantService.deleteCat(this.selectedCat.idCat).subscribe(()=>{
+    document.location.reload()
+  })
 }
 
 customSort(event: SortEvent) {

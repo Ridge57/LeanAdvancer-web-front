@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { SortEvent } from 'primeng/api';
+import {IdeeService} from 'src/services/idee.service';
 
 @Component({
   selector: 'app-suggestion-atraiter',
@@ -7,25 +8,55 @@ import { SortEvent } from 'primeng/api';
   styleUrls: ['./suggestion-atraiter.component.css']
 })
 export class SuggestionAtraiterComponent implements OnInit {
-
   cars1: any[];
   cols: any[];
-  constructor() { }
+  suggestions:any;
+  selectedSuggestion:any
+  selectedSuggestionID:number
+  statusList:any
+  displaySaveButton=false
+  constructor(private ideeService : IdeeService) { }
 
   ngOnInit(): void {
-    this.cars1 =[
-      {categorie:'na',zone:'22',date:'nkdss',emetteur:'Jean ERAS'},
-      {categorie:'xwa',zone:'221',date:'wqnks',emetteur:'Tomas VALDO'},
-      {categorie:'ncsa',zone:'432',date:'aqnks',emetteur:'Richard BRUNO'}
-     
-  ]
+    this.initialization()
 
     this.cols = [
-      { field: 'categorie', header: 'catégorie' },
-      { field: 'zone', header: 'zone' },
-      { field: 'date', header: 'date de saisie' },
-      { field: 'emetteur', header: 'emetteur' }
-  ];
+    { field: 'zone', subfield: 'nomZone', header: 'Zone' },
+    { field: 'user',subfield: 'userName', header:'User'},
+    { field: 'date',header:'Date'}
+    ]
+
+  }
+
+  getSuggestionsATraiter(status:any){
+    this.ideeService.findIdeasByStatus(status).subscribe((data)=>{
+      this.suggestions = data      
+    })
+  }
+
+  initialization(){
+    this.ideeService.getIdeaStatusList().subscribe((data)=>{
+      this.statusList = data      
+      this.getSuggestionsATraiter(this.statusList[0])
+    })
+  }
+
+  setStatus(status:any){
+      this.selectedSuggestion.status=status
+      this.displaySaveButton=true
+      console.log(this.statusList[0]);
+  }
+
+  getSelectedSuggestion(suggestion:any){
+    this.selectedSuggestion=suggestion
+    this.selectedSuggestionID=suggestion.idSuggestion
+    this.displaySaveButton=false
+  }
+
+  saveChanges(){
+    this.ideeService.updateIdeeStatus(this.selectedSuggestion).subscribe(()=>{
+      document.location.reload()
+    })
   }
   
   customSort(event: SortEvent) {

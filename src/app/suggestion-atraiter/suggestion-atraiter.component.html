@@ -21,27 +21,58 @@
                     <h3 class="h3 mb-0 text-gray-800">Gestion des suggestions | <small>suggestions à traiter</small></h3>
                 </div>
                 <app-suggestion-tabmenu></app-suggestion-tabmenu>
-                <p-table [columns]="cols" [value]="cars1" selectionMode="single" class="mb-4 card shadow" [paginator]="true" [rows]="10" [showCurrentPageReport]="true"
-                currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries">
+                <p-table [columns]="cols" [value]="suggestions" selectionMode="single" class="mb-4 card shadow" [paginator]="true" [rows]="10" [showCurrentPageReport]="true"
+                currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries" class="text-center">
                     <ng-template pTemplate="header" let-columns>
                         <tr>
                             <th *ngFor="let col of columns" [pSortableColumn]="col.field">
+                              <i *ngIf="col.header=='Zone'" class="fas fa-map-marker-alt" style="color: #4e73df;"></i>       
+                              <i *ngIf="col.header=='Date'" class="fas fa-clock" style="color: #36b9cc;"></i> 
+                              <i *ngIf="col.header=='User'" class="fas fa-user" style="color:#e6d92a;"></i>
                                 {{col.header}}
-                                <p-sortIcon [field]="col.field" ariaLabel="Activate to sort" ariaLabelDesc="Activate to sort in descending order" ariaLabelAsc="Activate to sort in ascending order"></p-sortIcon>
+                                <p-sortIcon [field]="col.field" *ngIf="col.header=='Date'"  ariaLabel="Activate to sort" ariaLabelDesc="Activate to sort in descending order" ariaLabelAsc="Activate to sort in ascending order"></p-sortIcon>
                             </th>
                             <th>
+                              <i class="fas fa-clipboard-check" style="color:#1cc88a;"></i>
+                                Status
+                             </th>
+                            <th>
+                              <i class="fas fa-search" style="color: #36b9cc;"></i> 
                                voir
                             </th>
                         </tr>
                     </ng-template>
                     <ng-template pTemplate="body" let-rowData let-columns="columns">
-                        <tr [pSelectableRow]="rowData">
+                        <tr [pSelectableRow]="rowData" (click)="getSelectedSuggestion(rowData)">
                             <td *ngFor="let col of columns">
-                                {{rowData[col.field]}}
+                                <div *ngIf="col.subfield;then nested_object_content else normal_content"></div>
+                                <ng-template #normal_content >
+                                    {{rowData[col.field] | date:'EEEE, d MMMM, y'}}
+                                </ng-template>
+                                <ng-template #nested_object_content >
+                                    {{rowData[col.field][col.subfield]}}
+                                </ng-template>
                             </td>
-                            <td class="d-flex justify-content-around" >
-                                <button type="button" class="btn btn-info">
+                            <td >
+                                <div *ngIf="rowData.status===statusList[0]" class="alert alert-secondary" role="alert">
+                                    A TRAITER
+                                  </div>
+                                  <div *ngIf="rowData.status===statusList[1]" class="alert alert-primary" role="alert">
+                                      EN ETUDE
+                                  </div>
+                                  <div *ngIf="rowData.status===statusList[2]" class="alert alert-success" role="alert">
+                                    ACCEPTEE
+                                  </div>
+                                  <div *ngIf="rowData.status===statusList[3]" class="alert alert-danger" role="alert">
+                                      Non Retenue
+                                    </div>
+                             </td>
+                            <td class="d-flex justify-content-around">
+                                <button *ngIf="selectedSuggestionID==rowData.idSuggestion" type="button" class="btn btn-info" data-toggle="modal" data-target="#DetailModal" data-backdrop="static" data-keyboard="false">
                                     <i class="pi pi-search" style="font-size: 1.2em;"></i>
+                                </button>
+                                <button *ngIf="selectedSuggestionID!=rowData.idSuggestion" disabled type="button" class="btn btn-info">
+                                  <i class="pi pi-search" style="font-size: 0.8em;"></i>
                                 </button>
                              </td>
                         </tr>
@@ -51,3 +82,81 @@
         </div>
     </div>
 </div>
+
+<!-- modal détails HistoriqTache -->
+<div *ngIf="selectedSuggestion" class="modal fade" id="DetailModal" tabindex="-1" role="dialog" aria-labelledby="ajoutModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+      <div class="modal-content">
+        <div class="modal-header alert alert-primary" role="alert">
+          <ul>
+              <li>
+                <h5 class="modal-title">où : {{selectedSuggestion.zone.nomZone}}</h5>
+              </li>
+              <li>
+                <h5 class="modal-title">quand : {{selectedSuggestion.date | date:'EEEE, d MMMM, y'}}</h5>
+              </li>
+              <li>
+                <h5 class="modal-title">qui : {{selectedSuggestion.user.userName}}</h5>
+              </li>
+          </ul>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        </div>
+        <div class="modal-body">         
+            <div class="form-group container">
+                <div>
+                  <ul class="list-group">
+                    <li class="list-group-item">
+                      <div class="col-sm-12 row">
+                        <div class="col-sm-5 col text-muted" style="font-size: 15px;" >
+                          <div>
+                            <span class="font-weight-bolder">Description : </span><br/>
+                            <p>{{selectedSuggestion.description}}</p>
+                          </div>
+                          <div>
+                            <span class="font-weight-bolder">Par : </span>{{selectedSuggestion.user.userName}}<br/>
+                          </div>
+                          <br/>
+                          <div>
+                            <span class="font-weight-bolder">Commentaires : </span><br/>
+                            <p>{{selectedSuggestion.commentaires}}</p>
+                          </div>
+  
+                        </div>
+                        <div class="col-sm-3 col container">
+                          <div class="row">
+                            <div class="form-group">
+                              <select (change)="setStatus($event.target.value)" class="form-control">
+                                <option *ngFor="let status of statusList" value='{{status}}'>{{status}}</option>
+                              </select>
+                            </div>
+                          </div>
+                          <br/>
+                          <br/>
+                          <div class="row">
+                            <div *ngIf="this.selectedSuggestion.status===statusList[0]" class="alert alert-secondary" role="alert">
+                              A TRAITER
+                            </div>
+                            <div *ngIf="this.selectedSuggestion.status===statusList[1]" class="alert alert-primary" role="alert">
+                                EN ETUDE
+                            </div>
+                            <div *ngIf="this.selectedSuggestion.status===statusList[2]" class="alert alert-success" role="alert">
+                              ACCEPTEE
+                            </div>
+                            <div *ngIf="this.selectedSuggestion.status===statusList[3]" class="alert alert-danger" role="alert">
+                                Non Retenue
+                              </div>
+                          </div>
+                        </div>
+                      </div>
+                    </li>
+                  </ul>
+                </div>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button *ngIf="displaySaveButton" (click)="saveChanges()" type="button" class="btn btn-success">Sauvegarder</button>
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">Fermer</button>
+        </div>
+      </div>
+    </div>
+  </div>

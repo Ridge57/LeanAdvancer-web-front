@@ -21,85 +21,129 @@
                   <h3 class="h3 mb-0 text-gray-800">Gestion des checklists | <small>tâches nok à traiter</small></h3>
               </div>
                 <app-checklist-tabmenu></app-checklist-tabmenu>
-                <p-toast></p-toast>
-               
-                <div id="carouselExampleIndicators" style="width: 100%;background-color: #F4F4F4;" 
-                class="carousel card shadow pb-4 mb-4" data-ride="carousel">
-                    <ol class="carousel-indicators" >
-                        <span class="badge">2 sur 5</span>
-                    </ol>
-                    <div class="carousel-inner">
-                      <div class="carousel-item active" >
-                        <div class="container">
-                            <div class="row mx-5 my-2 d-flex justify-content-around ">
-                              <div class="col-sm-3">
-                                <div class="row d-flex justify-content-center text-muted"><h6 >Photo du standard</h6></div>
-                                <div class="row" data-toggle="modal" data-target="#imageModal"><img src="../../assets/img/3.jpg" class="d-block w-100 rounded border border-dark" alt="..."></div>
-                              </div>
-                              <div class="col-sm-3 ">
-                                <div class="row d-flex justify-content-center text-muted">
-                                    Description du standard
-                                </div>
-                                <div class="row" style="font-size:small;">
-                                    <div class="col-sm-12 my-1"><span style="font-weight: bold;">Titre : </span> <br/><span class="text-muted">Vérifier la pression du compresseur</span></div>
-                                    <div class="col-sm-12 my-1"><span style="font-weight: bold;">Description : </span> <br/><span class="text-muted">vérifier que la pression est dans la plage verte de l'afficheur</span></div>
-                                    <div class="col-sm-12 my-1"><span style="font-weight: bold;">Zone : </span> <br/><span class="text-muted"> Asemblage</span></div>
-                                </div>
-                              </div>
-                              <div class="col-sm-3 ">
-                                <div class="row d-flex justify-content-center text-muted">
-                                    Emetteur
-                                </div>
-                                <div class="row" style="font-size:small;">
-                                    <div class="col-sm-12 my-1"><span style="font-weight: bold;">Contrôle effectué par : </span> <br/><span class="text-muted">Fabrice LUCKY</span></div>
-                                    <div class="col-sm-12 my-1"><span style="font-weight: bold;">Date : </span> <br/><span class="text-muted">16/06/2020</span></div>
-                                    <div class="col-sm-12 my-1"><span style="font-weight: bold;">Commentaires laissé : </span> <br/> <span class="text-muted">La pression affichée est au dessus de la plage verte</span></div>
-                                </div>
-                              </div>
-                              <div class="col-sm-2" style="text-align: center;">
-                                <div class="col-sm-12 my-1 text-success" style="font-size:small;">
-                                    Solder la tâche en cliquant içi
-                                </div>
-                                <button class="btn btn-success"  (click)="showSuccess()" type="button">
-                                    Traité
-                                </button>
-                                
-                              </div>
-                            </div>
-                          </div>
-                      </div>
-                     
-                    </div>
-                    <a class="carousel-control-prev rounded-circle border-0 bg-primary my-auto ml-2" href="#carouselExampleIndicators" role="button" style="width: 40px;height: 40px;" data-slide="prev">
-                      <span class="carousel-control-prev-icon"  aria-hidden="true"></span>
-                      <span class="sr-only">Previous</span>
-                    </a>
-                    <a class="carousel-control-next rounded-circle border-0 bg-primary my-auto mr-2" href="#carouselExampleIndicators" role="button" style="width: 40px;height: 40px;" data-slide="next">
-                      <span class="carousel-control-next-icon" aria-hidden="true"></span>
-                      <span class="sr-only">Next</span>
-                    </a>
-                  </div>
+ 
+                  <p-table [columns]="cols" [value]="taches" selectionMode="single" class="mb-4 card shadow" [paginator]="true" [rows]="10" [showCurrentPageReport]="true"
+                  currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries" class="text-center">
+                      <ng-template pTemplate="header" let-columns>
+                          <tr>
+                              <th *ngFor="let col of columns" [pSortableColumn]="col.field">
+                                <i *ngIf="col.header=='Titre de la tâche'" class="fas fa-bullseye" style="color: #4e73df;"></i>       
+                                <i *ngIf="col.header=='Date'" class="fas fa-clock" style="color: #36b9cc;"></i> 
+                                <i *ngIf="col.header=='Status'" class="fas fa-clipboard-check" style="color:#1cc88a;"></i>
+                                  {{col.header}}
+                                  <p-sortIcon [field]="col.field" *ngIf="col.header=='Titre de la tâche'" ariaLabel="Activate to sort" ariaLabelDesc="Activate to sort in descending order" ariaLabelAsc="Activate to sort in ascending order"></p-sortIcon> 
+                              </th>
+                              <th>
+                                <i class="fas fa-search" style="color: #36b9cc;"></i> 
+                                 voir
+                              </th>
+                          </tr>
+                      </ng-template>
+                      <ng-template pTemplate="body" let-rowData let-columns="columns">
+                          <tr [pSelectableRow]="rowData">
+                              <td *ngFor="let col of columns">
+                                  <div *ngIf="col.subfield;then nested_object_content else normal_content"></div>
+                                  <ng-template #normal_content >
+                                    {{rowData[col.field]}}
+                                  </ng-template>
+                                  <ng-template #nested_object_content >
+                                    {{rowData[col.field][col.subfield] | date:'EEEE, d MMMM, y'}}
+                                  </ng-template>
+                              </td>
+                              <td class="d-flex justify-content-around">
+                                  <button  (click)=showTaskDetails(rowData) type="button" class="btn btn-info" data-toggle="modal" data-target="#ajoutModal" data-backdrop="static" data-keyboard="false">
+                                      <i class="pi pi-search" style="font-size: 1.2em;"></i>
+                                  </button>
+                              </td>
+                          </tr>
+                      </ng-template>
+                  </p-table>
+
+
+
             </div>
         </div>
     </div>
 </div>
+  
+<!-- modal détails HistoriqTache -->
+<div *ngIf="selectedTask" class="modal fade" id="ajoutModal" tabindex="-1" role="dialog" aria-labelledby="ajoutModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header alert alert-primary" role="alert">
+        <div class="text-center">
+          <span class="mr-3">
+            <i class="fas fa-map-marker-alt" style="color: #4e73df;"></i> {{selectedTask.historiqChecklist.zone.nomZone}}
+          </span> 
+          <span class="mr-3">
+            <i class="fas fa-clock" style="color: #36b9cc;"></i> {{selectedTask.historiqChecklist.date | date:'EEEE, d MMMM, y'}}
+          </span>
+          <span class="mr-3">
+            <i class="fas fa-user" style="color:#1cc88a;"></i> {{selectedTask.historiqChecklist.user.userName}}
+          </span>
+        </div>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+      </div>
+      <div class="modal-body">         
+          <div class="form-group container">
+              <div>
+                <ul class="list-group">
+                  <li class="list-group-item">
+                    <div class="col-sm-12 row">
+                      <div class="col-sm-4 col">
+                        <img  *ngIf='selectedTask.photo' src="{{selectedTask.photo}}" style="width: 80%;">
+                        <img  *ngIf='!selectedTask.photo' alt="...">
+                      </div>
+                      <div class="col-sm-5 col text-muted" style="font-size: 15px;" >
+                        <div>
+                          <span class="font-weight-bolder">Activité à réaliser : </span><br/>
+                          <p>{{selectedTask.titre}}</p>
+                        </div>
+                        
+                        <div>
+                          <span class="font-weight-bolder">Description : </span><br/>
+                          <p>{{selectedTask.description}}</p>
+                        </div>
 
-  <!-- Modal -->
-  <div class="modal fade" id="imageModal" tabindex="-1" role="dialog" aria-labelledby="imageModalLabel" aria-hidden="true">
-    <div class="modal-dialog" role="document">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h5 class="modal-title" id="imageModalLabel">Photo du standard</h5>
-          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-            <span aria-hidden="true">&times;</span>
-          </button>
-        </div>
-        <div class="modal-body">
-            <img src="../../assets/img/3.jpg" class="d-block w-100 rounded border border-dark" alt="...">
-        </div>
-        <div class="modal-footer">
-          <button style="width: 100px;" type="button" class="btn btn-danger d-flex align-items-center justify-content-between" data-dismiss="modal"><div>Fermer</div> <i class="pi pi-times-circle" style="font-size: 1em"></i></button>
-        </div>
+                        <div>
+                          <span class="font-weight-bolder">Résultat : </span>{{selectedTask.status}} <i class="fas fa-exclamation-circle" style="color:#C82333;font-size: 16px;"></i><br/>
+                        </div>
+                        <br/>
+                        <div>
+                          <span class="font-weight-bolder">Commentaires laissés : </span><br/>
+                          <p>{{selectedTask.commentaires}}</p>
+                        </div>
+
+                      </div>
+                      <div class="col-sm-3 col container">
+                        <div class="row">
+                          <div class="form-group">
+                            <select (change)="setResolution($event.target.value)" class="form-control">
+                              <option *ngFor="let status of statusTasks" value='{{status}}'>{{status}}</option>
+                            </select>
+                          </div>
+                        </div>
+                        <br/>
+                        <br/>
+                        <div class="row">
+                          <div *ngIf="this.selectedTask.traitement===statusTasks[0]" class="alert alert-danger" role="alert">
+                            A TRAITER
+                          </div>
+                          <div *ngIf="this.selectedTask.traitement===statusTasks[1]" class="alert alert-success" role="alert">
+                            SOLDÉ
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </li>
+                </ul>
+              </div>
+          </div>
+      </div>
+      <div class="modal-footer">
+          <button *ngIf="displaySaveButton" (click)="saveChanges()" type="button" class="btn btn-success">Sauvegarder</button>
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">Fermer</button>
       </div>
     </div>
   </div>
+</div>

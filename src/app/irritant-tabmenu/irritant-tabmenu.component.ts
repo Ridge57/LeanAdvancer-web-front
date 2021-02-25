@@ -15,8 +15,7 @@ export class IrritantTabmenuComponent implements OnInit {
     this.items2 = [
       {label: 'à traiter', icon: 'pi pi-fw pi-home',routerLink:'/irritantATraiter'},
       {label: 'en cours', icon: 'pi pi-fw pi-calendar',routerLink:'/irritantEnCours'},
-      {label: 'soldés', icon: 'pi pi-fw pi-file',routerLink:'/irritantSoldes'},
-      {label: 'statistiques', icon: 'pi pi-fw pi-cog'}
+      {label: 'soldés', icon: 'pi pi-fw pi-file',routerLink:'/irritantSoldes'}
   ];
   }
 

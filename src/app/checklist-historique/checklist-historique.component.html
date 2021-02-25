@@ -22,27 +22,41 @@
                 </div>
                 <app-checklist-tabmenu></app-checklist-tabmenu>
                 
-                <p-table [columns]="cols" [value]="cars1" selectionMode="single" class="mb-4 card shadow" [paginator]="true" [rows]="10" [showCurrentPageReport]="true"
-                currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries">
+                <p-table [columns]="cols" [value]="AllHistoriqChecklist" selectionMode="single" class="mb-4 card shadow" [paginator]="true" [rows]="10" [showCurrentPageReport]="true"
+                currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries" class="text-center">
                     <ng-template pTemplate="header" let-columns>
                         <tr>
                             <th *ngFor="let col of columns" [pSortableColumn]="col.field">
-                                {{col.header}}
-                                <p-sortIcon [field]="col.field" ariaLabel="Activate to sort" ariaLabelDesc="Activate to sort in descending order" ariaLabelAsc="Activate to sort in ascending order"></p-sortIcon>
+                               <i *ngIf="col.header=='Zone'" class="fas fa-map-marker-alt" style="color: #4e73df;"></i>       
+                               <i *ngIf="col.header=='Date'" class="fas fa-clock" style="color: #36b9cc;"></i> 
+                               <i *ngIf="col.header=='Fait par'" class="fas fa-user" style="color:#1cc88a;"></i>
+                               {{col.header}}
+                                <p-sortIcon [field]="col.field" *ngIf="col.header=='Date'" ariaLabel="Activate to sort" ariaLabelDesc="Activate to sort in descending order" ariaLabelAsc="Activate to sort in ascending order"></p-sortIcon>
+
                             </th>
                             <th>
+                              <i class="fas fa-search" style="color: #36b9cc;"></i> 
                                voir
                             </th>
                         </tr>
                     </ng-template>
                     <ng-template pTemplate="body" let-rowData let-columns="columns">
-                        <tr [pSelectableRow]="rowData">
+                        <tr [pSelectableRow]="rowData" (click)="getAssociatedHistoriqTache(rowData)">
                             <td *ngFor="let col of columns">
-                                {{rowData[col.field]}}
+                                <div *ngIf="col.subfield;then nested_object_content else normal_content"></div>
+                                <ng-template #nested_object_content>
+                                    {{rowData[col.field][col.subfield]}}
+                                </ng-template>
+                                <ng-template #normal_content>
+                                    {{rowData[col.field] | date:'EEEE, d MMMM, y'}}
+                                </ng-template>
                             </td>
-                            <td class="d-flex justify-content-around" >
-                                <button type="button" class="btn btn-info">
+                            <td class="d-flex justify-content-around">
+                                <button *ngIf="selectedHistoriqChecklistID==rowData.idHistoriqChecklist" type="button" class="btn btn-info" data-toggle="modal" data-target="#ajoutModal" data-backdrop="static" data-keyboard="false">
                                     <i class="pi pi-search" style="font-size: 1.2em;"></i>
+                                </button>
+                                <button *ngIf="selectedHistoriqChecklistID!=rowData.idHistoriqChecklist" disabled type="button" class="btn btn-info">
+                                  <i class="pi pi-search" style="font-size: 0.8em;"></i>
                                 </button>
                              </td>
                         </tr>
@@ -50,5 +64,64 @@
                 </p-table>
             </div>
         </div>
+    </div>
+</div>
+
+<!-- modal détails HistoriqCheklist -->
+<div *ngIf="selectedHistoriqChecklist" class="modal fade" id="ajoutModal" tabindex="-1" role="dialog" aria-labelledby="ajoutModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+      <div class="modal-content">
+        <div class="modal-header alert alert-primary" role="alert">
+
+          <div class="text-center">
+            <span class="mr-3">
+              <i class="fas fa-map-marker-alt" style="color: #4e73df;"></i> {{selectedHistoriqChecklist.zone.nomZone}}
+            </span> 
+            <span class="mr-3">
+              <i class="fas fa-clock" style="color: #36b9cc;"></i> {{selectedHistoriqChecklist.date | date:'EEEE, d MMMM, y'}}
+            </span>
+            <span class="mr-3">
+              <i class="fas fa-user" style="color:#1cc88a;"></i> {{selectedHistoriqChecklist.user.userName}}
+            </span>
+          </div>
+          
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">         
+            <div class="form-group container my-2">
+                <div>
+                  <ul class="list-group">
+                    <li class="list-group-item" *ngFor="let tache of historiqTachesForHistoriqChecklist">
+                      <div class="col-sm-12 row d-flex justify-content-end">
+                          <i *ngIf="tache.status=='nok'" class="pi pi-exclamation-circle" style="color:#C82333;font-size: 48px;"></i>
+                          <i *ngIf="tache.status=='ok'" class="pi pi-check-circle" style="color:#218838;font-size: 48px;"></i>
+                        </div>
+                      <div class="col-sm-12 row">
+                        <div class="col-sm-3 col">
+                          <img *ngIf="tache.photo" src={{tache.photo}} alt="..." style="width: 80%;">
+                          <img *ngIf="!tache.photo" src={{defaultImg}} alt="...">
+                        </div>
+                        <div class="col-sm-5 col text-muted" style="font-size: 15px;" >
+                          <div>
+                            <span class="font-weight-bolder">Activité à réaliser : </span><br/>
+                            <p>{{tache.titre}}</p>
+                          </div>
+                          <br/>
+                          <div>
+                            <span class="font-weight-bolder">Description : </span><br/>
+                            <p>{{tache.description}}</p>
+                          </div>
+                        </div>
+                      </div>
+                    </li>
+                  </ul>
+                </div>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">Fermer</button>
+          </div>
+      </div>
     </div>
 </div>

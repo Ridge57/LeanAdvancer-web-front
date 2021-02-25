@@ -1,5 +1,5 @@
 import { BrowserModule } from '@angular/platform-browser';
-import { NgModule } from '@angular/core';
+import { LOCALE_ID, NgModule } from '@angular/core';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { DashboardComponent } from './dashboard/dashboard.component';
@@ -8,11 +8,14 @@ import { TopNavigationComponent } from './top-navigation/top-navigation.componen
 import {TableModule} from 'primeng/table';
 import {MenuModule} from 'primeng/menu';
 import {TabMenuModule} from 'primeng/tabmenu';
+import { registerLocaleData } from '@angular/common';
+import localeFr from '@angular/common/locales/fr';
+registerLocaleData(localeFr, 'fr');
 import { ChecklistTachesnokComponent } from './checklist-tachesnok/checklist-tachesnok.component';
 import { ChecklistHistoriqueComponent } from './checklist-historique/checklist-historique.component';
 import { ChecklistTabmenuComponent } from './checklist-tabmenu/checklist-tabmenu.component';
 import {CarouselModule} from 'primeng/carousel';
-import { FormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ChecklistVoirComponent } from './checklist-voir/checklist-voir.component';
 import {ToastModule} from 'primeng/toast';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
@@ -34,6 +37,7 @@ import { CategoriesComponent } from './categories/categories.component';
 import { ZonesComponent } from './zones/zones.component';
 import { UsersComponent } from './users/users.component';
 import { PersonnaliserComponent } from './personnaliser/personnaliser.component';
+import { HttpClientModule,HttpClientJsonpModule } from '@angular/common/http';
 
 
 @NgModule({
@@ -72,11 +76,16 @@ import { PersonnaliserComponent } from './personnaliser/personnaliser.component'
     CarouselModule,
     FormsModule,
     ToastModule,
+    ReactiveFormsModule,
     BrowserAnimationsModule,
     FileUploadModule,
-    AccordionModule
+    AccordionModule,
+    HttpClientModule,
+    HttpClientJsonpModule
   ],
-  providers: [],
+  providers: [
+    {provide: LOCALE_ID, useValue: 'fr' }
+  ],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

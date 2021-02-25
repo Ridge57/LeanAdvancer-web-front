@@ -23,18 +23,130 @@
                 <app-checklist-tabmenu></app-checklist-tabmenu>
                 <form>
                     <div class="form-group">
-                        <label for="exampleFormControlSelect1">Choisir la zone</label>
-                        <select class="form-control" (change)="setVisible($event)" id="exampleFormControlSelect1">
-                        <option>1</option>
-                        <option>2</option>
-                        <option>3</option>
-                        <option>4</option>
-                        <option>5</option>
+                        <select (change)="setVisible($event.target.value)" class="form-control">
+                          <option disabled selected value class="font-italic"> -- selectionner une zone -- </option>
+                          <option *ngFor="let zone of zones" value={{zone.idZone}}>{{zone.nomZone}}</option>
                         </select>
                     </div>
                 </form>
-                <div *ngIf="isVisible">TEST {{zone}}</div>
+                <div *ngIf="isVisible">
+                    <div class="mb-3 col-sm-6 row d-flex justify-content-around">
+                        <button type="button" class="btn btn-primary btn-sm col-sm-4 d-flex justify-content-around align-items-center" data-toggle="tooltip" data-placement="top" data-toggle="modal" data-target="#ajoutTacheModal"><i class="fas fa-plus-circle"></i>ajouter une tache</button>
+                        <button type="button" class="btn btn-success btn-sm col-sm-3 d-flex justify-content-around align-items-center" [disabled]="!editModeGlobal && imagesChangedAreSaved && taskChangedAreSaved && imagesToDeleteAreDeleted" (click)="sauvegarder()"><i class="fas fa-save"></i>sauvegarder</button>
+                        <button type="button" class="btn btn-success btn-sm col-sm-3 d-flex justify-content-around align-items-center" disabled *ngIf="!imagesChangedAreSaved && !taskChangedAreSaved && !imagesToDeleteAreDeleted"><span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>Loading...</button>
+                        <button type="button" class="btn btn-warning btn-sm col-sm-3 d-flex justify-content-around align-items-center" [disabled]="!editModeGlobal" (click)="annuler()"><i class="fas fa-undo"></i>annuler</button>
+                    </div>
+                    <div>
+                        <ul class="list-group">
+                            <li class="list-group-item" *ngFor="let tache of tachesForSelectedZoneChanged">
+                                    <div class="col-sm-12 row border-bottom mx-auto">
+                                        <div class="col-sm-3 col my-2">
+                                            <img *ngIf="tache.photo && !imgChangedMap.get(tache.idTache)" src={{tache.photo}} alt="..." style="width: 70%;">
+                                            <img *ngIf="imgChangedMap.get(tache.idTache)" [src]="imgChangedMap.get(tache.idTache)" alt="..." style="width: 70%;">
+                                            <div *ngIf="editMode" class="input-group-sm">
+                                                <div class="custom-file mt-2">
+                                                  <input type="file" class="custom-file-input" id="inputGroupFile01" (change)=setNewImage($event)>
+                                                  <label class="custom-file-label" for="inputGroupFile01">Choose file</label>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-sm-4 col text-muted" style="font-size: 15px;" >
+                                                <div>
+                                                    <span class="font-weight-bolder">Activité à réaliser : </span><br/>
+                                                    <p *ngIf="!(editMode && tache.idTache==selectedTacheID)">{{tache.titre}}</p>
+                                                    <input *ngIf="editMode && tache.idTache==selectedTacheID" type="text" class="form-control" (input)=setNewTitle($event) value={{tache.titre}}>
+                                                </div>
+                                                <br/>
+                                                <div>
+                                                    <span class="font-weight-bolder">Description : </span><br/>
+                                                    <p *ngIf="!(editMode && tache.idTache==selectedTacheID)">{{tache.description}}</p>
+                                                    <textarea *ngIf="editMode && tache.idTache==selectedTacheID" class="form-control" rows="3" (input)=setNewDescription($event) value={{tache.description}}></textarea>
+                                                </div>
+                                        </div>
+                                        <div class="col-sm-5 d-flex justify-content-around align-items-center">
+                                            <button (click)=setEditMode(tache) type="button" class="btn btn-outline-secondary" data-toggle="tooltip" data-placement="top" title = "modifier" [disabled] = "editMode"><i class = "fas fa-edit fa-3x"></i></button>
+                                            <button (click)="saveTaskChange()" type="button" class="btn btn-outline-success" data-toggle="tooltip" data-placement="top" title = "sauvegarder" [disabled] = "!editMode || tache.idTache!=selectedTacheID"><i class = "fas fa-save fa-3x"></i></button>
+                                            <button (click)=resetEditMode(tache) type="button" class="btn btn-outline-warning" data-toggle="tooltip" data-placement="top" title = "annuler" [disabled] = "!editMode || tache.idTache!=selectedTacheID"><i class = "fas fa-undo fa-3x"></i></button>
+                                            <button (click)=launchDeleteModal(tache) type="button" class="btn btn-outline-danger" data-toggle="tooltip" data-placement="top" title = "supprimer" data-toggle = "modal" data-target = "#confirmationModal"><i class="far fa-times-circle fa-3x"></i></button>
+                                        </div>
+                                    </div>
+                            </li>
+                        </ul>
+                      </div>
+                  
+
+
+
+                </div>
             </div>
         </div>
     </div>
 </div>
+
+<!-- Confirmation Modal -->
+<div class="modal fade" id="confirmationModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+         
+          <h5 class="modal-title d-flex justify-content-around align-items-center" id="exampleModalLabel"> <span style="color: #df4759;"><i class="fas fa-exclamation-circle mx-2"></i></span>Demande de confirmation</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          Confirmer la suppression de cette tâche : {{selectedTache.titre}} ?
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-warning" data-dismiss="modal">Annuler</button>
+          <button (click)=deleteTask() type="button" class="btn btn-danger" data-dismiss="modal">Oui, supprimer</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+<!-- Ajout Tache Modal -->
+<div class="modal fade" id="ajoutTacheModal" tabindex="-1" role="dialog" aria-labelledby="ModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="ModalLabel"><span style="color: #007AD9;"><i class="fas fa-plus-circle mx-2"></i></span>Ajout d'une nouvelle tâche</h5>
+          
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+          
+        </div>
+        <div class="modal-body">
+            <form [formGroup]="formTache">
+            <div class="col-sm-12 row border-bottom mx-auto">
+                <div class="col-sm-4 col my-2">
+                    <img src='' alt="..." style="width: 70%;">
+                    <div class="input-group-sm">
+                        <div class="custom-file mt-2">
+                          <input type="file" class="custom-file-input" id="inputGroupFile01" (change)=setNewImageForNewTache($event)>
+                          <label class="custom-file-label" for="inputGroupFile01">Choose file</label>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-sm-8 col text-muted" style="font-size: 15px;" >
+                        <div class="form-group">
+                            <span class="font-weight-bolder">Activité à réaliser : </span><br/>
+                            <input type="text" formControlName="titre" class="form-control" (input)=setNewTitle($event)>
+                        </div>
+                        <br/>
+                        <div>
+                            <span class="font-weight-bolder">Description : </span><br/>
+                            <textarea class="form-control" formControlName="description" rows="3" (input)=setNewDescription($event)></textarea>
+                        </div>
+                </div>
+            </div>
+            </form>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-warning" data-dismiss="modal">Annuler</button>
+          <button (click)=addNewTask() type="button" class="btn btn-primary" data-dismiss="modal">Ajouter</button>
+        </div>
+      </div>
+    </div>
+  </div>

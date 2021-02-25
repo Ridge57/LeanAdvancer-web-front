@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { SortEvent } from 'primeng/api';
+import {IdeeService} from 'src/services/idee.service';
 
 @Component({
   selector: 'app-suggestion-encours',
@@ -7,28 +8,57 @@ import { SortEvent } from 'primeng/api';
   styleUrls: ['./suggestion-encours.component.css']
 })
 export class SuggestionEncoursComponent implements OnInit {
-
   cars1: any[];
   cols: any[];
-  constructor() { }
+  suggestions:any;
+  selectedSuggestion:any
+  selectedSuggestionID:number
+  statusList:any
+  displaySaveButton=false
+  constructor(private ideeService : IdeeService) { }
 
   ngOnInit(): void {
-    this.cars1 =[
-      {categorie:'na',zone:'22',date:'nkdss',emetteur:'Jean ERAS',responsable:'Fred BODIN'},
-      {categorie:'xwa',zone:'221',date:'wqnks',emetteur:'Tomas VALDO',responsable:'Julien RAOULT'},
-      {categorie:'ncsa',zone:'432',date:'aqnks',emetteur:'Richard BRUNO',responsable:'Maxime PERROT'}
-     
-  ]
+    this.initialization()
 
     this.cols = [
-      { field: 'categorie', header: 'catégorie' },
-      { field: 'zone', header: 'zone' },
-      { field: 'date', header: 'date de saisie' },
-      { field: 'emetteur', header: 'emetteur' },
-      { field: 'responsable', header: 'géré par' }
-  ];
+    { field: 'zone', subfield: 'nomZone', header: 'Zone' },
+    { field: 'user',subfield: 'userName', header:'User'},
+    { field: 'date',header:'Date'},
+    ]
+
   }
 
+  getSuggestionsEnCours(status:any){
+    this.ideeService.findIdeasByStatus(status).subscribe((data)=>{
+      this.suggestions = data      
+    })
+  }
+
+  initialization(){
+    this.ideeService.getIdeaStatusList().subscribe((data)=>{
+      this.statusList = data      
+      this.getSuggestionsEnCours(this.statusList[1])
+    })
+  }
+
+  setStatus(status:any){
+      this.selectedSuggestion.status=status
+      this.displaySaveButton=true
+      console.log(this.statusList[0]);
+  }
+
+  getSelectedSuggestion(suggestion:any){
+    this.selectedSuggestion=suggestion
+    this.selectedSuggestionID=suggestion.idSuggestion
+    this.displaySaveButton=false
+  }
+
+  saveChanges(){
+    this.ideeService.updateIdeeStatus(this.selectedSuggestion).subscribe(()=>{
+      document.location.reload()
+    })
+  }
+  
   customSort(event: SortEvent) {
     event.data.sort((data1, data2) => {
         let value1 = data1[event.field];
