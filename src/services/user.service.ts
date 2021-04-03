@@ -10,15 +10,19 @@ export class UserService {
   constructor(private http:HttpClient,private hostServ:HostService) { }
 
   saveUser(user:any){
-    return this.http.post("http://"+this.hostServ.host+":8080/saveUser",user)
+    return this.http.post(this.hostServ.host+"/saveUser",user)
   }
 
   getAllUsers():any{
-    return this.http.get("http://"+this.hostServ.host+":8080/getAllUsers")
+    return this.http.get(this.hostServ.host+"/getAllUsers")
   }
 
   deleteUser(id:number){
-    return this.http.delete("http://"+this.hostServ.host+":8080//deleteUser/"+id)
+    return this.http.delete(this.hostServ.host+"/deleteUser/"+id)
+  }
+
+  connexion(privateKey:any){
+    return this.http.get(this.hostServ.host+"/connexion/"+privateKey)
   }
   
 }

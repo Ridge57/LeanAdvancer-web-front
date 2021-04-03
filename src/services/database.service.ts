@@ -10,7 +10,7 @@ export class DataBaseService {
   constructor(private http:HttpClient,private hostServ:HostService) { }
 
   exportDataBase():any{
-    return this.http.get("http://"+this.hostServ.host+":8080/exportDatabase")
+    return this.http.get(this.hostServ.host+"/exportDatabase")
   }
 
 }

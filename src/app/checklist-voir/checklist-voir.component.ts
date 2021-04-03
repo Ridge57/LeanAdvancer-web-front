@@ -17,16 +17,10 @@ export class ChecklistVoirComponent implements OnInit {
   newTitleForSelectedTache=""
   newDescriptionForSelectedTache=""
   tachesForSelectedZone:any
-  tachesDeleted:any=[]
-  tachesForSelectedZoneChanged:any
   imgChangedMap: Map<number, string> = new Map<number, string>(); //id tache, base64 img
   base64File:any=""
-  imagesChangedAreSaved:boolean=true
-  taskChangedAreSaved:boolean=true
-  imagesToDeleteAreDeleted:boolean=true
   zones:any
   editMode:boolean=false
-  editModeGlobal:boolean=false
   formTache:FormGroup;
   defaultImg="src\assets\img\no-image.png"
   constructor(private zoneService : ZoneService, private checklistService : ChecklistService, private formBuilder: FormBuilder) { }
@@ -71,7 +65,9 @@ export class ChecklistVoirComponent implements OnInit {
   }
 
   addNewTask(){
-    this.checklistService.addNewTask(this.formTache.value).subscribe()
+    this.checklistService.addNewTask(this.formTache.value).subscribe(()=>{
+      this.getTachesByZone(this.selectedZone)
+    })
   }
   getAllZones(){
     this.zoneService.getAllZones().subscribe((data)=>{
@@ -82,30 +78,27 @@ export class ChecklistVoirComponent implements OnInit {
   getTachesByZone(zone:any){
     this.checklistService.getTachesByZone(zone).subscribe((data)=>{
       this.tachesForSelectedZone=data
-      this.tachesForSelectedZoneChanged=data      
+      //this.tachesForSelectedZoneChanged=data      
     })
   }
 
   setEditMode(tache:any){
     this.editMode=true
-    this.editModeGlobal=true
+    //this.editModeGlobal=true
+    this.selectedTache=tache
     this.selectedTacheID=tache.idTache
     this.newTitleForSelectedTache=tache.titre
     this.newDescriptionForSelectedTache=tache.description
   }
 
   launchDeleteModal(tache:any){
-    this.newTitleForSelectedTache=""
-    this.newDescriptionForSelectedTache=""
     this.selectedTache=tache
   }
 
   deleteTask(){
-    var indice = this.tachesForSelectedZoneChanged.indexOf(this.selectedTache)
-    this.tachesForSelectedZoneChanged.splice(indice,1,)
-    this.tachesDeleted.push(this.selectedTache)
-    this.editModeGlobal=true
-    //this.setVisible(this.selectedZoneID)
+    this.checklistService.deleteTache(this.selectedTache.idTache).subscribe(()=>{
+      this.getTachesByZone(this.selectedZone)
+    })
   }
   resetEditMode(tache:any){
     this.editMode=false
@@ -136,58 +129,25 @@ export class ChecklistVoirComponent implements OnInit {
 });
 
   saveTaskChange(){
-    var i = 0
-    var find = false
-    while(!find || i<this.tachesForSelectedZoneChanged.length){
-      if(this.selectedTacheID==this.tachesForSelectedZoneChanged[i].idTache){
-        find=true
-        this.tachesForSelectedZoneChanged[i].titre=this.newTitleForSelectedTache
-        this.tachesForSelectedZoneChanged[i].description=this.newDescriptionForSelectedTache
-        this.editMode=false
-      }
-      i++
-    }
-  }
 
-  annuler(){
-    this.editModeGlobal=false
-    this.tachesForSelectedZoneChanged=this.tachesForSelectedZone
-    this.setVisible(this.selectedZoneID)
-    this.imgChangedMap.clear()
-  }
-
-  sauvegarder(){
-    this.imagesChangedAreSaved=false
-    this.taskChangedAreSaved=false
-    this.imagesToDeleteAreDeleted=false
-
-
-    /*enregistrement des changements dans les titres et les descriptions*/
-    for(var i = 0;i<this.tachesForSelectedZoneChanged.length;i++){
-      this.checklistService.saveTache(this.tachesForSelectedZoneChanged[i]).subscribe(()=>{
-        this.taskChangedAreSaved=true
+     /*enregistrement des changements dans les titres et les descriptions*/
+    
+      this.selectedTache.titre = this.newTitleForSelectedTache
+      this.selectedTache.description = this.newDescriptionForSelectedTache
+      this.checklistService.saveTache(this.selectedTache).subscribe(()=>{
+        this.getTachesByZone(this.selectedZone)
       })
-    }
 
-    /*enregistrement des nouvelles images*/
-     const convMap = {};
-        this.imgChangedMap.forEach((val: string, key: number) => {
-        convMap[key] = val;
+      /*enregistrement de la nouvelle image*/
+      const convMap = {};
+      this.imgChangedMap.forEach((val: string, key: number) => {
+      convMap[key] = val;
       });
       this.checklistService.updateImageForTask(convMap).subscribe(()=>{
-          this.imagesChangedAreSaved=true
-      })
-      this.editModeGlobal=false
-      this.editMode=false
-
-    /*suppression des taches*/
-    if(this.tachesDeleted.length>0){
-      this.checklistService.manyTachesToDelete(this.tachesDeleted).subscribe(()=>{
-        this.imagesToDeleteAreDeleted=true
-      })
-    }
+        this.imgChangedMap.clear()
+        this.getTachesByZone(this.selectedZone)
+    })
+    this.editMode=false
   }
-
-
 
 }

@@ -7,6 +7,6 @@ export class HostService {
 
   constructor() { }
 
-  host="localhost"
-  //host="lf_spring"
+  //host = "https://leanfoundation-back-app.herokuapp.com"
+  host="http://localhost:8080"
 }

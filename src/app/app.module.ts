@@ -38,6 +38,9 @@ import { ZonesComponent } from './zones/zones.component';
 import { UsersComponent } from './users/users.component';
 import { PersonnaliserComponent } from './personnaliser/personnaliser.component';
 import { HttpClientModule,HttpClientJsonpModule } from '@angular/common/http';
+import { HashLocationStrategy, LocationStrategy } from '@angular/common';
+import { ConnexionComponent } from './connexion/connexion.component';
+import { GlobalVariablesService } from 'src/services/globalvar.service';
 
 
 @NgModule({
@@ -65,7 +68,8 @@ import { HttpClientModule,HttpClientJsonpModule } from '@angular/common/http';
     CategoriesComponent,
     ZonesComponent,
     UsersComponent,
-    PersonnaliserComponent    
+    PersonnaliserComponent,
+    ConnexionComponent    
   ],
   imports: [
     BrowserModule,
@@ -84,7 +88,9 @@ import { HttpClientModule,HttpClientJsonpModule } from '@angular/common/http';
     HttpClientJsonpModule
   ],
   providers: [
-    {provide: LOCALE_ID, useValue: 'fr' }
+    {provide: LOCALE_ID, useValue: 'fr' },
+    {provide: LocationStrategy, useClass: HashLocationStrategy},
+    GlobalVariablesService
   ],
   bootstrap: [AppComponent]
 })

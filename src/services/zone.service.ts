@@ -11,18 +11,18 @@ export class ZoneService {
 
   
   getAllZones():any{
-    return this.http.get("http://"+this.hostServ.host+":8080/zones")
+    return this.http.get(this.hostServ.host+"/zones")
   }
 
   getZonesSortedByNbIrritant(year:any):any{
-    return this.http.get("http://"+this.hostServ.host+":8080/getZonesSortedByNbIrritant/"+year)
+    return this.http.get(this.hostServ.host+"/getZonesSortedByNbIrritant/"+year)
   }
 
   saveZone(zone:any):any{
-    return this.http.post("http://"+this.hostServ.host+":8080/Zone",zone)
+    return this.http.post(this.hostServ.host+"/Zone",zone)
   }
 
   deleteZone(idZone:number){
-    return this.http.delete("http://"+this.hostServ.host+":8080/deleteZone/"+idZone)
+    return this.http.delete(this.hostServ.host+"/deleteZone/"+idZone)
   }
 }

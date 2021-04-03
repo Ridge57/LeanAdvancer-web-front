@@ -11,48 +11,48 @@ export class IdeeService {
   constructor(private http:HttpClient,private hostServ:HostService) { }
 
   addIdee(idee:any):any{
-    return this.http.post("http://"+this.hostServ.host+":8080/addIdee",idee)
+    return this.http.post(this.hostServ.host+"/addIdee",idee)
   }
 
   getLast():any{
-    return this.http.get("http://"+this.hostServ.host+":8080/derniereIdee")
+    return this.http.get(this.hostServ.host+"/derniereIdee")
   }
 
   getAll():any{
-    return this.http.get("http://"+this.hostServ.host+":8080/idees")
+    return this.http.get(this.hostServ.host+"/idees")
   }
   findIdee(SearchParam:any):any{
-    return this.http.post("http://"+this.hostServ.host+":8080/findIdee",SearchParam)
+    return this.http.post(this.hostServ.host+"/findIdee",SearchParam)
   }
 
   getTotalToday():any{
-    return this.http.get("http://"+this.hostServ.host+":8080/getTotalTodayIdee")
+    return this.http.get(this.hostServ.host+"/getTotalTodayIdee")
   }
 
   getSuggestionsProcessingRate():any{
-    return this.http.get("http://"+this.hostServ.host+":8080/getSuggestionsProcessingRate")
+    return this.http.get(this.hostServ.host+"/getSuggestionsProcessingRate")
   }
 
   getNbreIdeesParMois(year:number){
-    return this.http.get("http://"+this.hostServ.host+":8080/getNbreIdeesParMois/"+year)
+    return this.http.get(this.hostServ.host+"/getNbreIdeesParMois/"+year)
   }
   
   getIdeesCurrentYear(year:number){
-    return this.http.get("http://"+this.hostServ.host+":8080/getIdeesCurrentYear/"+year)
+    return this.http.get(this.hostServ.host+"/getIdeesCurrentYear/"+year)
   }
   findIdeasByStatus(status:any):any{
-    return this.http.post("http://"+this.hostServ.host+":8080/findIdeasByStatus",status)
+    return this.http.post(this.hostServ.host+"/findIdeasByStatus",status)
   }
 
   getIdeaStatusList():any{
-    return this.http.get("http://"+this.hostServ.host+":8080/getIdeaStatusList")
+    return this.http.get(this.hostServ.host+"/getIdeaStatusList")
   }
 
   getClosedIdeas():any {
-     return this.http.get("http://"+this.hostServ.host+":8080/getClosedIdeas")
+     return this.http.get(this.hostServ.host+"/getClosedIdeas")
   }
  
   updateIdeeStatus(idee:any):any{
-    return this.http.post("http://"+this.hostServ.host+":8080/updateIdeeStatus",idee)
+    return this.http.post(this.hostServ.host+"/updateIdeeStatus",idee)
   }
 }

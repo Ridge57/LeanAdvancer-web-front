@@ -10,23 +10,23 @@ export class StandardService {
   constructor(private http:HttpClient,private hostServ:HostService) { }
 
   getStdByZone(zone:any):any{
-    return this.http.post("http://"+this.hostServ.host+":8080/standardByZone",zone)
+    return this.http.post(this.hostServ.host+"/standardByZone",zone)
   }
 
   getstandardsMoisCourant(){
-    return this.http.get("http://"+this.hostServ.host+":8080/standardsMoisCourant")
+    return this.http.get(this.hostServ.host+"/standardsMoisCourant")
   }
 
   getAllStandards(){
-    return this.http.get("http://"+this.hostServ.host+":8080/standards")
+    return this.http.get(this.hostServ.host+"/standards")
   }
 
   saveStandard(std:any):any{
-    return this.http.post("http://"+this.hostServ.host+":8080/saveStandard",std)
+    return this.http.post(this.hostServ.host+"/saveStandard",std)
   }
 
   deleteStandard(id:number):any{
-    return this.http.delete("http://"+this.hostServ.host+":8080/deleteStandard/"+id)
+    return this.http.delete(this.hostServ.host+"/deleteStandard/"+id)
   }
   
 }

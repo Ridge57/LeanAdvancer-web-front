@@ -1,0 +1,37 @@
+
+<!-- Page Wrapper -->
+<div id="wrapper">
+
+    <!-- Sidebar -->
+    <span class="wrapper">
+    <app-side-navigation class="pointer"></app-side-navigation>
+    </span>
+    <!-- End of Sidebar -->
+
+    <!-- Content Wrapper -->
+    <div id="content-wrapper" class="d-flex flex-column">
+
+        <!-- Main Content -->
+        <div id="content ">
+
+            <!-- Topbar -->
+            <span class="wrapper">
+            <app-top-navigation class="pointer"></app-top-navigation>
+            </span>
+            <!-- End of Topbar -->
+            <div class="container-fluid mb-3" class="d-flex justify-content-center">
+                <form class="col-sm-6">
+                    <h1 class="mb-3">CONNEXION</h1>
+                    <div class="mb-3">
+                      <input class="form-control" placeholder="Clé de connexion" (input)=keyInput($event)>
+                    </div>
+                    <button type="submit" class="btn btn-primary mb-4" (click)=connexion()>entrer</button>
+                    <div class="alert alert-danger" role="alert" *ngIf="falseKEY">
+                        Clé saisie invalide
+                    </div>
+                  </form>
+            </div>
+            
+        </div>
+    </div>
+</div>

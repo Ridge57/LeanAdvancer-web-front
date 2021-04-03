@@ -10,55 +10,59 @@ export class ChecklistService {
   constructor(private http : HttpClient,private hostServ:HostService) { }
 
   getCheckList(zone:any){
-    return this.http.post("http://"+this.hostServ.host+":8080/tachesByZone",zone)
+    return this.http.post(this.hostServ.host+"/tachesByZone",zone)
   }
   
   saveCheckList(zone, checklistCompleted:any){
-    return this.http.post("http://"+this.hostServ.host+":8080/addHistoriqTache/"+zone,checklistCompleted)
+    return this.http.post(this.hostServ.host+"/addHistoriqTache/"+zone,checklistCompleted)
   }
 
   getAllHistoriqCheckList(){
-    return this.http.get("http://"+this.hostServ.host+":8080/getAllHistoriqChecklist")
+    return this.http.get(this.hostServ.host+"/getAllHistoriqChecklist")
   }
 
   getNombreTachesATraiter(){
-    return this.http.get("http://"+this.hostServ.host+":8080/getNombreTachesATraiter")
+    return this.http.get(this.hostServ.host+"/getNombreTachesATraiter")
   }
 
   getTachesATraiter(){
-    return this.http.get("http://"+this.hostServ.host+":8080/getTachesATraiter")
+    return this.http.get(this.hostServ.host+"/getTachesATraiter")
   }
 
   getHistoriqTachesByHistoriqChecklist(historiqChecklist:any){
-    return this.http.post("http://"+this.hostServ.host+":8080/getHistoriqTachesByHistoriqChecklist",historiqChecklist)
+    return this.http.post(this.hostServ.host+"/getHistoriqTachesByHistoriqChecklist",historiqChecklist)
   }
 
   getTachesByZone(zone){
-    return this.http.post("http://"+this.hostServ.host+":8080/tachesByZone",zone)
+    return this.http.post(this.hostServ.host+"/tachesByZone",zone)
   }
 
   saveTache(tache){
-    return this.http.post("http://"+this.hostServ.host+":8080/saveTache",tache)
+    return this.http.post(this.hostServ.host+"/saveTache",tache)
   }
 
   updateImageForTask(map){
-    return this.http.post("http://"+this.hostServ.host+":8080/updateImageForTask",map)
+    return this.http.post(this.hostServ.host+"/updateImageForTask",map)
   }
 
   manyTachesToDelete(tachesToDeleteTab:any){
-    return this.http.post("http://"+this.hostServ.host+":8080/manyTachesToDelete",tachesToDeleteTab)
+    return this.http.post(this.hostServ.host+"/manyTachesToDelete",tachesToDeleteTab)
+  }
+
+  deleteTache(idTache:any){
+    return this.http.delete(this.hostServ.host+"/deleteTache/"+idTache)
   }
 
   addNewTask(task:any){
-    return this.http.post("http://"+this.hostServ.host+":8080/addNewTask",task)
+    return this.http.post(this.hostServ.host+"/addNewTask",task)
   }
 
   getTraitementTachesStatusAtraiterEtSolde(){
-    return this.http.get("http://"+this.hostServ.host+":8080/getTraitementTachesStatusAtraiterEtSolde")
+    return this.http.get(this.hostServ.host+"/getTraitementTachesStatusAtraiterEtSolde")
   }
 
   updateHistoriqTache(HistoriqTache:any){
-    return this.http.post("http://"+this.hostServ.host+":8080/updateHistoriqTache",HistoriqTache)
+    return this.http.post(this.hostServ.host+"/updateHistoriqTache",HistoriqTache)
   }
   
 }

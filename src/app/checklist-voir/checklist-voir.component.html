@@ -32,13 +32,10 @@
                 <div *ngIf="isVisible">
                     <div class="mb-3 col-sm-6 row d-flex justify-content-around">
                         <button type="button" class="btn btn-primary btn-sm col-sm-4 d-flex justify-content-around align-items-center" data-toggle="tooltip" data-placement="top" data-toggle="modal" data-target="#ajoutTacheModal"><i class="fas fa-plus-circle"></i>ajouter une tache</button>
-                        <button type="button" class="btn btn-success btn-sm col-sm-3 d-flex justify-content-around align-items-center" [disabled]="!editModeGlobal && imagesChangedAreSaved && taskChangedAreSaved && imagesToDeleteAreDeleted" (click)="sauvegarder()"><i class="fas fa-save"></i>sauvegarder</button>
-                        <button type="button" class="btn btn-success btn-sm col-sm-3 d-flex justify-content-around align-items-center" disabled *ngIf="!imagesChangedAreSaved && !taskChangedAreSaved && !imagesToDeleteAreDeleted"><span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>Loading...</button>
-                        <button type="button" class="btn btn-warning btn-sm col-sm-3 d-flex justify-content-around align-items-center" [disabled]="!editModeGlobal" (click)="annuler()"><i class="fas fa-undo"></i>annuler</button>
                     </div>
                     <div>
                         <ul class="list-group">
-                            <li class="list-group-item" *ngFor="let tache of tachesForSelectedZoneChanged">
+                            <li class="list-group-item" *ngFor="let tache of tachesForSelectedZone">
                                     <div class="col-sm-12 row border-bottom mx-auto">
                                         <div class="col-sm-3 col my-2">
                                             <img *ngIf="tache.photo && !imgChangedMap.get(tache.idTache)" src={{tache.photo}} alt="..." style="width: 70%;">
@@ -83,7 +80,7 @@
     </div>
 </div>
 
-<!-- Confirmation Modal -->
+<!-- Confirmation suppression Modal -->
 <div class="modal fade" id="confirmationModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog" role="document">
       <div class="modal-content">

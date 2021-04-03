@@ -1,6 +1,7 @@
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
 import { DashboardComponent } from './dashboard/dashboard.component';
+import { ConnexionComponent } from './connexion/connexion.component';
 import { ChecklistTachesnokComponent } from './checklist-tachesnok/checklist-tachesnok.component';
 import { ChecklistHistoriqueComponent } from './checklist-historique/checklist-historique.component';
 import { ChecklistVoirComponent } from './checklist-voir/checklist-voir.component';
@@ -20,7 +21,8 @@ import { PersonnaliserComponent } from './personnaliser/personnaliser.component'
 
 
 const routes: Routes = [
-  {path:'',component:DashboardComponent},
+  {path:'connexion',component:ConnexionComponent},
+  {path:'',component:ConnexionComponent},
   {path:'dashboard',component:DashboardComponent},
   {path:'checklistTachesNok',component:ChecklistTachesnokComponent},
   {path:'checklistHistorique',component:ChecklistHistoriqueComponent},
