@@ -1,11 +1,13 @@
 
 <!-- Page Wrapper -->
-<div id="wrapper">
+<div id="wrapper" style="background-color: white;">
 
     <!-- Sidebar -->
+    <!--
     <span class="wrapper">
     <app-side-navigation class="pointer"></app-side-navigation>
     </span>
+    -->
     <!-- End of Sidebar -->
 
     <!-- Content Wrapper -->
@@ -19,17 +21,26 @@
             <app-top-navigation class="pointer"></app-top-navigation>
             </span>
             <!-- End of Topbar -->
-            <div class="container-fluid mb-3" class="d-flex justify-content-center">
+            <div class="container-fluid mb-4" class="d-flex justify-content-center">
                 <form class="col-sm-6">
-                    <h1 class="mb-3">CONNEXION</h1>
+                    <div class="d-flex justify-content-center">
+                        <h4 class="mb-3">CONNEXION</h4>
+                    </div>
                     <div class="mb-3">
                       <input class="form-control" placeholder="Clé de connexion" (input)=keyInput($event)>
                     </div>
-                    <button type="submit" class="btn btn-primary mb-4" (click)=connexion()>entrer</button>
+                    <div class="d-flex justify-content-center">
+                        <button type="submit" class="btn btn-outline-primary mb-4" (click)=connexion()>Se connecter</button>
+                    </div>
+                    
                     <div class="alert alert-danger" role="alert" *ngIf="falseKEY">
                         Clé saisie invalide
                     </div>
                   </form>
+            </div>
+            <div class="d-flex align-items-center justify-content-center">
+                    <img src="../../assets/img/logo.PNG" class="rounded" alt="..." width="180px"><br/>
+                    <div class="mx-1 text-info" style="font-size: 49px;">LeanFoundations</div>
             </div>
             
         </div>
