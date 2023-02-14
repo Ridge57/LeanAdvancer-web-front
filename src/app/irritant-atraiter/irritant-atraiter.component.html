@@ -1,151 +1,390 @@
-
 <!-- Page Wrapper -->
 <div id="wrapper">
 
-    <!-- Sidebar -->
-    <app-side-navigation></app-side-navigation>
-    <!-- End of Sidebar -->
+  <!-- Sidebar -->
+  <app-side-navigation></app-side-navigation>
+  <!-- End of Sidebar -->
 
-    <!-- Content Wrapper -->
-    <div id="content-wrapper" class="d-flex flex-column">
+  <!-- Content Wrapper -->
+  <div id="content-wrapper" class="d-flex flex-column">
 
-        <!-- Main Content -->
-        <div id="content ">
+    <!-- Main Content -->
+    <div id="content ">
 
-            <!-- Topbar -->
-            <app-top-navigation></app-top-navigation>
-            <!-- End of Topbar -->
-            <div class="container-fluid">
-                <!-- Page Heading -->
-                <div class="mb-4">
-                    <h3 class="h3 mb-0 text-gray-800">Gestion des irritants | <small>irritants à traiter</small></h3>
-                </div>
-                <app-irritant-tabmenu></app-irritant-tabmenu>
-                <p-table [columns]="cols" [value]="irritants" selectionMode="single" class="mb-4 card shadow" [paginator]="true" [rows]="10" [showCurrentPageReport]="true"
-                currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries" class="text-center">
-                    <ng-template pTemplate="header" let-columns>
-                        <tr>
-                            <th *ngFor="let col of columns" [pSortableColumn]="col.field">
-                              <i *ngIf="col.header=='Zone'" class="fas fa-map-marker-alt" style="color: #4e73df;"></i>       
-                              <i *ngIf="col.header=='Date'" class="fas fa-clock" style="color: #36b9cc;"></i> 
-                              <i *ngIf="col.header=='Catégorie'" class="fas fa-bolt" style="color:#f0ed34;"></i>
-                              <i *ngIf="col.header=='User'" class="fas fa-user" style="color:#1cc88a;"></i>
-                                {{col.header}}
-                                <p-sortIcon [field]="col.field" *ngIf="col.header=='Date'" ariaLabel="Activate to sort" ariaLabelDesc="Activate to sort in descending order" ariaLabelAsc="Activate to sort in ascending order"></p-sortIcon>
-                            </th>
-                            <th>
-                              <i class="fas fa-search" style="color: #36b9cc;"></i> 
-                               voir
-                            </th>
-                        </tr>
-                    </ng-template>
-                    <ng-template pTemplate="body" let-rowData let-columns="columns">
-                        <tr [pSelectableRow]="rowData" (click)="getSelectedIrritant(rowData)">
-                            <td *ngFor="let col of columns">
-                                <div *ngIf="col.subfield;then nested_object_content else normal_content"></div>
-                                <ng-template #normal_content >
-                                    {{rowData[col.field] | date:'EEEE, d MMMM, y'}}
-                                </ng-template>
-                                <ng-template #nested_object_content >
-                                    {{rowData[col.field][col.subfield]}}
-                                </ng-template>
-                            </td>
-                            <td class="d-flex justify-content-around" >
-                                <button *ngIf="selectedIrritantID==rowData.idIrritant" type="button" class="btn btn-info" data-toggle="modal" data-target="#DetailModal" data-backdrop="static" data-keyboard="false">
-                                    <i class="pi pi-search" style="font-size: 1.2em;"></i>
-                                </button>
-                                <button *ngIf="selectedIrritantID!=rowData.idIrritant" disabled type="button" class="btn btn-info">
-                                  <i class="pi pi-search" style="font-size: 0.8em;"></i>
-                                </button>
-                             </td>
-                        </tr>
-                    </ng-template>
-                </p-table> 
-            </div>
+      <!-- Topbar -->
+      <app-top-navigation></app-top-navigation>
+      <!-- End of Topbar -->
+      <div class="container-fluid">
+
+        <!-- Page Heading -->
+        <div class="mb-4">
+          <h3 class="h3 mb-0 text-gray-800">Gestion des irritants</h3>
         </div>
-    </div>
-</div>
 
-<!-- modal détails HistoriqTache -->
-<div *ngIf="selectedIrritant" class="modal fade" id="DetailModal" tabindex="-1" role="dialog" aria-labelledby="ajoutModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-lg">
-      <div class="modal-content">
-        <div class="modal-header alert alert-primary" role="alert">
-          <div class="text-center">
-            <span class="mr-3">
-              <i class="fas fa-map-marker-alt" style="color: #4e73df;"></i> {{selectedIrritant.zone.nomZone}}
-            </span> 
-            <span class="mr-3">
-              <i class="fas fa-clock" style="color: #36b9cc;"></i>  {{selectedIrritant.date | date:'EEEE, d MMMM, y'}}
-            </span>
-            <span class="mr-3">
-              <i class="fas fa-user" style="color:#1cc88a;"></i> {{selectedIrritant.user.userName}}
-            </span>
+        <!-- Bouttons des options -->
+        <div class="card mb-4" style="background-color: rgb(244, 244, 244)">
+          <div class="card-body">
+            <button type="button" class="btn btn-outline-success mr-4" data-toggle="modal"
+              data-target="#ajoutIrritantModal">
+              <i class="pi pi-plus mr-2" style="font-size: 0.8em;"></i>
+              ajouter
+            </button>
+
+            <button type="button" class="btn btn-outline-danger mr-4" data-toggle="modal"
+              data-target="#supprimerIrrModal">
+              <i class="pi pi-trash mr-2" style="font-size: 0.8em;"></i>
+              supprimer
+            </button>
+
+            <button type="button" *ngIf="!isFilterActive" class="btn btn-outline-warning mr-4" data-toggle="modal"
+              data-target="#filtrerModal">
+              <i class="pi pi-filter mr-2" style="font-size: 0.8em;"></i>
+              filtrer
+            </button>
+            <button type="button" *ngIf="isFilterActive" class="btn btn-warning mr-4" data-toggle="modal"
+              data-target="#filtrerModal">
+              <i class="pi pi-filter mr-2" style="font-size: 0.8em;"></i>
+              filtrer
+            </button>
+
+            <button type="button" class="btn btn-outline-info">
+              <i class="fas fa-download fa-sm mr-2" style="font-size: 0.8em;"></i>
+              exporter
+            </button>
           </div>
-          <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
         </div>
-        <div class="modal-body">         
-            <div class="form-group container">
-                <div>
-                  <ul class="list-group">
-                    <li class="list-group-item">
-                      <div class="col-sm-12 row">
-                        <div class="col-sm-4 col">
-                          <img  *ngIf='selectedIrritant.photo' src="{{selectedIrritant.photo}}" style="width: 80%;">
-                          <img  *ngIf='!selectedIrritant.photo' alt="...">
-                        </div>
-                        <div class="col-sm-5 col text-muted" style="font-size: 15px;" >
-                          <div>
-                            <span class="font-weight-bolder">Catégorie : </span><br/>
-                            <p>{{selectedIrritant.categorie.nomCat}}</p>
-                          </div>
-                          
-                          <div>
-                            <span class="font-weight-bolder">Description : </span><br/>
-                            <p>{{selectedIrritant.description}}</p>
-                          </div>
-                          <div>
-                            <span class="font-weight-bolder">Par : </span>{{selectedIrritant.user.userName}}<br/>
-                          </div>
-                          <br/>
-                          <div>
-                            <span class="font-weight-bolder">Commentaires : </span><br/>
-                            <p>{{selectedIrritant.commentaires}}</p>
-                          </div>
-  
-                        </div>
-                        <div class="col-sm-3 col container">
-                          <div class="row">
-                            <div class="form-group">
-                              <select (change)="setStatus($event.target.value)" class="form-control">
-                                <option *ngFor="let status of statusList" value='{{status}}'>{{status}}</option>
-                              </select>
-                            </div>
-                          </div>
-                          <br/>
-                          <br/>
-                          <div class="row">
-                            <div *ngIf="this.selectedIrritant.status===statusList[0]" class="alert alert-danger" role="alert">
-                              A TRAITER
-                            </div>
-                            <div *ngIf="this.selectedIrritant.status===statusList[1]" class="alert alert-primary" role="alert">
-                                EN COURS
-                            </div>
-                            <div *ngIf="this.selectedIrritant.status===statusList[2]" class="alert alert-success" role="alert">
-                              SOLDÉ
-                            </div>
-                          </div>
-                        </div>
+
+
+
+        <!-- Ajout Irritant Modal -->
+        <div class="modal fade" id="ajoutIrritantModal" tabindex="-1" role="dialog" aria-labelledby="ajoutModalLabel"
+          aria-hidden="true" data-backdrop="static" data-keyboard="false">
+          <p-toast></p-toast>
+          <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+            <div class="modal-content">
+              <div class="bg-info text-white" style="height:10px"></div>
+              <div class="modal-body">
+                <form [formGroup]="irritantForm">
+                  <div class="row">
+                    <div class="form-group col-sm-6" formGroupName="categorie">
+                      <label for="quoi">Quoi</label>
+                      <select class="form-control" formControlName="idCat" id="quoi">
+                        <option></option>
+                        <option value={{type.idCat}} *ngFor="let type of typeIrritantList">{{type.nomCat}}</option>
+                      </select>
+                    </div>
+                    <div class="form-group col-sm-6" formGroupName="zone">
+                      <label for="zone">Où</label>
+                      <select class="form-control" formControlName="idZone" id="zone">
+                        <option></option>
+                        <option value={{zone.idZone}} *ngFor="let zone of zoneList">{{zone.nomZone}}</option>
+                      </select>
+                    </div>
+                  </div>
+
+                  <div class="row">
+                    <div class="form-group col-sm-6">
+                      <label for="comment">Comment</label>
+                      <textarea class="form-control" formControlName="description" id="comment" rows="6"
+                        placeholder="Description"></textarea>
+                    </div>
+                    <div class="form-group col-sm-6">
+                      <label for="user">Qui <span class="badge badge-secondary">{{selectedUserName}}</span>
+                      </label>
+                      <input type="text" #inputSearchUserAddIrritant class="form-control" id="user"
+                        placeholder="rechercher un nom" (input)="filtrerUserList($event)">
+                      <div id="userSelection">
+                        <table class="table table-hover table-sm">
+                          <caption>utilisateurs</caption>
+                          <thead>
+                            <th></th>
+                          </thead>
+                          <tbody>
+                            <tr *ngFor="let user of usersTmp" (click)="selectDeclarant(user)">
+                              <td>{{user.userName}}</td>
+                            </tr>
+                          </tbody>
+                        </table>
                       </div>
-                    </li>
-                  </ul>
-                </div>
+                    </div>
+                  </div>
+                </form>
+              </div>
+              <!-- modal footer -->
+              <div class="modal-footer">
+                <button type="button" class="btn btn-outline-secondary" data-dismiss="modal"
+                  (click)="resetForm()">Fermer</button>
+                <button type="button" class="btn btn-info" (click)="ajouterIrritant()">Enregistrer</button>
+
+              </div>
             </div>
+          </div>
         </div>
-        <div class="modal-footer">
-            <button *ngIf="displaySaveButton" (click)="saveChanges()" type="button" class="btn btn-success">Sauvegarder</button>
-            <button type="button" class="btn btn-secondary" data-dismiss="modal">Fermer</button>
+
+
+
+        <!-- Supprimer irritant modal -->
+        <div class="modal fade" id="supprimerIrrModal" tabindex="-1" role="dialog"
+          aria-labelledby="supprimerIrrModalLabel" aria-hidden="true">
+          <div class="modal-dialog" role="document">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h5 class="modal-title" id="supprimerIrrModalLabel">Supprimer un irritant</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                  <span aria-hidden="true">&times;</span>
+                </button>
+              </div>
+              <div class="modal-body">
+                Coonfirmer la suppression ?
+              </div>
+              <div class="modal-footer">
+                <button type="button" class="btn btn-outine-secondary" data-dismiss="modal">Annuler</button>
+                <button type="button" class="btn btn-danger" (click)="supprimerIrritant()">Je supprime</button>
+              </div>
+            </div>
+          </div>
         </div>
+
+
+
+        <!-- Filtrer liste Irritant Modal -->
+        <div class="modal fade" id="filtrerModal" tabindex="-1" role="dialog" aria-labelledby="filtrerModalLabel"
+          aria-hidden="true" data-backdrop="static" data-keyboard="false">
+          <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+            <div class="modal-content">
+              <div class="bg-warning text-white" style="height:10px">
+              </div>
+              <div class="modal-header">
+                <h5 class="modal-title" id="filtrerModalLabel">Filtrer la liste</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                  <span aria-hidden="true">&times;</span>
+                </button>
+              </div>
+              <div class="modal-body">
+                <form [formGroup]="irritantFilterForm">
+                  <div class="row">
+                    <div class="form-group col-sm-6">
+                      <label for="filtreIdCat">Type</label>
+                      <select class="form-control" formControlName="idCat" id="quoi">
+                        <option></option>
+                        <option value={{type.idCat}} *ngFor="let type of typeIrritantList">{{type.nomCat}}</option>
+                      </select>
+                    </div>
+                    <div class="form-group col-sm-6">
+                      <label for="filtreIdZone">Zone</label>
+                      <select class="form-control" id="filtreIdZone" formControlName="idZone">
+                        <option></option>
+                        <option value={{zone.idZone}} *ngFor="let zone of zoneList">{{zone.nomZone}}</option>
+                      </select>
+                    </div>
+                  </div>
+                  <div class="row">
+                    <div class="form-group col-sm-6">
+                      <label for="filtreStatut">Statut</label>
+                      <select class="form-control" id="filtreStatut" formControlName="status">
+                        <option></option>
+                        <option value={{s}} *ngFor="let s of statusList">{{s}}</option>
+                      </select>
+                    </div>
+                    <div class="form-group col-sm-6">
+                      <label for="userFiltre">Auteur <span class="badge badge-secondary">{{selectedUserName}}</span>
+                      </label>
+                      <input type="text" #inputSearchUserFilterIrritant class="form-control" id="userFiltre"
+                        placeholder="rechercher un nom" (input)="filtrerUserList($event)">
+                      <div id="userFiltreSelection">
+                        <table class="table table-hover table-sm">
+                          <caption>utilisateurs</caption>
+                          <thead>
+                            <th></th>
+                          </thead>
+                          <tbody>
+                            <tr *ngFor="let user of usersTmp" (click)="selectDeclarant(user)">
+                              <td>{{user.userName}}</td>
+                            </tr>
+                          </tbody>
+                        </table>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="form-group col-sm-6">
+                    <label for="rangeDateFilter">Dates</label>
+                    <div>
+                      <p-calendar #rangeDatesFilter selectionMode="range" [readonlyInput]="true"
+                        inputId="rangeDateFilter" dateFormat="dd/mm/yy"></p-calendar>
+                    </div>
+                  </div>
+                </form>
+
+
+
+              </div>
+              <div class="modal-footer">
+                <button type="button" class="btn btn-outline-secondary" data-dismiss="modal"
+                  (click)="resetFilterForm()">Annuler</button>
+                <button type="button" class="btn btn-warning" (click)="filtrerIrritant()">Filtrer</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+
+
+        <!-- Liste des irritants -->
+        <p-table class="ui-table text-center" [columns]="cols" [value]="irritants" selectionMode="single"
+          [paginator]="true" [rows]="5" [showCurrentPageReport]="true"
+          currentPageReportTemplate="Ligne {first} à {last} sur {totalRecords} irritant(s)">
+          <ng-template pTemplate="header" let-columns>
+            <tr>
+              <th *ngFor="let col of columns" [pSortableColumn]="col.field"
+                [pSortableColumnDisabled]="!col.sort ? true : false" id="heads">
+                <i *ngIf="col.header=='Zone'" class="fas fa-map-marker-alt" style="color: #4e73df;"></i>
+                <i *ngIf="col.header=='Date'" class="fas fa-clock" style="color: #36b9cc;"></i>
+                <i *ngIf="col.header=='Catégorie'" class="fas fa-bolt" style="color:#f0ed34;"></i>
+                <i *ngIf="col.header=='User'" class="fas fa-user" style="color:#1cc88a;"></i>
+                {{col.header}}
+                <p-sortIcon [field]="col.field" *ngIf="col.header=='Date'" ariaLabel="Activate to sort"
+                  ariaLabelDesc="Activate to sort in descending order"
+                  ariaLabelAsc="Activate to sort in ascending order"></p-sortIcon>
+              </th>
+              <th id="details">
+                <i class="fas fa-search" style="color: #36b9cc;"></i>
+                afficher les détails
+              </th>
+            </tr>
+          </ng-template>
+          <ng-template pTemplate="body" let-rowData let-columns="columns">
+            <tr [pSelectableRow]="rowData" (click)="getSelectedIrritant(rowData)">
+              <td *ngFor="let col of columns">
+                <div *ngIf="col.subfield;then nested_object_content else normal_content"></div>
+                <ng-template #nested_object_content>
+                  {{rowData[col.field][col.subfield]}}
+                </ng-template>
+                <ng-template #normal_content>
+                  <span *ngIf="col.field==='date'">
+                    {{rowData[col.field] | date:'EEEE, d MMMM, y'}}
+                  </span>
+                  <span *ngIf="col.field==='status'">
+                    <h5>
+                      <span *ngIf="rowData[col.field]===statusList[0]" class="badge badge-danger">
+                        {{rowData[col.field]}}
+                      </span>
+                      <span *ngIf="rowData[col.field]===statusList[1]" class="badge badge-primary">
+                        {{rowData[col.field]}}
+                      </span>
+                      <span *ngIf="rowData[col.field]===statusList[2]" class="badge badge-success">
+                        {{rowData[col.field]}}
+                      </span>
+                    </h5>
+                  </span>
+                </ng-template>
+              </td>
+              <td class="d-flex justify-content-around" style="border-bottom: none;">
+                <button *ngIf="selectedIrritantID==rowData.idIrritant" class="btn btn-info" data-toggle="modal"
+                  data-target="#DetailModal" data-backdrop="static" data-keyboard="false">
+                  <i class="pi pi-search" style="font-size: 1.2em;"></i>
+                </button>
+                <button *ngIf="selectedIrritantID!=rowData.idIrritant" disabled class="btn btn-info">
+                  <i class="pi pi-search" style="font-size: 0.8em;"></i>
+                </button>
+              </td>
+            </tr>
+          </ng-template>
+        </p-table>
+        <!-- Fin liste des irritants -->
+
+
+
       </div>
     </div>
   </div>
+</div>
+
+
+<!-- modal détails HistoriqTache -->
+<div *ngIf="selectedIrritant" class="modal fade" id="DetailModal" tabindex="-1" role="dialog"
+  aria-labelledby="ajoutModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header alert alert-primary" role="alert">
+        <div class="text-center">
+          <span class="mr-3">
+            <i class="fas fa-map-marker-alt" style="color: #4e73df;"></i> {{selectedIrritant.zone.nomZone}}
+          </span>
+          <span class="mr-3">
+            <i class="fas fa-clock" style="color: #36b9cc;"></i> {{selectedIrritant.date | date:'EEEE, d MMMM, y'}}
+          </span>
+          <span class="mr-3">
+            <i class="fas fa-user" style="color:#1cc88a;"></i> {{selectedIrritant.user.userName}}
+          </span>
+        </div>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+            aria-hidden="true">&times;</span></button>
+      </div>
+      <div class="modal-body">
+        <div class="form-group container">
+          <div>
+            <ul class="list-group">
+              <li class="list-group-item">
+                <div class="col-sm-12 row">
+                  <div class="col-sm-4 col">
+                    <img *ngIf='selectedIrritant.photo' src="{{selectedIrritant.photo}}" style="width: 80%;">
+                    <img *ngIf='!selectedIrritant.photo' alt="...">
+                  </div>
+                  <div class="col-sm-5 col text-muted" style="font-size: 15px;">
+                    <div>
+                      <span class="font-weight-bolder">Catégorie : </span><br />
+                      <p>{{selectedIrritant.categorie.nomCat}}</p>
+                    </div>
+
+                    <div>
+                      <span class="font-weight-bolder">Description : </span><br />
+                      <p>{{selectedIrritant.description}}</p>
+                    </div>
+                    <div>
+                      <span class="font-weight-bolder">Par : </span>{{selectedIrritant.user.userName}}<br />
+                    </div>
+                    <br />
+                    <div>
+                      <span class="font-weight-bolder">Commentaires : </span><br />
+                      <p>{{selectedIrritant.commentaires}}</p>
+                    </div>
+
+                  </div>
+                  <div class="col-sm-3 col container">
+                    <div class="row">
+                      <div class="form-group">
+                        <select (change)="setStatus($event.target.value)" class="form-control">
+                          <option *ngFor="let status of statusList" value='{{status}}'>{{status}}</option>
+                        </select>
+                      </div>
+                    </div>
+                    <br />
+                    <br />
+                    <div class="row">
+                      <div *ngIf="this.selectedIrritant.status===statusList[0]" class="alert alert-danger" role="alert">
+                        A TRAITER
+                      </div>
+                      <div *ngIf="this.selectedIrritant.status===statusList[1]" class="alert alert-primary"
+                        role="alert">
+                        EN COURS
+                      </div>
+                      <div *ngIf="this.selectedIrritant.status===statusList[2]" class="alert alert-success"
+                        role="alert">
+                        SOLDÉ
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button *ngIf="displaySaveButton" (click)="saveChanges()" type="button"
+          class="btn btn-success">Sauvegarder</button>
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Fermer</button>
+      </div>
+    </div>
+  </div>
+</div>

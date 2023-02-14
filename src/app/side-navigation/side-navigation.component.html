@@ -1,81 +1,83 @@
-<ul class="navbar-nav sticky-top bg-gradient-primary sidebar sidebar-dark accordion multi-collapse" id="accordionSidebar">
+<ul class="navbar-nav sticky-top sidebar sidebar-dark accordion multi-collapse" id="accordionSidebar"
+  style="background-color: rgb(49, 175, 191);">
 
-    <!-- Sidebar - Brand -->
-    <span style="background-color: white;">
+  <!-- Sidebar - Brand style="background-color: rgb(49, 175, 191);" bg-gradient-primary-->
+  <span style="background-color: white;">
     <a class="sidebar-brand d-flex align-items-center justify-content-center" href="index.html">
-        <img src="../../assets/img/logo.PNG" class="rounded" alt="..." width="40px">
+      <img src="../../assets/img/logo.PNG" class="rounded" alt="..." width="40px">
       <div class="sidebar-brand-text mx-1 text-info">LeanFoundations</div>
     </a>
-    </span>
+  </span>
 
-    <!-- Divider -->
-    <hr class="sidebar-divider my-0">
+  <!-- Divider -->
+  <hr class="sidebar-divider my-0">
 
-    <!-- Nav Item - Dashboard -->
-    <li class="nav-item active">
-      <a class="nav-link" [routerLink]="['/dashboard']">
-        <i class="fas fa-fw fa-tachometer-alt"></i>
-        <span>Dashboard</span></a>
-    </li>
-    <li class="nav-item">
-      <a class="nav-link" [routerLink]="['/checklistTachesNok']">
-        <i class="fas fa-fw fa-tasks"></i>
-        <span>Checklist</span></a>
-    </li>
-    <li class="nav-item">
-      <a class="nav-link" [routerLink]="['/irritantATraiter']">
-        <i class="fas fa-fw fa-exclamation-circle"></i>
-        <span>Irritants</span></a>
-    </li>
-    <li class="nav-item">
-      <a class="nav-link" [routerLink]="['/standardVoir']">
-        <i class="fas fa-fw fa-file-alt"></i>
-        <span>Standards</span></a>
-    </li>
-    <li class="nav-item">
-      <a class="nav-link" [routerLink]="['/suggestionATraiter']">
-        <i class="fas fa-fw fa-lightbulb"></i>
-        <span>Suggestions</span></a>
-    </li>
+  <!-- Nav Item - Dashboard -->
+  <li class="nav-item active" style="color: white;">
+    <a class="nav-link" [routerLink]="['/dashboard']">
+      <i class="fas fa-fw fa-tachometer-alt"></i>
+      <span>Dashboard</span></a>
+  </li>
+  <li class="nav-item">
+    <a class="nav-link" [routerLink]="['/checklistTachesNok']">
+      <i class="fas fa-fw fa-tasks"></i>
+      <span>Checklist</span></a>
+  </li>
+  <li class="nav-item">
+    <a class="nav-link" [routerLink]="['/irritantATraiter']">
+      <i class="fas fa-fw fa-exclamation-circle"></i>
+      <span>Irritants</span></a>
+  </li>
+  <li class="nav-item">
+    <a class="nav-link" [routerLink]="['/standardVoir']">
+      <i class="fas fa-fw fa-file-alt"></i>
+      <span>Standards</span></a>
+  </li>
+  <li class="nav-item">
+    <a class="nav-link" [routerLink]="['/suggestionATraiter']">
+      <i class="fas fa-fw fa-lightbulb"></i>
+      <span>Suggestions</span></a>
+  </li>
 
-    <!-- Nav Item - Pages Collapse Menu -->
-    <li class="nav-item">
-      <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapsePages" aria-expanded="true" aria-controls="collapsePages">
-        <i class="fas fa-fw fa-wrench"></i>
-        <span>Ajustement</span>
-      </a>
-      <div id="collapsePages" class="collapse" aria-labelledby="headingPages" data-parent="#accordionSidebar">
-        <div class="bg-white py-2 collapse-inner rounded">
-          <a class="collapse-item" [routerLink]="['/categories']">Gestion des catégories</a>
-          <a class="collapse-item" [routerLink]="['/zones']">Gestion des zones</a>
-          <a class="collapse-item" [routerLink]="['/users']">Gestion des utilisateurs</a>
-        </div>
+  <!-- Nav Item - Pages Collapse Menu -->
+  <li class="nav-item">
+    <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapsePages" aria-expanded="true"
+      aria-controls="collapsePages">
+      <i class="fas fa-fw fa-wrench"></i>
+      <span>Ajustement</span>
+    </a>
+    <div id="collapsePages" class="collapse" aria-labelledby="headingPages" data-parent="#accordionSidebar">
+      <div class="bg-white py-2 collapse-inner rounded">
+        <a class="collapse-item" [routerLink]="['/categories']">Gestion des catégories</a>
+        <a class="collapse-item" [routerLink]="['/zones']">Gestion des zones</a>
+        <a class="collapse-item" [routerLink]="['/users']">Gestion des utilisateurs</a>
       </div>
-    </li>
-
-    <hr class="sidebar-divider">
-
-    <!-- Heading -->
-    <div class="sidebar-heading">
-      Lean Digital
     </div>
-    <!-- <li class="nav-item">
+  </li>
+
+  <hr class="sidebar-divider">
+
+  <!-- Heading -->
+  <div class="sidebar-heading">
+    Lean Digital
+  </div>
+  <!-- <li class="nav-item">
       <a class="nav-link" [routerLink]="['/checklistTachesNok']">
         <i class="fas fa-fw fa-euro-sign"></i>
         <span>Demander un devis</span></a>
     </li> -->
-    <li class="nav-item">
-      <a class="nav-link" [routerLink]="['/personnaliser']">
-        <i class="fas fa-fw fa-user-cog text-warning"></i>
-        <span>Personnaliser mon produit</span></a>
-    </li>
+  <li class="nav-item">
+    <a class="nav-link" [routerLink]="['/personnaliser']">
+      <i class="fas fa-fw fa-user-cog text-warning"></i>
+      <span>Personnaliser mon produit</span></a>
+  </li>
 
-    <!-- Divider -->
-    <hr class="sidebar-divider d-none d-md-block">
+  <!-- Divider -->
+  <hr class="sidebar-divider d-none d-md-block">
 
-    <!-- Sidebar Toggler (Sidebar) -->
-    <!-- <div class="text-center d-none d-sm-inline">
+  <!-- Sidebar Toggler (Sidebar) -->
+  <!-- <div class="text-center d-none d-sm-inline">
       <button class="rounded-circle border-0" id="sidebarToggle"  data-toggle="collapse" data-target="#accordionSidebar" aria-expanded="false" aria-controls="accordionSidebar"></button>
     </div> -->
 
-  </ul>
+</ul>

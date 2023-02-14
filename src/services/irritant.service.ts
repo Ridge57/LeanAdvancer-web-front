@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { HttpClient} from '@angular/common/http';
+import { HttpClient } from '@angular/common/http';
 import { HostService } from 'src/services/host.service';
 
 @Injectable({
@@ -7,68 +7,76 @@ import { HostService } from 'src/services/host.service';
 })
 export class IrritantService {
 
-  constructor(private http:HttpClient, private hostServ:HostService) { }
+  constructor(private http: HttpClient, private hostServ: HostService) { }
 
-  addIrritant(irr:any):any{
-    return this.http.post(this.hostServ.host+"/Irritant",irr)
-  }
-
-  getAll(){
-    return this.http.get(this.hostServ.host+"/irritants")
+  addIrritant(irr: any): any {
+    return this.http.post(this.hostServ.host + "/Irritant", irr)
   }
 
-  findByStatus(status:any):any{
-    return this.http.post(this.hostServ.host+"/findByStatus",status)
+  getAll() {
+    return this.http.get(this.hostServ.host + "/irritants")
   }
 
-  getIrritantsCurrentYear(year:number){
-    return this.http.get(this.hostServ.host+"/getIrritantsCurrentYear/"+year)
+  findByStatus(status: any): any {
+    return this.http.post(this.hostServ.host + "/findByStatus", status)
   }
 
-  findIrritant(SearchParam:any):any{
-    return this.http.post(this.hostServ.host+"/findIrritant",SearchParam)
-  }
-  
-  getZones():any{
-    return this.http.get(this.hostServ.host+"/zones")
+  getIrritantsCurrentYear(year: number) {
+    return this.http.get(this.hostServ.host + "/getIrritantsCurrentYear/" + year)
   }
 
-  getLast():any{
-    return this.http.get(this.hostServ.host+"/dernier")
+  findIrritant(SearchParam: any): any {
+    return this.http.post(this.hostServ.host + "/findIrritant", SearchParam)
   }
 
-  getStatusList():any{
-    return this.http.get(this.hostServ.host+"/getStatusList")
+  filtrerIrritants(SearchParam: any): any {
+    return this.http.post(this.hostServ.host + "/filtrerIrritants", SearchParam)
   }
 
-  updateIrritantStatus(irritant:any):any{
-    return this.http.post(this.hostServ.host+"/updateIrritantStatus",irritant)
+  getZones(): any {
+    return this.http.get(this.hostServ.host + "/zones")
   }
 
-  getCategories():any{
-    return this.http.get(this.hostServ.host+"/categories")
+  getLast(): any {
+    return this.http.get(this.hostServ.host + "/dernier")
   }
 
-  addCategorie(cat:any){
-    return this.http.post(this.hostServ.host+"/Categorie",cat)
+  getStatusList(): any {
+    return this.http.get(this.hostServ.host + "/getStatusList")
   }
 
-  deleteCat(idCat:number){
-    return this.http.delete(this.hostServ.host+"/deleteCat/"+idCat)
+  updateIrritantStatus(irritant: any): any {
+    return this.http.post(this.hostServ.host + "/updateIrritantStatus", irritant)
   }
 
-  getTotalToday():any{
-    return this.http.get(this.hostServ.host+"/getTotalToday")
+  getCategories(): any {
+    return this.http.get(this.hostServ.host + "/categories")
   }
 
-  getIrritantProcessingRate(){
-    return this.http.get(this.hostServ.host+"/getIrrProcessingRate")
+  addCategorie(cat: any) {
+    return this.http.post(this.hostServ.host + "/Categorie", cat)
   }
-  getNbreIrritantsParMois(year:number):any{
-    return this.http.get(this.hostServ.host+"/getNbreIrritantsParMois/"+year)
+
+  deleteCat(idCat: number) {
+    return this.http.delete(this.hostServ.host + "/deleteCat/" + idCat)
   }
-  
-  getSortedCategoriesIrritant(year:number):any{
-    return this.http.get(this.hostServ.host+"/getSortedCategoriesIrritant/"+year)
+
+  deleteIrritant(id: number) {
+    return this.http.delete(this.hostServ.host + "/deleteIrritant/" + id)
+  }
+
+  getTotalToday(): any {
+    return this.http.get(this.hostServ.host + "/getTotalToday")
+  }
+
+  getIrritantProcessingRate() {
+    return this.http.get(this.hostServ.host + "/getIrrProcessingRate")
+  }
+  getNbreIrritantsParMois(year: number): any {
+    return this.http.get(this.hostServ.host + "/getNbreIrritantsParMois/" + year)
+  }
+
+  getSortedCategoriesIrritant(year: number): any {
+    return this.http.get(this.hostServ.host + "/getSortedCategoriesIrritant/" + year)
   }
 }

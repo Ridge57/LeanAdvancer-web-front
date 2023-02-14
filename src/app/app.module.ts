@@ -5,30 +5,30 @@ import { AppComponent } from './app.component';
 import { DashboardComponent } from './dashboard/dashboard.component';
 import { SideNavigationComponent } from './side-navigation/side-navigation.component';
 import { TopNavigationComponent } from './top-navigation/top-navigation.component';
-import {TableModule} from 'primeng/table';
-import {MenuModule} from 'primeng/menu';
-import {TabMenuModule} from 'primeng/tabmenu';
+import { TableModule } from 'primeng/table';
+import { ToolbarModule } from 'primeng/toolbar';
+import { SharedModule } from 'primeng/api';
+import { MenuModule } from 'primeng/menu';
+import { CalendarModule } from 'primeng/calendar';
+import { TabMenuModule } from 'primeng/tabmenu';
 import { registerLocaleData } from '@angular/common';
 import localeFr from '@angular/common/locales/fr';
 registerLocaleData(localeFr, 'fr');
 import { ChecklistTachesnokComponent } from './checklist-tachesnok/checklist-tachesnok.component';
 import { ChecklistHistoriqueComponent } from './checklist-historique/checklist-historique.component';
 import { ChecklistTabmenuComponent } from './checklist-tabmenu/checklist-tabmenu.component';
-import {CarouselModule} from 'primeng/carousel';
+import { CarouselModule } from 'primeng/carousel';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ChecklistVoirComponent } from './checklist-voir/checklist-voir.component';
-import {ToastModule} from 'primeng/toast';
+import { ToastModule } from 'primeng/toast';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { IrritantTabmenuComponent } from './irritant-tabmenu/irritant-tabmenu.component';
-import { IrritantEncoursComponent } from './irritant-encours/irritant-encours.component';
 import { IrritantAtraiterComponent } from './irritant-atraiter/irritant-atraiter.component';
-import { IrritantSoldesComponent } from './irritant-soldes/irritant-soldes.component';
 import { StandardTabmenuComponent } from './standard-tabmenu/standard-tabmenu.component';
 import { StandardAjouterComponent } from './standard-ajouter/standard-ajouter.component';
 import { StandardVoirComponent } from './standard-voir/standard-voir.component';
 import { StandardRectifierComponent } from './standard-rectifier/standard-rectifier.component';
-import {FileUploadModule} from 'primeng/fileupload';
-import {AccordionModule} from 'primeng/accordion';
+import { FileUploadModule } from 'primeng/fileupload';
+import { AccordionModule } from 'primeng/accordion';
 import { SuggestionTabmenuComponent } from './suggestion-tabmenu/suggestion-tabmenu.component';
 import { SuggestionAtraiterComponent } from './suggestion-atraiter/suggestion-atraiter.component';
 import { SuggestionEncoursComponent } from './suggestion-encours/suggestion-encours.component';
@@ -37,7 +37,7 @@ import { CategoriesComponent } from './categories/categories.component';
 import { ZonesComponent } from './zones/zones.component';
 import { UsersComponent } from './users/users.component';
 import { PersonnaliserComponent } from './personnaliser/personnaliser.component';
-import { HttpClientModule,HttpClientJsonpModule } from '@angular/common/http';
+import { HttpClientModule, HttpClientJsonpModule } from '@angular/common/http';
 import { HashLocationStrategy, LocationStrategy } from '@angular/common';
 import { ConnexionComponent } from './connexion/connexion.component';
 import { GlobalVariablesService } from 'src/services/globalvar.service';
@@ -53,10 +53,7 @@ import { GlobalVariablesService } from 'src/services/globalvar.service';
     ChecklistHistoriqueComponent,
     ChecklistTabmenuComponent,
     ChecklistVoirComponent,
-    IrritantTabmenuComponent,
-    IrritantEncoursComponent,
     IrritantAtraiterComponent,
-    IrritantSoldesComponent,
     StandardTabmenuComponent,
     StandardAjouterComponent,
     StandardVoirComponent,
@@ -69,15 +66,18 @@ import { GlobalVariablesService } from 'src/services/globalvar.service';
     ZonesComponent,
     UsersComponent,
     PersonnaliserComponent,
-    ConnexionComponent    
+    ConnexionComponent
   ],
   imports: [
     BrowserModule,
     AppRoutingModule,
     TableModule,
     MenuModule,
+    CalendarModule,
     TabMenuModule,
     CarouselModule,
+    ToolbarModule,
+    SharedModule,
     FormsModule,
     ToastModule,
     ReactiveFormsModule,
@@ -88,8 +88,8 @@ import { GlobalVariablesService } from 'src/services/globalvar.service';
     HttpClientJsonpModule
   ],
   providers: [
-    {provide: LOCALE_ID, useValue: 'fr' },
-    {provide: LocationStrategy, useClass: HashLocationStrategy},
+    { provide: LOCALE_ID, useValue: 'fr' },
+    { provide: LocationStrategy, useClass: HashLocationStrategy },
     GlobalVariablesService
   ],
   bootstrap: [AppComponent]

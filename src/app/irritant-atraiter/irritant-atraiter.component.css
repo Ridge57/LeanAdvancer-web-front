@@ -1,0 +1,19 @@
+.ui-table * {
+
+    border-left: 0 !important;
+    border-right: 0 !important;
+}
+
+p-calendar {
+    width: 100%;
+}
+
+#userSelection {
+    height: 20vh;
+    overflow-y: auto;
+}
+
+#userFiltreSelection {
+    height: 20vh;
+    overflow-y: auto;
+}
