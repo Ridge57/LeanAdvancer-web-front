@@ -8,9 +8,11 @@ import { TopNavigationComponent } from './top-navigation/top-navigation.componen
 import { TableModule } from 'primeng/table';
 import { ToolbarModule } from 'primeng/toolbar';
 import { SharedModule } from 'primeng/api';
+//import { CascadeSelectModule } from 'primeng/cascadeselect';
 import { MenuModule } from 'primeng/menu';
 import { CalendarModule } from 'primeng/calendar';
 import { TabMenuModule } from 'primeng/tabmenu';
+import { InputSwitchModule } from 'primeng/inputswitch';
 import { registerLocaleData } from '@angular/common';
 import localeFr from '@angular/common/locales/fr';
 registerLocaleData(localeFr, 'fr');
@@ -22,7 +24,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ChecklistVoirComponent } from './checklist-voir/checklist-voir.component';
 import { ToastModule } from 'primeng/toast';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { IrritantAtraiterComponent } from './irritant-atraiter/irritant-atraiter.component';
+import { IrritantsComponent } from './irritants/irritants.component';
 import { StandardTabmenuComponent } from './standard-tabmenu/standard-tabmenu.component';
 import { StandardAjouterComponent } from './standard-ajouter/standard-ajouter.component';
 import { StandardVoirComponent } from './standard-voir/standard-voir.component';
@@ -43,6 +45,7 @@ import { ConnexionComponent } from './connexion/connexion.component';
 import { GlobalVariablesService } from 'src/services/globalvar.service';
 
 
+
 @NgModule({
   declarations: [
     AppComponent,
@@ -53,7 +56,7 @@ import { GlobalVariablesService } from 'src/services/globalvar.service';
     ChecklistHistoriqueComponent,
     ChecklistTabmenuComponent,
     ChecklistVoirComponent,
-    IrritantAtraiterComponent,
+    IrritantsComponent,
     StandardTabmenuComponent,
     StandardAjouterComponent,
     StandardVoirComponent,
@@ -78,7 +81,9 @@ import { GlobalVariablesService } from 'src/services/globalvar.service';
     CarouselModule,
     ToolbarModule,
     SharedModule,
+    InputSwitchModule,
     FormsModule,
+    //CascadeSelectModule,
     ToastModule,
     ReactiveFormsModule,
     BrowserAnimationsModule,

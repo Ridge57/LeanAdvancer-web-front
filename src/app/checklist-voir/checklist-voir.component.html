@@ -1,149 +1,359 @@
-
 <!-- Page Wrapper -->
 <div id="wrapper">
 
-    <!-- Sidebar -->
-    <app-side-navigation></app-side-navigation>
-    <!-- End of Sidebar -->
+  <!-- Sidebar -->
+  <app-side-navigation></app-side-navigation>
+  <!-- End of Sidebar -->
 
-    <!-- Content Wrapper -->
-    <div id="content-wrapper" class="d-flex flex-column">
+  <!-- Content Wrapper -->
+  <div id="content-wrapper" class="d-flex flex-column">
 
-        <!-- Main Content -->
-        <div id="content ">
+    <!-- Main Content -->
+    <div id="content ">
 
-            <!-- Topbar --> 
-            <app-top-navigation></app-top-navigation>
-            <!-- End of Topbar -->
-            <div class="container-fluid">
-                <!-- Page Heading -->
-                <div class="mb-4">
-                    <h3 class="h3 mb-0 text-gray-800">Gestion des checklists | <small>afficher une checklist</small></h3>
-                </div>
-                <app-checklist-tabmenu></app-checklist-tabmenu>
-                <form>
-                    <div class="form-group">
-                        <select (change)="setVisible($event.target.value)" class="form-control">
-                          <option disabled selected value class="font-italic"> -- selectionner une zone -- </option>
-                          <option *ngFor="let zone of zones" value={{zone.idZone}}>{{zone.nomZone}}</option>
-                        </select>
-                    </div>
-                </form>
-                <div *ngIf="isVisible">
-                    <div class="mb-3 col-sm-6 row d-flex justify-content-around">
-                        <button type="button" class="btn btn-primary btn-sm col-sm-4 d-flex justify-content-around align-items-center" data-toggle="tooltip" data-placement="top" data-toggle="modal" data-target="#ajoutTacheModal"><i class="fas fa-plus-circle"></i>ajouter une tache</button>
-                    </div>
-                    <div>
-                        <ul class="list-group">
-                            <li class="list-group-item" *ngFor="let tache of tachesForSelectedZone">
-                                    <div class="col-sm-12 row border-bottom mx-auto">
-                                        <div class="col-sm-3 col my-2">
-                                            <img *ngIf="tache.photo && !imgChangedMap.get(tache.idTache)" src={{tache.photo}} alt="..." style="width: 70%;">
-                                            <img *ngIf="imgChangedMap.get(tache.idTache)" [src]="imgChangedMap.get(tache.idTache)" alt="..." style="width: 70%;">
-                                            <div *ngIf="editMode" class="input-group-sm">
-                                                <div class="custom-file mt-2">
-                                                  <input type="file" class="custom-file-input" id="inputGroupFile01" (change)=setNewImage($event)>
-                                                  <label class="custom-file-label" for="inputGroupFile01">Choose file</label>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="col-sm-4 col text-muted" style="font-size: 15px;" >
-                                                <div>
-                                                    <span class="font-weight-bolder">Activité à réaliser : </span><br/>
-                                                    <p *ngIf="!(editMode && tache.idTache==selectedTacheID)">{{tache.titre}}</p>
-                                                    <input *ngIf="editMode && tache.idTache==selectedTacheID" type="text" class="form-control" (input)=setNewTitle($event) value={{tache.titre}}>
-                                                </div>
-                                                <br/>
-                                                <div>
-                                                    <span class="font-weight-bolder">Description : </span><br/>
-                                                    <p *ngIf="!(editMode && tache.idTache==selectedTacheID)">{{tache.description}}</p>
-                                                    <textarea *ngIf="editMode && tache.idTache==selectedTacheID" class="form-control" rows="3" (input)=setNewDescription($event) value={{tache.description}}></textarea>
-                                                </div>
-                                        </div>
-                                        <div class="col-sm-5 d-flex justify-content-around align-items-center">
-                                            <button (click)=setEditMode(tache) type="button" class="btn btn-outline-secondary" data-toggle="tooltip" data-placement="top" title = "modifier" [disabled] = "editMode"><i class = "fas fa-edit fa-3x"></i></button>
-                                            <button (click)="saveTaskChange()" type="button" class="btn btn-outline-success" data-toggle="tooltip" data-placement="top" title = "sauvegarder" [disabled] = "!editMode || tache.idTache!=selectedTacheID"><i class = "fas fa-save fa-3x"></i></button>
-                                            <button (click)=resetEditMode(tache) type="button" class="btn btn-outline-warning" data-toggle="tooltip" data-placement="top" title = "annuler" [disabled] = "!editMode || tache.idTache!=selectedTacheID"><i class = "fas fa-undo fa-3x"></i></button>
-                                            <button (click)=launchDeleteModal(tache) type="button" class="btn btn-outline-danger" data-toggle="tooltip" data-placement="top" title = "supprimer" data-toggle = "modal" data-target = "#confirmationModal"><i class="far fa-times-circle fa-3x"></i></button>
-                                        </div>
-                                    </div>
-                            </li>
-                        </ul>
-                      </div>
-                  
-
-
-
-                </div>
-            </div>
+      <!-- Topbar -->
+      <app-top-navigation></app-top-navigation>
+      <!-- End of Topbar -->
+      <div class="container-fluid">
+        <!-- Page Heading -->
+        <div class="mb-4">
+          <h3 class="h3 mb-0 text-gray-800">Gestion des checklists | <small>afficher une checklist</small></h3>
         </div>
+        <app-checklist-tabmenu></app-checklist-tabmenu>
+        <form>
+          <div class="row form-group">
+            <select (change)="setVisible($event.target.value)" class="form-control col-sm-3">
+              <option disabled selected value class="font-italic"> -- selectionner une zone -- </option>
+              <option *ngFor="let zone of zones" value={{zone.idZone}}>{{zone.nomZone}}</option>
+            </select>
+            <div class="row col-sm-9 justify-content-around" *ngIf="isVisible">
+              <button type="button" class="btn btn-primary col-sm-3" data-toggle="modal" data-target="#ajoutTacheModal">
+                <i class="fas fa-plus-circle mr-2"></i>ajouter une tache
+              </button>
+              <select (change)="filtrerTachesJours($event.target.value)" class="form-control col-sm-3">
+                <option selected value class="font-italic"> Tous les jours </option>
+                <option *ngFor="let jour of jours" value={{jour}}>{{jour}}</option>
+              </select>
+              <select (change)="filtrerTachesEquipes($event.target.value)" class="form-control col-sm-3">
+                <option selected value class="font-italic"> Toutes les équipes </option>
+                <option *ngFor="let equipe of equipes" value={{equipe}}>{{equipe}}</option>
+              </select>
+            </div>
+          </div>
+        </form>
+        <div *ngIf="isVisible">
+          <div>
+            <ul class="list-group">
+              <li class="list-group-item" *ngFor="let tache of tachesForSelectedZone">
+                <div class="col-sm-12 row border-bottom mx-auto">
+                  <div class="col-sm-3 col my-2">
+                    <img *ngIf="tache.photo && !imgChangedMap.get(tache.idTache)" src={{tache.photo}} alt="..."
+                      style="width: 70%;">
+                    <img *ngIf="imgChangedMap.get(tache.idTache)" [src]="imgChangedMap.get(tache.idTache)" alt="..."
+                      style="width: 70%;">
+                    <div *ngIf="editMode" class="input-group-sm">
+                      <div class="custom-file mt-2">
+                        <input type="file" class="custom-file-input" id="inputGroupFile01" (change)=setNewImage($event)>
+                        <label class="custom-file-label" for="inputGroupFile01">Choose file</label>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="col-sm-4 col text-muted" style="font-size: 15px;">
+                    <div>
+                      <span class="font-weight-bolder">Activité à réaliser : </span><br />
+                      <p *ngIf="!(editMode && tache.idTache==selectedTacheID)">{{tache.titre}}</p>
+                      <input *ngIf="editMode && tache.idTache==selectedTacheID" type="text" class="form-control"
+                        (input)=setNewTitle($event) value={{tache.titre}}>
+                    </div>
+                    <br />
+                    <div>
+                      <span class="font-weight-bolder">Description : </span><br />
+                      <p *ngIf="!(editMode && tache.idTache==selectedTacheID)">{{tache.description}}</p>
+                      <textarea *ngIf="editMode && tache.idTache==selectedTacheID" class="form-control" rows="3"
+                        (input)=setNewDescription($event) value={{tache.description}}></textarea>
+                    </div>
+                  </div>
+                  <div class="col-sm-5 d-flex justify-content-around align-items-center">
+                    <button (click)=setEditMode(tache) type="button" class="btn btn-outline-secondary"
+                      data-toggle="tooltip" data-placement="top" title="modifier" [disabled]="editMode"><i
+                        class="fas fa-edit fa-3x"></i></button>
+                    <button (click)="saveTaskChange()" type="button" class="btn btn-outline-success"
+                      data-toggle="tooltip" data-placement="top" title="sauvegarder"
+                      [disabled]="!editMode || tache.idTache!=selectedTacheID"><i
+                        class="fas fa-save fa-3x"></i></button>
+                    <button (click)=resetEditMode(tache) type="button" class="btn btn-outline-warning"
+                      data-toggle="tooltip" data-placement="top" title="annuler"
+                      [disabled]="!editMode || tache.idTache!=selectedTacheID"><i
+                        class="fas fa-undo fa-3x"></i></button>
+                    <button (click)=launchDeleteModal(tache) type="button" class="btn btn-outline-danger"
+                      data-toggle="tooltip" data-placement="top" title="supprimer" data-toggle="modal"
+                      data-target="#confirmationModal"><i class="far fa-times-circle fa-3x"></i></button>
+                  </div>
+                </div>
+              </li>
+            </ul>
+          </div>
+
+
+
+
+        </div>
+      </div>
     </div>
+  </div>
 </div>
 
 <!-- Confirmation suppression Modal -->
-<div class="modal fade" id="confirmationModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-    <div class="modal-dialog" role="document">
-      <div class="modal-content">
-        <div class="modal-header">
-         
-          <h5 class="modal-title d-flex justify-content-around align-items-center" id="exampleModalLabel"> <span style="color: #df4759;"><i class="fas fa-exclamation-circle mx-2"></i></span>Demande de confirmation</h5>
-          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-            <span aria-hidden="true">&times;</span>
-          </button>
-        </div>
-        <div class="modal-body">
-          Confirmer la suppression de cette tâche : {{selectedTache.titre}} ?
-        </div>
-        <div class="modal-footer">
-          <button type="button" class="btn btn-warning" data-dismiss="modal">Annuler</button>
-          <button (click)=deleteTask() type="button" class="btn btn-danger" data-dismiss="modal">Oui, supprimer</button>
-        </div>
+<div class="modal fade" id="confirmationModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+  aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+
+        <h5 class="modal-title d-flex justify-content-around align-items-center" id="exampleModalLabel"> <span
+            style="color: #df4759;"><i class="fas fa-exclamation-circle mx-2"></i></span>Demande de confirmation</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        Confirmer la suppression de cette tâche : {{selectedTache.titre}} ?
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-warning" data-dismiss="modal">Annuler</button>
+        <button (click)=deleteTask() type="button" class="btn btn-danger" data-dismiss="modal">Oui, supprimer</button>
       </div>
     </div>
   </div>
+</div>
 
 <!-- Ajout Tache Modal -->
-<div class="modal fade" id="ajoutTacheModal" tabindex="-1" role="dialog" aria-labelledby="ModalLabel" aria-hidden="true">
-    <div class="modal-dialog" role="document">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h5 class="modal-title" id="ModalLabel"><span style="color: #007AD9;"><i class="fas fa-plus-circle mx-2"></i></span>Ajout d'une nouvelle tâche</h5>
-          
-          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-            <span aria-hidden="true">&times;</span>
-          </button>
-          
-        </div>
-        <div class="modal-body">
-            <form [formGroup]="formTache">
-            <div class="col-sm-12 row border-bottom mx-auto">
-                <div class="col-sm-4 col my-2">
-                    <img src='' alt="..." style="width: 70%;">
-                    <div class="input-group-sm">
-                        <div class="custom-file mt-2">
-                          <input type="file" class="custom-file-input" id="inputGroupFile01" (change)=setNewImageForNewTache($event)>
-                          <label class="custom-file-label" for="inputGroupFile01">Choose file</label>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-sm-8 col text-muted" style="font-size: 15px;" >
-                        <div class="form-group">
-                            <span class="font-weight-bolder">Activité à réaliser : </span><br/>
-                            <input type="text" formControlName="titre" class="form-control" (input)=setNewTitle($event)>
-                        </div>
-                        <br/>
-                        <div>
-                            <span class="font-weight-bolder">Description : </span><br/>
-                            <textarea class="form-control" formControlName="description" rows="3" (input)=setNewDescription($event)></textarea>
-                        </div>
-                </div>
+<div class="modal fade" id="ajoutTacheModal" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+  aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered " role="document">
+    <div class="modal-content">
+
+      <div class="modal-header">
+        <h5 class="modal-title" id="ModalLabel"><span style="color: #007AD9;"><i
+              class="fas fa-plus-circle mx-2"></i></span>Ajout d'une nouvelle tâche</h5>
+
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+
+      <div class="modal-body">
+        <form [formGroup]="formTache">
+          <div class="border-bottom mx-auto">
+
+            <div class="col-sm-12 col text-muted" style="font-size: 15px;">
+              <div>
+                <span class="font-weight-bolder">Activité à réaliser : </span>
+                <input type="text" formControlName="titre" class="form-control" (input)=setNewTitle($event)>
+              </div>
+
+              <div class="mt-2">
+                <span class="font-weight-bolder">Description : </span>
+                <textarea class="form-control" formControlName="description" rows="3"
+                  (input)=setNewDescription($event)></textarea>
+              </div>
+
+              <div class="mt-2">
+                <p class="font-weight-bolder">Image :</p>
+                <span class="custom-file">
+                  <input type="file" class="custom-file-input" id="inputGroupFile01"
+                    (change)=setNewImageForNewTache($event)>
+                  <label class="custom-file-label" for="inputGroupFile01">Choose file</label></span>
+              </div>
+
+              <!-- Periodicité -->
+              <table class="table table-hover" *ngIf="!chargeTableView">
+                <thead>
+                  <tr>
+                    <th scope="col">#</th>
+                    <th scope="col">Lun</th>
+                    <th scope="col">Mar</th>
+                    <th scope="col">Mer</th>
+                    <th scope="col">Jeu</th>
+                    <th scope="col">Ven</th>
+                    <th scope="col">Sam</th>
+                    <th scope="col">Dim</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <th scope="row">Matin</th>
+                    <td>
+                      <input type='checkbox' value='lundi-M' (change)="handleChange($event);">
+                    </td>
+                    <td>
+                      <input type='checkbox' value='mardi-M' (change)="handleChange($event);">
+                    </td>
+                    <td>
+                      <input type='checkbox' value='mercredi-M' (change)="handleChange($event);">
+                    </td>
+                    <td>
+                      <input type='checkbox' value='jeudi-M' (change)="handleChange($event);">
+                    </td>
+                    <td>
+                      <input type='checkbox' value='vendredi-M' (change)="handleChange($event);">
+                    </td>
+                    <td>
+                      <input type='checkbox' value='samedi-M' (change)="handleChange($event);">
+                    </td>
+                    <td>
+                      <input type='checkbox' value='dimanche-M' (change)="handleChange($event);">
+                    </td>
+                  </tr>
+                  <tr>
+                    <th scope="row">Soir</th>
+                    <td>
+                      <input type='checkbox' value='lundi-S' (change)="handleChange($event);">
+                    </td>
+                    <td>
+                      <input type='checkbox' value='mardi-S' (change)="handleChange($event);">
+                    </td>
+                    <td>
+                      <input type='checkbox' value='mercredi-S' (change)="handleChange($event);">
+                    </td>
+                    <td>
+                      <input type='checkbox' value='jeudi-S' (change)="handleChange($event);">
+                    </td>
+                    <td>
+                      <input type='checkbox' value='vendredi-S' (change)="handleChange($event);">
+                    </td>
+                    <td>
+                      <input type='checkbox' value='samedi-S' (change)="handleChange($event);">
+                    </td>
+                    <td>
+                      <input type='checkbox' value='dimanche-S' (change)="handleChange($event);">
+                    </td>
+                  </tr>
+                  <tr>
+                    <th scope="row">Nuit</th>
+                    <td>
+                      <input type='checkbox' value='lundi-N' (change)="handleChange($event);">
+                    </td>
+                    <td>
+                      <input type='checkbox' value='mardi-N' (change)="handleChange($event);">
+                    </td>
+                    <td>
+                      <input type='checkbox' value='mercredi-N' (change)="handleChange($event);">
+                    </td>
+                    <td>
+                      <input type='checkbox' value='jeudi-N' (change)="handleChange($event);">
+                    </td>
+                    <td>
+                      <input type='checkbox' value='vendredi-N' (change)="handleChange($event);">
+                    </td>
+                    <td>
+                      <input type='checkbox' value='samedi-N' (change)="handleChange($event);">
+                    </td>
+                    <td>
+                      <input type='checkbox' value='dimanche-N' (change)="handleChange($event);">
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+
+
+              <!-- Charge -->
+              <table class="table table-hover" *ngIf="chargeTableView">
+                <thead>
+                  <tr>
+                    <th scope="col">#</th>
+                    <th scope="col">Lun</th>
+                    <th scope="col">Mar</th>
+                    <th scope="col">Mer</th>
+                    <th scope="col">Jeu</th>
+                    <th scope="col">Ven</th>
+                    <th scope="col">Sam</th>
+                    <th scope="col">Dim</th>
+                    <th scope="col">total</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <th scope="row">Matin</th>
+                    <td>{{numberTaskByPeriod.get('lundi-M')}}</td>
+                    <td>{{numberTaskByPeriod.get('mardi-M')}}</td>
+                    <td>{{numberTaskByPeriod.get('mercredi-M')}}</td>
+                    <td>{{numberTaskByPeriod.get('jeudi-M')}}</td>
+                    <td>{{numberTaskByPeriod.get('vendredi-M')}}</td>
+                    <td>{{numberTaskByPeriod.get('samedi-M')}}</td>
+                    <td>{{numberTaskByPeriod.get('dimanche-M')}}</td>
+                    <td>{{numberTaskByPeriod.get('lundi-M')+numberTaskByPeriod.get('mardi-M')
+                      +numberTaskByPeriod.get('mercredi-M')+numberTaskByPeriod.get('jeudi-M')
+                      +numberTaskByPeriod.get('vendredi-M')+numberTaskByPeriod.get('samedi-M')
+                      +numberTaskByPeriod.get('dimanche-M')}}</td>
+                  </tr>
+                  <tr>
+                    <th scope="row">Soir</th>
+                    <td>{{numberTaskByPeriod.get('lundi-S')}}</td>
+                    <td>{{numberTaskByPeriod.get('mardi-S')}}</td>
+                    <td>{{numberTaskByPeriod.get('mercredi-S')}}</td>
+                    <td>{{numberTaskByPeriod.get('jeudi-S')}}</td>
+                    <td>{{numberTaskByPeriod.get('vendredi-S')}}</td>
+                    <td>{{numberTaskByPeriod.get('samedi-S')}}</td>
+                    <td>{{numberTaskByPeriod.get('dimanche-S')}}</td>
+                    <td>{{numberTaskByPeriod.get('lundi-S')+numberTaskByPeriod.get('mardi-S')
+                      +numberTaskByPeriod.get('mercredi-S')+numberTaskByPeriod.get('jeudi-S')
+                      +numberTaskByPeriod.get('vendredi-S')+numberTaskByPeriod.get('samedi-S')
+                      +numberTaskByPeriod.get('dimanche-S')}}</td>
+                  </tr>
+                  <tr>
+                    <th scope="row">Nuit</th>
+                    <td>{{numberTaskByPeriod.get('lundi-N')}}</td>
+                    <td>{{numberTaskByPeriod.get('mardi-N')}}</td>
+                    <td>{{numberTaskByPeriod.get('mercredi-N')}}</td>
+                    <td>{{numberTaskByPeriod.get('jeudi-N')}}</td>
+                    <td>{{numberTaskByPeriod.get('vendredi-N')}}</td>
+                    <td>{{numberTaskByPeriod.get('samedi-N')}}</td>
+                    <td>{{numberTaskByPeriod.get('dimanche-N')}}</td>
+                    <td>{{numberTaskByPeriod.get('lundi-N')+numberTaskByPeriod.get('mardi-N')
+                      +numberTaskByPeriod.get('mercredi-N')+numberTaskByPeriod.get('jeudi-N')
+                      +numberTaskByPeriod.get('vendredi-N')+numberTaskByPeriod.get('samedi-N')
+                      +numberTaskByPeriod.get('dimanche-N')}}</td>
+                  </tr>
+                  <tr>
+                    <th scope="row">total</th>
+                    <td>
+                      {{numberTaskByPeriod.get('lundi-M')+numberTaskByPeriod.get('lundi-S')+numberTaskByPeriod.get('lundi-N')}}
+                    </td>
+                    <td>
+                      {{numberTaskByPeriod.get('mardi-M')+numberTaskByPeriod.get('mardi-S')+numberTaskByPeriod.get('mardi-N')}}
+                    </td>
+                    <td>
+                      {{numberTaskByPeriod.get('mercredi-M')+numberTaskByPeriod.get('mercredi-S')+numberTaskByPeriod.get('mercredi-N')}}
+                    </td>
+                    <td>
+                      {{numberTaskByPeriod.get('jeudi-M')+numberTaskByPeriod.get('jeudi-S')+numberTaskByPeriod.get('jeudi-N')}}
+                    </td>
+                    <td>
+                      {{numberTaskByPeriod.get('vendredi-M')+numberTaskByPeriod.get('vendredi-S')+numberTaskByPeriod.get('vendredi-N')}}
+                    </td>
+                    <td>
+                      {{numberTaskByPeriod.get('samedi-M')+numberTaskByPeriod.get('samedi-S')+numberTaskByPeriod.get('samedi-N')}}
+                    </td>
+                    <td>
+                      {{numberTaskByPeriod.get('dimanche-M')+numberTaskByPeriod.get('dimanche-S')+numberTaskByPeriod.get('dimanche-N')}}
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+
+              <p-inputSwitch (onChange)="switchTableView($event);"></p-inputSwitch>
+              <p *ngIf="!chargeTableView">vue choix</p>
+              <p *ngIf="chargeTableView">vue charge</p>
+
             </div>
-            </form>
-        </div>
-        <div class="modal-footer">
-          <button type="button" class="btn btn-warning" data-dismiss="modal">Annuler</button>
-          <button (click)=addNewTask() type="button" class="btn btn-primary" data-dismiss="modal">Ajouter</button>
-        </div>
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Annuler</button>
+        <button (click)=addNewTask() type="button" class="btn btn-primary" data-dismiss="modal">Ajouter</button>
       </div>
     </div>
   </div>
+</div>

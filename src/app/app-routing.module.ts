@@ -5,7 +5,7 @@ import { ConnexionComponent } from './connexion/connexion.component';
 import { ChecklistTachesnokComponent } from './checklist-tachesnok/checklist-tachesnok.component';
 import { ChecklistHistoriqueComponent } from './checklist-historique/checklist-historique.component';
 import { ChecklistVoirComponent } from './checklist-voir/checklist-voir.component';
-import { IrritantAtraiterComponent } from './irritant-atraiter/irritant-atraiter.component';
+import { IrritantsComponent } from './irritants/irritants.component';
 import { StandardAjouterComponent } from './standard-ajouter/standard-ajouter.component';
 import { StandardVoirComponent } from './standard-voir/standard-voir.component';
 import { StandardRectifierComponent } from './standard-rectifier/standard-rectifier.component';
@@ -25,7 +25,7 @@ const routes: Routes = [
   { path: 'checklistTachesNok', component: ChecklistTachesnokComponent },
   { path: 'checklistHistorique', component: ChecklistHistoriqueComponent },
   { path: 'checklistVoir', component: ChecklistVoirComponent },
-  { path: 'irritantATraiter', component: IrritantAtraiterComponent },
+  { path: 'irritants', component: IrritantsComponent },
   { path: 'standardAjouter', component: StandardAjouterComponent },
   { path: 'standardVoir', component: StandardVoirComponent },
   { path: 'standardRectifier', component: StandardRectifierComponent },

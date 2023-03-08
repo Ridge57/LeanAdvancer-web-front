@@ -1,18 +1,17 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
-import { SortEvent } from 'primeng/api';
+import { SortEvent, MessageService } from 'primeng/api';
 import { IrritantService } from 'src/services/irritant.service';
 import { UserService } from 'src/services/user.service';
 import { FormBuilder, FormGroup } from '@angular/forms'
-import { MessageService } from 'primeng/api';
-declare var $: any;
+declare let $: any;
 
 @Component({
-  selector: 'app-irritant-atraiter',
-  templateUrl: './irritant-atraiter.component.html',
-  styleUrls: ['./irritant-atraiter.component.css'],
+  selector: 'app-irritants',
+  templateUrl: './irritants.component.html',
+  styleUrls: ['./irritants.component.css'],
   providers: [MessageService]
 })
-export class IrritantAtraiterComponent implements OnInit {
+export class IrritantsComponent implements OnInit {
   @ViewChild('inputSearchUserFilterIrritant') inputSearchUserFilterIrritant;
   @ViewChild('inputSearchUserAddIrritant') inputSearchUserAddIrritant;
   @ViewChild('rangeDatesFilter') rangeDatesFilter;
