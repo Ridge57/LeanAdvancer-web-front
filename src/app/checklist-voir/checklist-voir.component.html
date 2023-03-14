@@ -14,90 +14,142 @@
       <!-- Topbar -->
       <app-top-navigation></app-top-navigation>
       <!-- End of Topbar -->
-      <div class="container-fluid">
+      <div class="container-fluid col-sm-12 col-lg-10 mx-auto">
         <!-- Page Heading -->
         <div class="mb-4">
           <h3 class="h3 mb-0 text-gray-800">Gestion des checklists | <small>afficher une checklist</small></h3>
         </div>
+
+        <!-- tab menu -->
         <app-checklist-tabmenu></app-checklist-tabmenu>
-        <form>
-          <div class="row form-group">
-            <select (change)="setVisible($event.target.value)" class="form-control col-sm-3">
-              <option disabled selected value class="font-italic"> -- selectionner une zone -- </option>
-              <option *ngFor="let zone of zones" value={{zone.idZone}}>{{zone.nomZone}}</option>
-            </select>
-            <div class="row col-sm-9 justify-content-around" *ngIf="isVisible">
-              <button type="button" class="btn btn-primary col-sm-3" data-toggle="modal" data-target="#ajoutTacheModal">
-                <i class="fas fa-plus-circle mr-2"></i>ajouter une tache
-              </button>
-              <select (change)="filtrerTachesJours($event.target.value)" class="form-control col-sm-3">
-                <option selected value class="font-italic"> Tous les jours </option>
-                <option *ngFor="let jour of jours" value={{jour}}>{{jour}}</option>
-              </select>
-              <select (change)="filtrerTachesEquipes($event.target.value)" class="form-control col-sm-3">
-                <option selected value class="font-italic"> Toutes les équipes </option>
-                <option *ngFor="let equipe of equipes" value={{equipe}}>{{equipe}}</option>
-              </select>
-            </div>
+
+
+
+
+        <!-- bouttons selection de la zone et ajouter une tache -->
+
+        <div class="row form-group">
+          <select (change)="setVisible($event.target.value)" class="form-control col-sm-3">
+            <option disabled selected value class="font-italic"> -- selectionner une zone -- </option>
+            <option *ngFor="let zone of zones" value={{zone.idZone}}>{{zone.nomZone}}</option>
+          </select>
+          <div class="row col-sm-9" *ngIf="isVisible">
+            <button type="button" class="btn btn-primary col-sm-3 mx-3" data-toggle="modal"
+              data-target="#ajoutTacheModal">
+              <i class="fas fa-plus-circle mr-2"></i>ajouter une tache
+            </button>
+            <p-cascadeSelect [options]="periods" optionLabel="cname" optionGroupLabel="jour"
+              [optionGroupChildren]="['equipe']" [style]="{'minWidth': '14rem'}" placeholder="periode"
+              (onChange)="filtrerLesTaches($event)"></p-cascadeSelect>
           </div>
-        </form>
-        <div *ngIf="isVisible">
-          <div>
-            <ul class="list-group">
-              <li class="list-group-item" *ngFor="let tache of tachesForSelectedZone">
-                <div class="col-sm-12 row border-bottom mx-auto">
-                  <div class="col-sm-3 col my-2">
-                    <img *ngIf="tache.photo && !imgChangedMap.get(tache.idTache)" src={{tache.photo}} alt="..."
-                      style="width: 70%;">
-                    <img *ngIf="imgChangedMap.get(tache.idTache)" [src]="imgChangedMap.get(tache.idTache)" alt="..."
-                      style="width: 70%;">
-                    <div *ngIf="editMode" class="input-group-sm">
-                      <div class="custom-file mt-2">
-                        <input type="file" class="custom-file-input" id="inputGroupFile01" (change)=setNewImage($event)>
-                        <label class="custom-file-label" for="inputGroupFile01">Choose file</label>
-                      </div>
-                    </div>
-                  </div>
-                  <div class="col-sm-4 col text-muted" style="font-size: 15px;">
-                    <div>
-                      <span class="font-weight-bolder">Activité à réaliser : </span><br />
-                      <p *ngIf="!(editMode && tache.idTache==selectedTacheID)">{{tache.titre}}</p>
-                      <input *ngIf="editMode && tache.idTache==selectedTacheID" type="text" class="form-control"
-                        (input)=setNewTitle($event) value={{tache.titre}}>
-                    </div>
-                    <br />
-                    <div>
-                      <span class="font-weight-bolder">Description : </span><br />
-                      <p *ngIf="!(editMode && tache.idTache==selectedTacheID)">{{tache.description}}</p>
-                      <textarea *ngIf="editMode && tache.idTache==selectedTacheID" class="form-control" rows="3"
-                        (input)=setNewDescription($event) value={{tache.description}}></textarea>
-                    </div>
-                  </div>
-                  <div class="col-sm-5 d-flex justify-content-around align-items-center">
-                    <button (click)=setEditMode(tache) type="button" class="btn btn-outline-secondary"
-                      data-toggle="tooltip" data-placement="top" title="modifier" [disabled]="editMode"><i
-                        class="fas fa-edit fa-3x"></i></button>
-                    <button (click)="saveTaskChange()" type="button" class="btn btn-outline-success"
-                      data-toggle="tooltip" data-placement="top" title="sauvegarder"
-                      [disabled]="!editMode || tache.idTache!=selectedTacheID"><i
-                        class="fas fa-save fa-3x"></i></button>
-                    <button (click)=resetEditMode(tache) type="button" class="btn btn-outline-warning"
-                      data-toggle="tooltip" data-placement="top" title="annuler"
-                      [disabled]="!editMode || tache.idTache!=selectedTacheID"><i
-                        class="fas fa-undo fa-3x"></i></button>
-                    <button (click)=launchDeleteModal(tache) type="button" class="btn btn-outline-danger"
-                      data-toggle="tooltip" data-placement="top" title="supprimer" data-toggle="modal"
-                      data-target="#confirmationModal"><i class="far fa-times-circle fa-3x"></i></button>
+        </div>
+
+
+
+        <!-- liste des taches -->
+        <p-accordion *ngIf="isVisible">
+          <p-accordionTab *ngFor="let tache of filteredTaches" header="[ {{tache.type}} ]&emsp;&emsp;{{tache.titre}}">
+            <div class="col-sm-12 row border-bottom mx-auto text-muted" style="font-size: 14px;">
+
+              <!-- photo -->
+              <div class="col-sm-3 col my-2">
+                <img *ngIf="tache.photo && !imgChangedMap.get(tache.idTache)" src={{tache.photo}} alt="..."
+                  style="width: 70%;">
+                <img *ngIf="imgChangedMap.get(tache.idTache)" [src]="imgChangedMap.get(tache.idTache)" alt="..."
+                  style="width: 70%;">
+                <div *ngIf="editMode" class="input-group-sm">
+                  <div class="custom-file mt-2">
+                    <input type="file" class="custom-file-input" id="inputGroupFile01" (change)=setNewImage($event)>
+                    <label class="custom-file-label" for="inputGroupFile01">Choose file</label>
                   </div>
                 </div>
-              </li>
-            </ul>
-          </div>
+              </div>
+
+              <!-- titre | description | -->
+              <div class="col-sm-5">
+
+                <div>
+                  <input *ngIf="editMode && tache.idTache==selectedTacheID" type="text" class="form-control"
+                    (input)=setNewTitle($event) value={{tache.titre}} style="font-size: 14px;">
+                </div>
+
+                <div>
+                  <span class="font-weight-bolder">Description : </span><br />
+                  <p *ngIf="!(editMode && tache.idTache==selectedTacheID)">{{tache.description}}</p>
+                  <textarea *ngIf="editMode && tache.idTache==selectedTacheID" class="form-control" rows="3"
+                    (input)=setNewDescription($event) value={{tache.description}} style="font-size: 14px;"></textarea>
+                </div>
+              </div>
 
 
+              <!-- Périodicité | type de tache | bouttons de modifications -->
+              <div class="col-sm-4">
 
+                <!-- Périodicité -->
+                <div>
+                  <span class="font-weight-bolder">Periodicité : </span><br />
+                  <p *ngIf="!(editMode && tache.idTache==selectedTacheID)">{{tache.periods}}</p>
+                  <input *ngIf="editMode && tache.idTache==selectedTacheID" type="text" class="form-control"
+                    [(ngModel)]="selectedPeriods" (click)="openChangePeriodsTacheModal()" style="font-size: 14px;">
+                </div>
 
-        </div>
+                <!-- type de tache-->
+                <div class="mb-2">
+                  <!-- tag type de tache -->
+                  <span *ngIf="!editMode">
+                    <p-tag *ngIf="tache.type==='EHS'" styleClass="mr-2" severity="success" value="EHS"></p-tag>
+                    <p-tag *ngIf="tache.type==='MA'" styleClass="mr-2" severity="warning" value="MA"></p-tag>
+                    <p-tag *ngIf="tache.type==='5S'" severity="danger" value="5S"></p-tag>
+                  </span>
+
+                  <!-- type de tache : edition -->
+                  <span *ngIf="editMode">
+
+                    <!-- boutons edition du type de tache -->
+                    <button (click)="setTypeTache('EHS')" pButton pRipple type="button" label="EHS"
+                      class="p-button-success p-button-text my-2"></button>
+                    <button (click)="setTypeTache('MA')" pButton pRipple type="button" label="MA"
+                      class="p-button-warning p-button-text my-2"></button>
+                    <button (click)="setTypeTache('5S')" pButton pRipple type="button" label="5S"
+                      class="p-button-danger p-button-text mr-2 my-2"></button>
+
+                    <!-- bouton neutre d'affichage du type de tache choisi -->
+                    <button *ngIf="typeTache==='EHS'" pButton pRipple type="button" label="EHS"
+                      class="p-button-success p-button-rounded my-2"></button>
+                    <button *ngIf="typeTache==='MA'" pButton pRipple type="button" label="MA"
+                      class="p-button-rounded p-button-warning my-2"></button>
+                    <button *ngIf="typeTache==='5S'" pButton pRipple type="button" label="5S"
+                      class="p-button-rounded p-button-danger my-2"></button>
+                  </span>
+
+                </div>
+
+                <!-- bouttons modifier | sauvegarder | annuler | supprimer -->
+
+                <!-- modifier -->
+                <button (click)=setEditMode(tache) type="button" class="btn btn-outline-secondary mr-2"
+                  data-toggle="tooltip" data-placement="top" title="modifier" [disabled]="editMode"><i
+                    class="fas fa-edit fa-1x"></i></button>
+
+                <!-- sauvegarder -->
+                <button (click)="saveTaskChange()" type="button" class="btn btn-outline-success mr-2"
+                  data-toggle="tooltip" data-placement="top" title="sauvegarder"
+                  [disabled]="!editMode || tache.idTache!=selectedTacheID"><i class="fas fa-save fa-1x"></i></button>
+
+                <!-- annuler -->
+                <button (click)=resetEditMode(tache) type="button" class="btn btn-outline-warning mr-2"
+                  data-toggle="tooltip" data-placement="top" title="annuler"
+                  [disabled]="!editMode || tache.idTache!=selectedTacheID"><i class="fas fa-undo fa-1x"></i></button>
+
+                <!-- supprimer -->
+                <button (click)=launchDeleteModal(tache) type="button" class="btn btn-outline-danger"
+                  data-toggle="tooltip" data-placement="top" title="supprimer" data-toggle="modal"
+                  data-target="#confirmationModal"><i class="far fa-times-circle fa-1x"></i></button>
+              </div>
+            </div>
+          </p-accordionTab>
+        </p-accordion>
+
       </div>
     </div>
   </div>
@@ -117,7 +169,7 @@
         </button>
       </div>
       <div class="modal-body">
-        Confirmer la suppression de cette tâche : {{selectedTache.titre}} ?
+        Confirmer la suppression de cette tâche : {{selectedTache?.titre}} ?
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-warning" data-dismiss="modal">Annuler</button>
@@ -126,11 +178,12 @@
     </div>
   </div>
 </div>
-
+<p-toast></p-toast>
 <!-- Ajout Tache Modal -->
-<div class="modal fade" id="ajoutTacheModal" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
-  aria-hidden="true">
-  <div class="modal-dialog modal-dialog-centered " role="document">
+<div class="modal fade" id="ajoutTacheModal" tabindex="-1" role="dialog" aria-labelledby="ModalLabel" aria-hidden="true"
+  data-backdrop="static" data-keyboard="false">
+  <p-toast></p-toast>
+  <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
     <div class="modal-content">
 
       <div class="modal-header">
@@ -147,23 +200,39 @@
           <div class="border-bottom mx-auto">
 
             <div class="col-sm-12 col text-muted" style="font-size: 15px;">
-              <div>
-                <span class="font-weight-bolder">Activité à réaliser : </span>
-                <input type="text" formControlName="titre" class="form-control" (input)=setNewTitle($event)>
+              <div class="row">
+                <div class="col-sm-6">
+                  <input type="text" formControlName="titre" class="form-control" (input)=setNewTitle($event)
+                    placeholder="Titre (Activité à réaliser)">
+                </div>
+                <div class="col-sm-4">
+                  <button (click)="setTypeTache('EHS')" pButton pRipple type="button" label="EHS"
+                    class="p-button-success p-button-text"></button>
+                  <button (click)="setTypeTache('MA')" pButton pRipple type="button" label="MA"
+                    class="p-button-warning p-button-text"></button>
+                  <button (click)="setTypeTache('5S')" pButton pRipple type="button" label="5S"
+                    class="p-button-danger p-button-text"></button>
+                </div>
+                <div class="col-sm-2">
+                  <button *ngIf="typeTache==='EHS'" pButton pRipple type="button" label="EHS"
+                    class="p-button-success p-button-rounded"></button>
+                  <button *ngIf="typeTache==='MA'" pButton pRipple type="button" label="MA"
+                    class="p-button-rounded p-button-warning"></button>
+                  <button *ngIf="typeTache==='5S'" pButton pRipple type="button" label="5S"
+                    class="p-button-rounded p-button-danger"></button>
+                </div>
               </div>
 
               <div class="mt-2">
-                <span class="font-weight-bolder">Description : </span>
-                <textarea class="form-control" formControlName="description" rows="3"
+                <textarea class="form-control" formControlName="description" rows="2" placeholder="Description"
                   (input)=setNewDescription($event)></textarea>
               </div>
 
               <div class="mt-2">
-                <p class="font-weight-bolder">Image :</p>
                 <span class="custom-file">
                   <input type="file" class="custom-file-input" id="inputGroupFile01"
                     (change)=setNewImageForNewTache($event)>
-                  <label class="custom-file-label" for="inputGroupFile01">Choose file</label></span>
+                  <label class="custom-file-label" for="inputGroupFile01">Image ..</label></span>
               </div>
 
               <!-- Periodicité -->
@@ -351,8 +420,264 @@
         </form>
       </div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-dismiss="modal">Annuler</button>
-        <button (click)=addNewTask() type="button" class="btn btn-primary" data-dismiss="modal">Ajouter</button>
+        <button type="button" class="btn btn-secondary" (click)="resetAjoutIrrForm()">Annuler</button>
+        <button (click)=addNewTask() type="button" class="btn btn-primary">Ajouter</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<!-- modifier la periodicité de la Tache Modal -->
+<div class="modal fade" id="changePeriodsTacheModal" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+  aria-hidden="true" data-backdrop="static" data-keyboard="false">
+  <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+    <div class="modal-content">
+
+      <div class="modal-header">
+        <h5 class="modal-title" id="ModalLabel"><span style="color: #007AD9;"><i
+              class="fas fa-plus-circle mx-2"></i></span>Modifier la périodicité</h5>
+
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+
+      <div class="modal-body">
+        <form>
+          <div class="border-bottom mx-auto">
+
+            <div class="col-sm-12 col text-muted" style="font-size: 15px;">
+
+              <!-- Periodicité -->
+              <table class="table table-hover" *ngIf="!chargeTableView">
+                <thead>
+                  <tr>
+                    <th scope="col">#</th>
+                    <th scope="col">Lun</th>
+                    <th scope="col">Mar</th>
+                    <th scope="col">Mer</th>
+                    <th scope="col">Jeu</th>
+                    <th scope="col">Ven</th>
+                    <th scope="col">Sam</th>
+                    <th scope="col">Dim</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <th scope="row">Matin</th>
+                    <td>
+                      <input type='checkbox' value='lundi-M'
+                        [checked]="selectedTache === undefined ? false : selectedPeriods.indexOf('lundi-M')>-1"
+                        (change)="handleChange($event);">
+                    </td>
+                    <td>
+                      <input type='checkbox' value='mardi-M'
+                        [checked]="selectedTache ? selectedPeriods.indexOf('mardi-M') > -1 : false"
+                        (change)="handleChange($event);">
+                    </td>
+                    <td>
+                      <input type='checkbox' value='mercredi-M'
+                        [checked]="selectedTache ? selectedPeriods.indexOf('mercredi-M') > -1 : false"
+                        (change)="handleChange($event);">
+                    </td>
+                    <td>
+                      <input type='checkbox' value='jeudi-M'
+                        [checked]="selectedTache ? selectedPeriods.indexOf('jeudi-M') > -1 : false"
+                        (change)="handleChange($event);">
+                    </td>
+                    <td>
+                      <input type='checkbox' value='vendredi-M'
+                        [checked]="selectedTache ? selectedPeriods.indexOf('vendredi-M') > -1 : false"
+                        (change)="handleChange($event);">
+                    </td>
+                    <td>
+                      <input type='checkbox' value='samedi-M'
+                        [checked]="selectedTache ? selectedPeriods.indexOf('samedi-M') > -1 : false"
+                        (change)="handleChange($event);">
+                    </td>
+                    <td>
+                      <input type='checkbox' value='dimanche-M'
+                        [checked]="selectedTache ? selectedPeriods.indexOf('dimanche-M') > -1 : false"
+                        (change)="handleChange($event);">
+                    </td>
+                  </tr>
+                  <tr>
+                    <th scope="row">Soir</th>
+                    <td>
+                      <input type='checkbox' value='lundi-S'
+                        [checked]="selectedTache ? selectedPeriods.indexOf('lundi-S') > -1 : false"
+                        (change)="handleChange($event);">
+                    </td>
+                    <td>
+                      <input type='checkbox' value='mardi-S'
+                        [checked]="selectedTache ? selectedPeriods.indexOf('mardi-S') > -1 : false"
+                        (change)="handleChange($event);">
+                    </td>
+                    <td>
+                      <input type='checkbox' value='mercredi-S'
+                        [checked]="selectedTache ? selectedPeriods.indexOf('mercredi-S') > -1 : false"
+                        (change)="handleChange($event);">
+                    </td>
+                    <td>
+                      <input type='checkbox' value='jeudi-S'
+                        [checked]="selectedTache ? selectedPeriods.indexOf('jeudi-S') > -1 : false"
+                        (change)="handleChange($event);">
+                    </td>
+                    <td>
+                      <input type='checkbox' value='vendredi-S'
+                        [checked]="selectedTache ? selectedPeriods.indexOf('vendredi-S') > -1 : false"
+                        (change)="handleChange($event);">
+                    </td>
+                    <td>
+                      <input type='checkbox' value='samedi-S'
+                        [checked]="selectedTache ? selectedPeriods.indexOf('samedi-S') > -1 : false"
+                        (change)="handleChange($event);">
+                    </td>
+                    <td>
+                      <input type='checkbox' value='dimanche-S'
+                        [checked]="selectedTache ? selectedPeriods.indexOf('dimanche-S') > -1 : false"
+                        (change)="handleChange($event);">
+                    </td>
+                  </tr>
+                  <tr>
+                    <th scope="row">Nuit</th>
+                    <td>
+                      <input type='checkbox' value='lundi-N'
+                        [checked]="selectedTache ? selectedPeriods.indexOf('lundi-N') > -1 : false"
+                        (change)="handleChange($event);">
+                    </td>
+                    <td>
+                      <input type='checkbox' value='mardi-N'
+                        [checked]="selectedTache ? selectedPeriods.indexOf('mardi-N') > -1 : false"
+                        (change)="handleChange($event);">
+                    </td>
+                    <td>
+                      <input type='checkbox' value='mercredi-N'
+                        [checked]="selectedTache ? selectedPeriods.indexOf('mercredi-N') > -1 : false"
+                        (change)="handleChange($event);">
+                    </td>
+                    <td>
+                      <input type='checkbox' value='jeudi-N'
+                        [checked]="selectedTache ? selectedPeriods.indexOf('jeudi-N') > -1 : false"
+                        (change)="handleChange($event);">
+                    </td>
+                    <td>
+                      <input type='checkbox' value='vendredi-N'
+                        [checked]="selectedTache ? selectedPeriods.indexOf('vendredi-N') > -1 : false"
+                        (change)="handleChange($event);">
+                    </td>
+                    <td>
+                      <input type='checkbox' value='samedi-N'
+                        [checked]="selectedTache ? selectedPeriods.indexOf('samedi-N') > -1 : false"
+                        (change)="handleChange($event);">
+                    </td>
+                    <td>
+                      <input type='checkbox' value='dimanche-N'
+                        [checked]="selectedTache ? selectedPeriods.indexOf('dimanche-N') > -1 : false"
+                        (change)="handleChange($event);">
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+
+
+              <!-- Charge -->
+              <table class="table table-hover" *ngIf="chargeTableView">
+                <thead>
+                  <tr>
+                    <th scope="col">#</th>
+                    <th scope="col">Lun</th>
+                    <th scope="col">Mar</th>
+                    <th scope="col">Mer</th>
+                    <th scope="col">Jeu</th>
+                    <th scope="col">Ven</th>
+                    <th scope="col">Sam</th>
+                    <th scope="col">Dim</th>
+                    <th scope="col">total</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <th scope="row">Matin</th>
+                    <td>{{numberTaskByPeriod.get('lundi-M')}}</td>
+                    <td>{{numberTaskByPeriod.get('mardi-M')}}</td>
+                    <td>{{numberTaskByPeriod.get('mercredi-M')}}</td>
+                    <td>{{numberTaskByPeriod.get('jeudi-M')}}</td>
+                    <td>{{numberTaskByPeriod.get('vendredi-M')}}</td>
+                    <td>{{numberTaskByPeriod.get('samedi-M')}}</td>
+                    <td>{{numberTaskByPeriod.get('dimanche-M')}}</td>
+                    <td>{{numberTaskByPeriod.get('lundi-M')+numberTaskByPeriod.get('mardi-M')
+                      +numberTaskByPeriod.get('mercredi-M')+numberTaskByPeriod.get('jeudi-M')
+                      +numberTaskByPeriod.get('vendredi-M')+numberTaskByPeriod.get('samedi-M')
+                      +numberTaskByPeriod.get('dimanche-M')}}</td>
+                  </tr>
+                  <tr>
+                    <th scope="row">Soir</th>
+                    <td>{{numberTaskByPeriod.get('lundi-S')}}</td>
+                    <td>{{numberTaskByPeriod.get('mardi-S')}}</td>
+                    <td>{{numberTaskByPeriod.get('mercredi-S')}}</td>
+                    <td>{{numberTaskByPeriod.get('jeudi-S')}}</td>
+                    <td>{{numberTaskByPeriod.get('vendredi-S')}}</td>
+                    <td>{{numberTaskByPeriod.get('samedi-S')}}</td>
+                    <td>{{numberTaskByPeriod.get('dimanche-S')}}</td>
+                    <td>{{numberTaskByPeriod.get('lundi-S')+numberTaskByPeriod.get('mardi-S')
+                      +numberTaskByPeriod.get('mercredi-S')+numberTaskByPeriod.get('jeudi-S')
+                      +numberTaskByPeriod.get('vendredi-S')+numberTaskByPeriod.get('samedi-S')
+                      +numberTaskByPeriod.get('dimanche-S')}}</td>
+                  </tr>
+                  <tr>
+                    <th scope="row">Nuit</th>
+                    <td>{{numberTaskByPeriod.get('lundi-N')}}</td>
+                    <td>{{numberTaskByPeriod.get('mardi-N')}}</td>
+                    <td>{{numberTaskByPeriod.get('mercredi-N')}}</td>
+                    <td>{{numberTaskByPeriod.get('jeudi-N')}}</td>
+                    <td>{{numberTaskByPeriod.get('vendredi-N')}}</td>
+                    <td>{{numberTaskByPeriod.get('samedi-N')}}</td>
+                    <td>{{numberTaskByPeriod.get('dimanche-N')}}</td>
+                    <td>{{numberTaskByPeriod.get('lundi-N')+numberTaskByPeriod.get('mardi-N')
+                      +numberTaskByPeriod.get('mercredi-N')+numberTaskByPeriod.get('jeudi-N')
+                      +numberTaskByPeriod.get('vendredi-N')+numberTaskByPeriod.get('samedi-N')
+                      +numberTaskByPeriod.get('dimanche-N')}}</td>
+                  </tr>
+                  <tr>
+                    <th scope="row">total</th>
+                    <td>
+                      {{numberTaskByPeriod.get('lundi-M')+numberTaskByPeriod.get('lundi-S')+numberTaskByPeriod.get('lundi-N')}}
+                    </td>
+                    <td>
+                      {{numberTaskByPeriod.get('mardi-M')+numberTaskByPeriod.get('mardi-S')+numberTaskByPeriod.get('mardi-N')}}
+                    </td>
+                    <td>
+                      {{numberTaskByPeriod.get('mercredi-M')+numberTaskByPeriod.get('mercredi-S')+numberTaskByPeriod.get('mercredi-N')}}
+                    </td>
+                    <td>
+                      {{numberTaskByPeriod.get('jeudi-M')+numberTaskByPeriod.get('jeudi-S')+numberTaskByPeriod.get('jeudi-N')}}
+                    </td>
+                    <td>
+                      {{numberTaskByPeriod.get('vendredi-M')+numberTaskByPeriod.get('vendredi-S')+numberTaskByPeriod.get('vendredi-N')}}
+                    </td>
+                    <td>
+                      {{numberTaskByPeriod.get('samedi-M')+numberTaskByPeriod.get('samedi-S')+numberTaskByPeriod.get('samedi-N')}}
+                    </td>
+                    <td>
+                      {{numberTaskByPeriod.get('dimanche-M')+numberTaskByPeriod.get('dimanche-S')+numberTaskByPeriod.get('dimanche-N')}}
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+
+              <p-inputSwitch (onChange)="switchTableView($event);"></p-inputSwitch>
+              <p *ngIf="!chargeTableView">vue choix</p>
+              <p *ngIf="chargeTableView">vue charge</p>
+
+            </div>
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" (click)=resetSelectedPeriod()>Annuler</button>
+        <button (click)=changePeriods() type="button" class="btn btn-primary" data-dismiss="modal">Valider</button>
       </div>
     </div>
   </div>

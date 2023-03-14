@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import {MenuItem} from 'primeng/api';
+import { MenuItem } from 'primeng/api';
 
 
 @Component({
@@ -14,11 +14,11 @@ export class ChecklistTabmenuComponent implements OnInit {
 
   ngOnInit(): void {
     this.items2 = [
-      {label: 'tâches nok', icon: 'pi pi-fw pi-home',routerLink:'/checklistTachesNok'},
-      {label: 'historique', icon: 'pi pi-fw pi-calendar',routerLink:'/checklistHistorique'},
-      {label: 'afficher/modifier', icon: 'pi pi-fw pi-file',routerLink:'/checklistVoir'}
-  ];
-  
+      { label: 'tâches NOK', icon: 'pi pi-fw pi-times-circle', routerLink: '/checklistTachesNok' },
+      { label: 'historique des checklists', icon: 'pi pi-fw pi-copy', routerLink: '/checklistHistorique' },
+      { label: 'afficher/ajouter/modifier ', icon: 'pi pi-fw pi-file', routerLink: '/checklistVoir' }
+    ];
+
   }
 
 }

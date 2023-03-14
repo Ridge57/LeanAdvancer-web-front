@@ -8,11 +8,18 @@ import { TopNavigationComponent } from './top-navigation/top-navigation.componen
 import { TableModule } from 'primeng/table';
 import { ToolbarModule } from 'primeng/toolbar';
 import { SharedModule } from 'primeng/api';
-//import { CascadeSelectModule } from 'primeng/cascadeselect';
+import { DialogModule } from 'primeng/dialog';
+import { ConfirmDialogModule } from 'primeng/confirmdialog';
+import { CascadeSelectModule } from 'primeng/cascadeselect';
 import { MenuModule } from 'primeng/menu';
 import { CalendarModule } from 'primeng/calendar';
 import { TabMenuModule } from 'primeng/tabmenu';
+import { TagModule } from 'primeng/tag';
 import { InputSwitchModule } from 'primeng/inputswitch';
+import { SelectButtonModule } from 'primeng/selectbutton';
+import { AccordionModule } from 'primeng/accordion'
+import { ImageModule } from 'primeng/image';
+import { ButtonModule } from 'primeng/button';
 import { registerLocaleData } from '@angular/common';
 import localeFr from '@angular/common/locales/fr';
 registerLocaleData(localeFr, 'fr');
@@ -30,7 +37,6 @@ import { StandardAjouterComponent } from './standard-ajouter/standard-ajouter.co
 import { StandardVoirComponent } from './standard-voir/standard-voir.component';
 import { StandardRectifierComponent } from './standard-rectifier/standard-rectifier.component';
 import { FileUploadModule } from 'primeng/fileupload';
-import { AccordionModule } from 'primeng/accordion';
 import { SuggestionTabmenuComponent } from './suggestion-tabmenu/suggestion-tabmenu.component';
 import { SuggestionAtraiterComponent } from './suggestion-atraiter/suggestion-atraiter.component';
 import { SuggestionEncoursComponent } from './suggestion-encours/suggestion-encours.component';
@@ -82,8 +88,14 @@ import { GlobalVariablesService } from 'src/services/globalvar.service';
     ToolbarModule,
     SharedModule,
     InputSwitchModule,
+    ButtonModule,
     FormsModule,
-    //CascadeSelectModule,
+    DialogModule,
+    ConfirmDialogModule,
+    ImageModule,
+    CascadeSelectModule,
+    SelectButtonModule,
+    TagModule,
     ToastModule,
     ReactiveFormsModule,
     BrowserAnimationsModule,

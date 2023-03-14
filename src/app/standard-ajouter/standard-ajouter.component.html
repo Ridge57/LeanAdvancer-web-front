@@ -1,4 +1,3 @@
-
 <!-- Page Wrapper -->
 <div id="wrapper">
 
@@ -15,44 +14,193 @@
             <!-- Topbar -->
             <app-top-navigation></app-top-navigation>
             <!-- End of Topbar -->
-            <div class="container-fluid">
+            <div class="container-fluid col-sm-12 col-lg-10 mx-auto">
                 <!-- Page Heading -->
                 <div class="mb-4">
-                    <h3 class="h3 mb-0 text-gray-800">Gestion des standards | <small>ajouter un standard</small></h3>
+                    <h3 class="h3 mb-0 text-gray-800">Gestion des modes opératoires | <small>ajouter un mode
+                            opératoire</small></h3>
                 </div>
                 <app-standard-tabmenu></app-standard-tabmenu>
-    
-                <p-toast [style]="{marginTop: '130px'}"></p-toast>
-                <form class="card shadow">
-                    <div class="p-3 row">
-                        <div class="col">
-                            <form>
-                            <div class="mb-3 col-sm-6 row d-flex justify-content-around">
-                                <button type="button" class="btn btn-primary btn-sm col-sm-4 d-flex justify-content-around align-items-center" (click)="ajouter()"><i class="fas fa-plus-circle"></i>ajouter un standard</button>
-                                <button type="button" class="btn btn-warning btn-sm col-sm-3 d-flex justify-content-around align-items-center" *ngIf="step>0" (click)="annuler()"><i class="fas fa-save"></i>annuler</button>
-                                <button type="button" class="btn btn-success btn-sm col-sm-3 d-flex justify-content-around align-items-center" *ngIf="step>2" (click)="sauvegarder()"><i class="fas fa-undo"></i>sauvegarder</button>
+
+                <p-toast [style]="{marginTop: '20px'}"></p-toast>
+
+
+                <!-- debut ajout d'un nouvel SOP -->
+                <div class="card shadow">
+                    <form>
+                        <!-- bouttons nouveau | annuler | sauvegarder -->
+                        <div class="mx-3 my-3 row">
+                            <button *ngIf="!isTitleVisible" pButton pRipple label="Nouveau" icon="pi pi-plus-circle"
+                                class="p-button-primary mr-4" (click)="ajouter()"></button>
+                            <button *ngIf="isTitleVisible" pButton pRipple label="Annuler" icon="pi pi-trash"
+                                class="p-button-warning mr-4" (click)="annuler()"></button>
+                            <button *ngIf="etapes.length>0" pButton pRipple label="Sauvegarder" icon="pi pi-save"
+                                class="p-button-success" (click)="sauvegarder()"></button>
+                        </div>
+
+                        <!-- titre du mode opératoire | zone du mode opératoire -->
+                        <div class="row mx-3" *ngIf="isTitleVisible">
+                            <div class="form-group col-sm-6">
+                                <input type="text" class="form-control" pInputText
+                                    (input)="titleChange($event.target.value)" placeholder="titre du mode opératoire">
                             </div>
-                            <div class="form-group col-sm-6" *ngIf="step>0">
-                                <label>Titre du standard</label>
-                                <input type="text" class="form-control" (input)="titleChange($event.target.value)" placeholder="exemple : vérifier la pression du compresseur">
-                            </div>
-                            <div class="form-group col-sm-6" *ngIf="step>0">
-                                <label>Zone </label>
-                                <select class="form-control" (change)="zoneChange($event.target.value)">
-                                    <option disabled selected value class="font-italic"> -- selectionner une zone -- </option>
-                                    <option *ngFor='let zone of zones'value={{zone.idZone}}>{{zone.nomZone}}</option>
+                            <div class="form-group col-sm-6">
+                                <select class="form-control" (change)="zoneChange($event.target.value)"
+                                    [disabled]="titre.length===0">
+                                    <option disabled selected value class="font-italic"> -- selectionner une
+                                        zone -- </option>
+                                    <option *ngFor='let zone of zones' value={{zone.idZone}}>{{zone.nomZone}}
+                                    </option>
                                 </select>
                             </div>
-                            <div class="form-group input-group col-sm-6" *ngIf="step>1">
+                        </div>
+                    </form>
+                </div>
+
+                <!-- liste des étapes -->
+                <div class="card mt-2" *ngIf="isStepListVisible">
+                    <p-toolbar styleClass="mb-4">
+                        <ng-template pTemplate="left">
+                            <button pButton pRipple label="Ajouter une étape" icon="pi pi-plus"
+                                class="p-button-primary mx-2" (click)="openNew()"></button>
+                            <button pButton pRipple label="Supprimer" icon="pi pi-trash" class="p-button-danger"
+                                (click)="deleteSelectedEtapes()"
+                                [disabled]="!selectedEtapes || !selectedEtapes.length"></button>
+                        </ng-template>
+                    </p-toolbar>
+
+                    <p-table #dt [value]="etapes" [rows]="100" [(selection)]="selectedEtapes" [rowHover]="true"
+                        dataKey="id">
+
+                        <ng-template pTemplate="header">
+                            <tr>
+                                <th>
+                                    <p-tableHeaderCheckbox></p-tableHeaderCheckbox>
+                                </th>
+                                <th>Description</th>
+                                <th class="mx-auto">Média</th>
+                                <th></th>
+                            </tr>
+                        </ng-template>
+                        <ng-template pTemplate="body" let-etape>
+                            <tr>
+                                <td>
+                                    <p-tableCheckbox [value]="etape"></p-tableCheckbox>
+                                </td>
+                                <td>{{etape.description}}</td>
+                                <td>
+                                    <p-image *ngIf="etape.imgUrl" class="mx-auto" [src]="etape.imgUrl" alt="Image"
+                                        width="120" [preview]="true" class="shadow-4"></p-image>
+                                    <p-image *ngIf="etape.vidUrl" class="mx-auto" src="../../assets/img/video.jpg"
+                                        alt="video" width="120" (click)="showDisplayVideoDialog(etape)"></p-image>
+                                    <div *ngIf="!etape.vidUrl && !etape.imgUrl">
+                                        <i class="pi pi-minus" class="mx-auto"></i>
+                                    </div>
+                                </td>
+                                <td>
+                                    <button pButton pRipple icon="pi pi-pencil"
+                                        class="p-button-rounded p-button-primary mr-2"
+                                        (click)="editEtape(etape)"></button>
+                                    <button pButton pRipple icon="pi pi-trash" class="p-button-rounded p-button-warning"
+                                        (click)="deleteEtape(etape)"></button>
+                                </td>
+                            </tr>
+                        </ng-template>
+                        <ng-template pTemplate="summary">
+                            <div class="flex align-items-center justify-content-between">
+                                <!-- {{etapes ? etapes.length : 0 }} étapes. -->
+                                {{etapes.length}} {{etapes.length>1 ? 'étapes' : 'étape' }}
+                            </div>
+                        </ng-template>
+                    </p-table>
+                </div>
+
+
+                <!-- dialog ajout d'une nouvelle étape -->
+                <p-dialog [(visible)]="etapeDialog" [style]="{width: '450px'}" header="Etape {{etapes.length+1}}"
+                    [modal]="true" styleClass="p-fluid">
+                    <ng-template pTemplate="content">
+
+                        <!-- description -->
+                        <div class="form-group mt-2">
+                            <textarea class="form-control" id="exampleFormControlTextarea1" rows="3"
+                                [(ngModel)]="etape.description" placeholder="description"></textarea>
+                        </div>
+
+                        <!-- choix du media -->
+                        <p-selectButton class="my-2" [options]="mediaOptions" [(ngModel)]="selectedMedia"
+                            optionValue="value" optionLabel="icon" (onChange)="selectionMediaChange()">
+                            <ng-template let-item>
+                                <i [class]="item.icon"></i>
+                            </ng-template>
+                        </p-selectButton>
+
+
+                        <!-- integrer une image -->
+                        <span *ngIf="selectedMedia==='img'">
+                            <div class="input-group my-2">
+                                <div class="input-group-prepend">
+                                    <span class="input-group-text">optionnel</span>
+                                </div>
                                 <div class="custom-file">
-                                <input type="file" class="form-control custom-file-input" (change)="fileChange($event)">
-                                <label class="custom-file-label" >{{uploadedFile ? uploadedFile : 'choisir le fichier'}}</label>
+                                    <input type="file" accept="image/*" class="custom-file-input" id="uploadImg"
+                                        (change)="onUpload($event,'img')">
+                                    <label class="custom-file-label" for="uploadImg">{{etape.file ?
+                                        etape.file.name
+                                        : 'choisir une
+                                        photo'}}</label>
                                 </div>
                             </div>
-                            </form>
-                        </div>
-                    </div>
-                </form>
+                            <div class="d-flex justify-content-center" *ngIf="etape.imgUrl">
+                                <img [src]="etape.imgUrl" width="100%" alt="..." />
+                            </div>
+                        </span>
+
+                        <!-- intégrer une vidéo -->
+                        <span *ngIf="selectedMedia==='vid'">
+                            <div class="input-group my-2">
+                                <div class="input-group-prepend">
+                                    <span class="input-group-text">optionnel</span>
+                                </div>
+                                <div class="custom-file">
+                                    <input type="file" accept="video/*" class="custom-file-input" id="uploadVid"
+                                        (change)="onUpload($event,'vid')">
+
+                                    <label class="custom-file-label" for="uploadVid">{{etape.file ?
+                                        etape.file.name
+                                        : 'charger une
+                                        vidéo'}}</label>
+                                </div>
+                            </div>
+                            <div class="d-flex justify-content-center" *ngIf="etape.vidUrl">
+                                <video width="320" height="240">
+                                    <source [src]="etape.vidUrl" type="video/mp4">
+                                    Format non supporté (.mp4 uniquement).
+                                </video>
+                            </div>
+                        </span>
+                    </ng-template>
+
+                    <!-- cancel & save -->
+                    <ng-template pTemplate="footer">
+                        <button pButton pRipple label="Cancel" icon="pi pi-times" class="p-button-text"
+                            (click)="hideDialog()"></button>
+                        <button pButton pRipple label="Save" icon="pi pi-check" class="p-button-text"
+                            (click)="saveEtape()"></button>
+                    </ng-template>
+                </p-dialog>
+
+
+                <!-- confirmation dialog -->
+                <p-confirmDialog [style]="{width: '450px'}"></p-confirmDialog>
+
+                <!-- affichage de la vidéo -->
+                <p-dialog header="" [(visible)]="isDisplayVideoVisible" [style]="{width: '50vw'}">
+                    <video class="w-100" controls autoplay>
+                        <source [src]="etape ? etape.vidUrl : ''" type="video/mp4">
+                    </video>
+                    <p class="text-muted">{{etape ? etape.description : ''}}</p>
+                </p-dialog>
             </div>
         </div>
     </div>

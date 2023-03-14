@@ -2,35 +2,41 @@ import { Component, OnInit } from '@angular/core';
 import { ZoneService } from 'src/services/zone.service';
 import { ChecklistService } from 'src/services/checklist.service';
 import { FormBuilder, FormGroup } from '@angular/forms';
+import { ChangeDetectorRef } from '@angular/core';
+import { MessageService } from 'primeng/api';
+declare let $: any;
 
 @Component({
   selector: 'app-checklist-voir',
   templateUrl: './checklist-voir.component.html',
-  styleUrls: ['./checklist-voir.component.css']
+  styleUrls: ['./checklist-voir.component.css'],
+  providers: [MessageService]
 })
 export class ChecklistVoirComponent implements OnInit {
   isVisible: boolean
-  selectedTache: any = ""
+  selectedTache: any = undefined
   selectedTacheID: any
   selectedZoneID: any
   selectedZone: any
   newTitleForSelectedTache = ""
   newDescriptionForSelectedTache = ""
   tachesForSelectedZone: any
-  filteredTaches: any
+  filteredTaches: any = []
   imgChangedMap: Map<number, string> = new Map<number, string>(); //id tache, base64 img
   base64File: any = ""
   zones: any
   editMode: boolean = false
   selectedPeriods: string[] = [];
-  jours = ['lundi', 'mardi', 'mercredi', 'jeudi', 'vendredi', 'samedi', 'dimanche']
-  isFilteredByDays = false
-  equipes = ['matin', 'soir', 'nuit']
+  filteredPeriod = ""
+  periods = []
   numberTaskByPeriod = new Map<string, number>()
   formTache: FormGroup;
   chargeTableView: boolean = false;
   defaultImg = "src\assets\img\no-image.png"
-  constructor(private zoneService: ZoneService, private checklistService: ChecklistService, private formBuilder: FormBuilder) { }
+  initialValueOfChangePeriodModal: any
+  typeTache = ""
+  constructor(private zoneService: ZoneService, private checklistService: ChecklistService,
+    private formBuilder: FormBuilder, private changeDetectorRef: ChangeDetectorRef, private messageService: MessageService) { }
 
   ngOnInit(): void {
     this.defaultImg = "src\assets\img\no-image.png"
@@ -38,6 +44,81 @@ export class ChecklistVoirComponent implements OnInit {
     this.selectedZone = null
     this.getAllZones()
     this.initForm()
+    this.initPeriods()
+
+  }
+
+  filtrerLesTaches(e: any) {
+    console.log(e.value.code);
+    this.filteredTaches = []
+    for (const tache of this.tachesForSelectedZone) {
+      for (const period of tache.periods) {
+        if (period == e.value.code) {
+          this.filteredTaches.push(tache)
+        }
+      }
+    }
+
+  }
+  initPeriods() {
+    this.periods = [
+      {
+        jour: 'lundi',
+        equipe: [
+          { cname: 'lundi matin', code: 'lundi-M' },
+          { cname: 'lundi soir', code: 'lundi-S' },
+          { cname: 'lundi nuit', code: 'lundi-N' }
+        ]
+      },
+      {
+        jour: 'mardi',
+        equipe: [
+          { cname: 'mardi matin', code: 'mardi-M' },
+          { cname: 'mardi soir', code: 'mardi-S' },
+          { cname: 'mardi nuit', code: 'mardi-N' }
+        ]
+      },
+      {
+        jour: 'mercredi',
+        equipe: [
+          { cname: 'mercredi matin', code: 'mercredi-M' },
+          { cname: 'mercredi soir', code: 'mercredi-S' },
+          { cname: 'mercredi nuit', code: 'mercredi-N' }
+        ]
+      },
+      {
+        jour: 'jeudi',
+        equipe: [
+          { cname: 'jeudi matin', code: 'jeudi-M' },
+          { cname: 'jeudi soir', code: 'jeudi-S' },
+          { cname: 'jeudi nuit', code: 'jeudi-N' }
+        ]
+      },
+      {
+        jour: 'vendredi',
+        equipe: [
+          { cname: 'vendredi matin', code: 'vendredi-M' },
+          { cname: 'vendredi soir', code: 'vendredi-S' },
+          { cname: 'vendredi nuit', code: 'vendredi-N' }
+        ]
+      },
+      {
+        jour: 'samedi',
+        equipe: [
+          { cname: 'samedi matin', code: 'samedi-M' },
+          { cname: 'samedi soir', code: 'samedi-S' },
+          { cname: 'samedi nuit', code: 'samedi-N' }
+        ]
+      },
+      {
+        jour: 'dimanche',
+        equipe: [
+          { cname: 'dimanche matin', code: 'dimanche-M' },
+          { cname: 'dimanche soir', code: 'dimanche-S' },
+          { cname: 'dimanche nuit', code: 'dimanche-N' }
+        ]
+      }
+    ]
   }
   setVisible(id: any) {
     this.selectedZoneID = id
@@ -50,7 +131,6 @@ export class ChecklistVoirComponent implements OnInit {
       i++
     }
     this.isVisible = true
-    //this.formTache.controls['zone']['idZone'].setValue(this.selectedZoneID)
     this.formTache.get('zone.idZone').setValue(this.selectedZoneID)
     this.getTachesByZone(this.selectedZone)
   }
@@ -64,6 +144,44 @@ export class ChecklistVoirComponent implements OnInit {
     }
   }
 
+  openChangePeriodsTacheModal() {
+    this.selectedPeriods = this.selectedTache.periods
+    $('#changePeriodsTacheModal').modal('show');
+  }
+
+  resetSelectedPeriod() {
+    this.selectedPeriods = []
+    this.setInitialValue()
+    $('#changePeriodsTacheModal').modal('hide');
+  }
+
+  setInitialValue() {
+    this.chargeTableView = true
+    this.changeDetectorRef.detectChanges();
+    this.chargeTableView = false
+  }
+
+  changePeriods() {
+    this.selectedTache.periods = this.selectedPeriods
+    this.changeDetectorRef.detectChanges();
+  }
+
+  resetAjoutIrrForm() {
+    this.formTache.reset()
+    this.initForm()
+    this.formTache.get('zone.idZone').setValue(this.selectedZoneID)
+    this.selectedPeriods = []
+    this.base64File = ""
+    this.typeTache = ""
+    this.setInitialValue()
+    $('#ajoutTacheModal').modal('hide');
+  }
+
+  setTypeTache(type: any) {
+    this.typeTache = type
+  }
+
+
   switchTableView(e: any) {
     this.chargeTableView = e.checked
   }
@@ -73,6 +191,7 @@ export class ChecklistVoirComponent implements OnInit {
       titre: '',
       description: '',
       photo: '',
+      type: '',
       zone: this.formBuilder.group({
         idZone: '',
       }),
@@ -80,22 +199,7 @@ export class ChecklistVoirComponent implements OnInit {
     });
   }
 
-  filtrerTachesEquipes(e: any) {
-    console.log(e);
 
-
-  }
-
-  filtrerTachesJours(e: any) {
-    console.log(e);
-    for (const tache of this.tachesForSelectedZone) {
-      for (const period of tache.periods) {
-
-      }
-    }
-    this.isFilteredByDays = true
-
-  }
 
   async setNewImageForNewTache(event: any) {
     this.base64File = await this.toBase64(event.target.files[0])
@@ -103,10 +207,27 @@ export class ChecklistVoirComponent implements OnInit {
   }
 
   addNewTask() {
-    this.formTache.get('periods').setValue(this.selectedPeriods)
-    this.checklistService.addNewTask(this.formTache.value).subscribe(() => {
-      this.getTachesByZone(this.selectedZone)
-    })
+
+    console.log(this.formTache.get('titre'));
+    if (!(this.formTache.get('titre').value.length > 0)) {
+      this.messageService.add({ severity: 'warn', summary: 'saisie obligatoire : ', detail: "titre" });
+    } else if (!(this.formTache.get('description').value.length > 0)) {
+      this.messageService.add({ severity: 'warn', summary: 'saisie obligatoire : ', detail: "description" });
+    } else if (!(this.typeTache.length > 0)) {
+      this.messageService.add({ severity: 'warn', summary: 'saisie obligatoire : ', detail: "type" });
+    } else if (!(this.selectedPeriods.length > 0)) {
+      this.messageService.add({ severity: 'warn', summary: 'saisie obligatoire : ', detail: "periodicité" });
+    } else {
+      this.formTache.get('periods').setValue(this.selectedPeriods)
+      this.formTache.get('type').setValue(this.typeTache)
+      this.formTache.get('photo').setValue("")
+      this.checklistService.addNewTask(this.formTache.value).subscribe(() => {
+        this.getTachesByZone(this.selectedZone)
+        this.messageService.add({ severity: 'success', summary: 'suvegardé ' });
+        this.resetAjoutIrrForm()
+      })
+    }
+
   }
   getAllZones() {
     this.zoneService.getAllZones().subscribe((data) => {
@@ -162,6 +283,7 @@ export class ChecklistVoirComponent implements OnInit {
     this.editMode = true
     //this.editModeGlobal=true
     this.selectedTache = tache
+    this.selectedPeriods = tache.periods
     this.selectedTacheID = tache.idTache
     this.newTitleForSelectedTache = tache.titre
     this.newDescriptionForSelectedTache = tache.description
@@ -181,6 +303,7 @@ export class ChecklistVoirComponent implements OnInit {
     this.selectedTacheID = ""
     this.newTitleForSelectedTache = ""
     this.newDescriptionForSelectedTache = ""
+    this.typeTache = ""
   }
 
   setNewDescription(val: any) {
@@ -210,19 +333,22 @@ export class ChecklistVoirComponent implements OnInit {
 
     this.selectedTache.titre = this.newTitleForSelectedTache
     this.selectedTache.description = this.newDescriptionForSelectedTache
+    if (this.typeTache.length > 0) {
+      this.selectedTache.type = this.typeTache
+    }
     this.checklistService.saveTache(this.selectedTache).subscribe(() => {
       this.getTachesByZone(this.selectedZone)
     })
 
     /*enregistrement de la nouvelle image*/
-    const convMap = {};
-    this.imgChangedMap.forEach((val: string, key: number) => {
-      convMap[key] = val;
-    });
-    this.checklistService.updateImageForTask(convMap).subscribe(() => {
-      this.imgChangedMap.clear()
-      this.getTachesByZone(this.selectedZone)
-    })
+    // const convMap = {};
+    // this.imgChangedMap.forEach((val: string, key: number) => {
+    //   convMap[key] = val;
+    // });
+    // this.checklistService.updateImageForTask(convMap).subscribe(() => {
+    //   this.imgChangedMap.clear()
+    //   this.getTachesByZone(this.selectedZone)
+    // })
     this.editMode = false
   }
 
