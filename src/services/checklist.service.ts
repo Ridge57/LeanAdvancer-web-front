@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { HostService } from 'src/services/host.service';
 
 @Injectable({
@@ -7,62 +7,76 @@ import { HostService } from 'src/services/host.service';
 })
 export class ChecklistService {
 
-  constructor(private http : HttpClient,private hostServ:HostService) { }
+  constructor(private http: HttpClient, private hostServ: HostService) { }
 
-  getCheckList(zone:any){
-    return this.http.post(this.hostServ.host+"/tachesByZone",zone)
-  }
-  
-  saveCheckList(zone, checklistCompleted:any){
-    return this.http.post(this.hostServ.host+"/addHistoriqTache/"+zone,checklistCompleted)
+  getCheckList(zone: any) {
+    const headers = new HttpHeaders().set("Authorization", "Bearer " + localStorage.getItem("accessToken"))
+    return this.http.post(this.hostServ.host + "/tachesByZone", zone, { headers })
   }
 
-  getAllHistoriqCheckList(){
-    return this.http.get(this.hostServ.host+"/getAllHistoriqChecklist")
+  saveCheckList(zone, checklistCompleted: any) {
+    const headers = new HttpHeaders().set("Authorization", "Bearer " + localStorage.getItem("accessToken"))
+    return this.http.post(this.hostServ.host + "/addHistoriqTache/" + zone, checklistCompleted, { headers })
   }
 
-  getNombreTachesATraiter(){
-    return this.http.get(this.hostServ.host+"/getNombreTachesATraiter")
+  getAllHistoriqCheckList() {
+    const headers = new HttpHeaders().set("Authorization", "Bearer " + localStorage.getItem("accessToken"))
+    return this.http.get(this.hostServ.host + "/getAllHistoriqChecklist", { headers })
   }
 
-  getTachesATraiter(){
-    return this.http.get(this.hostServ.host+"/getTachesATraiter")
+  getNombreTachesATraiter() {
+    const headers = new HttpHeaders().set("Authorization", "Bearer " + localStorage.getItem("accessToken"))
+    return this.http.get(this.hostServ.host + "/getNombreTachesATraiter", { headers })
   }
 
-  getHistoriqTachesByHistoriqChecklist(historiqChecklist:any){
-    return this.http.post(this.hostServ.host+"/getHistoriqTachesByHistoriqChecklist",historiqChecklist)
+  getTachesATraiter() {
+    const headers = new HttpHeaders().set("Authorization", "Bearer " + localStorage.getItem("accessToken"))
+    return this.http.get(this.hostServ.host + "/getTachesATraiter", { headers })
   }
 
-  getTachesByZone(zone){
-    return this.http.post(this.hostServ.host+"/tachesByZone",zone)
+  getHistoriqTachesByHistoriqChecklist(historiqChecklist: any) {
+    const headers = new HttpHeaders().set("Authorization", "Bearer " + localStorage.getItem("accessToken"))
+    return this.http.post(this.hostServ.host + "/getHistoriqTachesByHistoriqChecklist", historiqChecklist, { headers })
   }
 
-  saveTache(tache){
-    return this.http.post(this.hostServ.host+"/saveTache",tache)
+  getTachesByZone(zone) {
+    const headers = new HttpHeaders().set("Authorization", "Bearer " + localStorage.getItem("accessToken"))
+    return this.http.post(this.hostServ.host + "/tachesByZone", zone, { headers })
   }
 
-  updateImageForTask(map){
-    return this.http.post(this.hostServ.host+"/updateImageForTask",map)
+  saveTache(tache) {
+    const headers = new HttpHeaders().set("Authorization", "Bearer " + localStorage.getItem("accessToken"))
+    return this.http.post(this.hostServ.host + "/saveTache", tache, { headers })
   }
 
-  manyTachesToDelete(tachesToDeleteTab:any){
-    return this.http.post(this.hostServ.host+"/manyTachesToDelete",tachesToDeleteTab)
+  updateImageForTask(map) {
+    const headers = new HttpHeaders().set("Authorization", "Bearer " + localStorage.getItem("accessToken"))
+    return this.http.post(this.hostServ.host + "/updateImageForTask", map, { headers })
   }
 
-  deleteTache(idTache:any){
-    return this.http.delete(this.hostServ.host+"/deleteTache/"+idTache)
+  manyTachesToDelete(tachesToDeleteTab: any) {
+    const headers = new HttpHeaders().set("Authorization", "Bearer " + localStorage.getItem("accessToken"))
+    return this.http.post(this.hostServ.host + "/manyTachesToDelete", tachesToDeleteTab, { headers })
   }
 
-  addNewTask(task:any){
-    return this.http.post(this.hostServ.host+"/addNewTask",task)
+  deleteTache(idTache: any) {
+    const headers = new HttpHeaders().set("Authorization", "Bearer " + localStorage.getItem("accessToken"))
+    return this.http.delete(this.hostServ.host + "/deleteTache/" + idTache, { headers })
   }
 
-  getTraitementTachesStatusAtraiterEtSolde(){
-    return this.http.get(this.hostServ.host+"/getTraitementTachesStatusAtraiterEtSolde")
+  addNewTask(task: any) {
+    const headers = new HttpHeaders().set("Authorization", "Bearer " + localStorage.getItem("accessToken"))
+    return this.http.post(this.hostServ.host + "/addNewTask", task, { headers })
   }
 
-  updateHistoriqTache(HistoriqTache:any){
-    return this.http.post(this.hostServ.host+"/updateHistoriqTache",HistoriqTache)
+  getTraitementTachesStatusAtraiterEtSolde() {
+    const headers = new HttpHeaders().set("Authorization", "Bearer " + localStorage.getItem("accessToken"))
+    return this.http.get(this.hostServ.host + "/getTraitementTachesStatusAtraiterEtSolde", { headers })
   }
-  
+
+  updateHistoriqTache(HistoriqTache: any) {
+    const headers = new HttpHeaders().set("Authorization", "Bearer " + localStorage.getItem("accessToken"))
+    return this.http.post(this.hostServ.host + "/updateHistoriqTache", HistoriqTache, { headers })
+  }
+
 }

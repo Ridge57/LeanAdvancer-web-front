@@ -3,6 +3,7 @@ import { SortEvent, MessageService } from 'primeng/api';
 import { IrritantService } from 'src/services/irritant.service';
 import { UserService } from 'src/services/user.service';
 import { FormBuilder, FormGroup } from '@angular/forms'
+import { Router } from '@angular/router';
 declare let $: any;
 
 @Component({
@@ -39,7 +40,12 @@ export class IrritantsComponent implements OnInit {
 
 
   constructor(private irritantService: IrritantService,
-    private userService: UserService, private formBuilder: FormBuilder, private messageService: MessageService) { }
+    private userService: UserService, private formBuilder: FormBuilder,
+    private messageService: MessageService, private router: Router) {
+    if (localStorage.getItem("accessToken") == null) {
+      this.router.navigate(['/home'])
+    }
+  }
 
   ngOnInit(): void {
     this.initialization()
@@ -155,7 +161,6 @@ export class IrritantsComponent implements OnInit {
     this.irritantFilterForm.get('idUser').setValue(this.selectedUser.idUser)
     this.irritantFilterForm.get('dateDebut').setValue(this.rangeDatesFilter.value[0])
     this.irritantFilterForm.get('dateFin').setValue(this.rangeDatesFilter.value[1])
-    console.log(this.irritantFilterForm.value);
     this.irritantService.filtrerIrritants(this.irritantFilterForm.value).subscribe((data) => {
       this.irritants = data
       $("#filtrerModal").modal("hide");

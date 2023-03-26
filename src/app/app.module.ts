@@ -47,7 +47,6 @@ import { UsersComponent } from './users/users.component';
 import { PersonnaliserComponent } from './personnaliser/personnaliser.component';
 import { HttpClientModule, HttpClientJsonpModule } from '@angular/common/http';
 import { ConnexionComponent } from './connexion/connexion.component';
-import { GlobalVariablesService } from 'src/services/globalvar.service';
 
 
 
@@ -105,8 +104,7 @@ import { GlobalVariablesService } from 'src/services/globalvar.service';
   ],
   providers: [
     { provide: LOCALE_ID, useValue: 'fr' },
-    Location, { provide: LocationStrategy, useClass: PathLocationStrategy },
-    GlobalVariablesService
+    Location, { provide: LocationStrategy, useClass: PathLocationStrategy }
   ],
   bootstrap: [AppComponent]
 })

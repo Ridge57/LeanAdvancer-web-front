@@ -5,6 +5,7 @@ import { StandardService } from 'src/services/standard.service';
 import { FormArray, FormBuilder, FormGroup } from '@angular/forms';
 import { Etape } from './etape';
 import { DomSanitizer } from '@angular/platform-browser';
+import { Router } from '@angular/router';
 
 
 @Component({
@@ -36,7 +37,12 @@ export class StandardAjouterComponent implements OnInit {
 
   submitted: boolean;
   constructor(private sanitizer: DomSanitizer, private zoneService: ZoneService, private standardService: StandardService,
-    private confirmationService: ConfirmationService, private messageService: MessageService) { }
+    private confirmationService: ConfirmationService,
+    private messageService: MessageService, private router: Router) {
+    if (localStorage.getItem("accessToken") == null) {
+      this.router.navigate(['/home'])
+    }
+  }
 
 
   ngOnInit(): void {

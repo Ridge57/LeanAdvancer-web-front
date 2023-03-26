@@ -7,22 +7,22 @@ import { HostService } from 'src/services/host.service';
 })
 export class UserService {
 
-  constructor(private http:HttpClient,private hostServ:HostService) { }
+  constructor(private http: HttpClient, private hostServ: HostService) { }
 
-  saveUser(user:any){
-    return this.http.post(this.hostServ.host+"/saveUser",user)
+  saveUser(user: any) {
+    return this.http.post(this.hostServ.host + "/saveUser", user)
   }
 
-  getAllUsers():any{
-    return this.http.get(this.hostServ.host+"/getAllUsers")
+  getAllUsers(): any {
+    return this.http.get(this.hostServ.host + "/getAllUsers")
   }
 
-  deleteUser(id:number){
-    return this.http.delete(this.hostServ.host+"/deleteUser/"+id)
+  deleteUser(id: number) {
+    return this.http.delete(this.hostServ.host + "/deleteUser/" + id)
   }
 
-  connexion(privateKey:any){
-    return this.http.get(this.hostServ.host+"/connexion/"+privateKey)
+  authenticate(authRequest: any) {
+    return this.http.post(this.hostServ.host + "/authenticate", authRequest)
   }
-  
+
 }

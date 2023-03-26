@@ -4,6 +4,7 @@ import { ChecklistService } from 'src/services/checklist.service';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { ChangeDetectorRef } from '@angular/core';
 import { MessageService } from 'primeng/api';
+import { Router } from '@angular/router';
 declare let $: any;
 
 @Component({
@@ -36,7 +37,12 @@ export class ChecklistVoirComponent implements OnInit {
   initialValueOfChangePeriodModal: any
   typeTache = ""
   constructor(private zoneService: ZoneService, private checklistService: ChecklistService,
-    private formBuilder: FormBuilder, private changeDetectorRef: ChangeDetectorRef, private messageService: MessageService) { }
+    private formBuilder: FormBuilder, private changeDetectorRef: ChangeDetectorRef,
+    private messageService: MessageService, private router: Router) {
+    if (localStorage.getItem("accessToken") == null) {
+      this.router.navigate(['/home'])
+    }
+  }
 
   ngOnInit(): void {
     this.defaultImg = "src\assets\img\no-image.png"
@@ -49,7 +55,6 @@ export class ChecklistVoirComponent implements OnInit {
   }
 
   filtrerLesTaches(e: any) {
-    console.log(e.value.code);
     this.filteredTaches = []
     for (const tache of this.tachesForSelectedZone) {
       for (const period of tache.periods) {
@@ -207,8 +212,6 @@ export class ChecklistVoirComponent implements OnInit {
   }
 
   addNewTask() {
-
-    console.log(this.formTache.get('titre'));
     if (!(this.formTache.get('titre').value.length > 0)) {
       this.messageService.add({ severity: 'warn', summary: 'saisie obligatoire : ', detail: "titre" });
     } else if (!(this.formTache.get('description').value.length > 0)) {

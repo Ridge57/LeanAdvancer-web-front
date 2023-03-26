@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup } from '@angular/forms';
+import { Router } from '@angular/router';
 import { SortEvent } from 'primeng/api';
 import { StandardService } from 'src/services/standard.service';
 import { ZoneService } from 'src/services/zone.service';
@@ -10,7 +11,7 @@ import { ZoneService } from 'src/services/zone.service';
   styleUrls: ['./standard-voir.component.css']
 })
 export class StandardVoirComponent implements OnInit {
-    cars1: any[];
+  cars1: any[];
   cols: any[]
   zones: any
   standards: any
@@ -19,7 +20,12 @@ export class StandardVoirComponent implements OnInit {
   formStd: FormGroup
   uploadedFile: any
   base64File: any
-  constructor(private standardService: StandardService, private formBuilder: FormBuilder, private zoneService: ZoneService) { }
+  constructor(private standardService: StandardService,
+    private formBuilder: FormBuilder, private zoneService: ZoneService, private router: Router) {
+    if (localStorage.getItem("accessToken") == null) {
+      this.router.navigate(['/home'])
+    }
+  }
 
   ngOnInit(): void {
     this.getAllStandards()

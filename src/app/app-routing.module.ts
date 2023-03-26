@@ -19,7 +19,7 @@ import { PersonnaliserComponent } from './personnaliser/personnaliser.component'
 
 
 const routes: Routes = [
-  { path: 'connexion', component: ConnexionComponent },
+  { path: 'home', component: ConnexionComponent },
   { path: '', component: ConnexionComponent },
   { path: 'dashboard', component: DashboardComponent },
   { path: 'checklistTachesNok', component: ChecklistTachesnokComponent },

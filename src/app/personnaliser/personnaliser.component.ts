@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-personnaliser',
@@ -8,13 +9,17 @@ import { Component, OnInit } from '@angular/core';
 export class PersonnaliserComponent implements OnInit {
   uploadedFile: any;
 
-  constructor() { }
+  constructor(private router: Router) {
+    if (localStorage.getItem("accessToken") == null) {
+      this.router.navigate(['/home'])
+    }
+  }
 
   ngOnInit(): void {
   }
 
-  fileChange(event:any){  
-    this.uploadedFile=event.target.value 
+  fileChange(event: any) {
+    this.uploadedFile = event.target.value
   }
 
 }

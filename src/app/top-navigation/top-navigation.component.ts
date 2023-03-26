@@ -1,6 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { GlobalVariablesService } from 'src/services/globalvar.service';
-import {Router} from "@angular/router"
+import { Router } from "@angular/router"
 import { Location } from '@angular/common';
 
 @Component({
@@ -9,16 +8,16 @@ import { Location } from '@angular/common';
   styleUrls: ['./top-navigation.component.css']
 })
 export class TopNavigationComponent implements OnInit {
-
-  constructor(public globalvarService : GlobalVariablesService,private router: Router,
-    private location: Location) { }
+  organisation: string
+  constructor(private router: Router) { }
 
   ngOnInit(): void {
+    this.organisation = localStorage.getItem("organisation")
   }
 
-  logOut(){
-    this.globalvarService.setCompany(null)
-    this.location.replaceState('/')
-    this.router.navigate(['/connexion'])
+  logOut() {
+    localStorage.removeItem("accessToken")
+    localStorage.removeItem('organisation')
+    this.router.navigate(['/home'])
   }
 }

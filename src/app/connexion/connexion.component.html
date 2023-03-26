@@ -1,4 +1,3 @@
-
 <!-- Page Wrapper -->
 <div id="wrapper" style="background-color: white;">
 
@@ -18,31 +17,35 @@
 
             <!-- Topbar -->
             <span class="wrapper">
-            <app-top-navigation class="pointer"></app-top-navigation>
+                <app-top-navigation class="pointer"></app-top-navigation>
             </span>
             <!-- End of Topbar -->
             <div class="container-fluid mb-4" class="d-flex justify-content-center">
-                <form class="col-sm-6">
+                <form class="col-sm-6" [formGroup]="authRequest" (ngSubmit)="connexion()">
                     <div class="d-flex justify-content-center">
                         <h4 class="mb-3">CONNEXION</h4>
                     </div>
                     <div class="mb-3">
-                      <input class="form-control" placeholder="Clé de connexion" (input)=keyInput($event)>
+                        <input type="text" formControlName="username" class="form-control" placeholder="Organisation">
+                    </div>
+                    <div class="mb-3">
+                        <input type="password" formControlName="privateKey" class="form-control"
+                            placeholder="Clé de connexion">
                     </div>
                     <div class="d-flex justify-content-center">
-                        <button type="submit" class="btn btn-outline-primary mb-4" (click)=connexion()>Se connecter</button>
+                        <button type="submit" class="btn btn-outline-primary mb-4">Se connecter</button>
                     </div>
-                    
+
                     <div class="alert alert-danger" role="alert" *ngIf="falseKEY">
                         Clé saisie invalide
                     </div>
-                  </form>
+                </form>
             </div>
             <div class="d-flex align-items-center justify-content-center">
-                    <img src="../../assets/img/logo.PNG" class="rounded" alt="..." width="180px"><br/>
-                    <div class="mx-1 text-info" style="font-size: 49px;">LeanFoundations</div>
+                <img src="../../assets/img/logo.PNG" class="rounded" alt="..." width="180px"><br />
+                <div class="mx-1 text-info" style="font-size: 49px;">LeanFoundations</div>
             </div>
-            
+
         </div>
     </div>
 </div>

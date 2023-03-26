@@ -1,8 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { UserService } from 'src/services/user.service';
-import { GlobalVariablesService } from 'src/services/globalvar.service';
-import {Router} from "@angular/router"
-import { Location } from '@angular/common';
+import { FormBuilder } from '@angular/forms';
+import { Router } from '@angular/router';
 
 
 @Component({
@@ -11,29 +10,31 @@ import { Location } from '@angular/common';
   styleUrls: ['./connexion.component.css']
 })
 export class ConnexionComponent implements OnInit {
-  privateKey : any
-  falseKEY : boolean =false
-  constructor(private userService : UserService,private router: Router,
-    private location: Location,private globalvarService : GlobalVariablesService) { }
+  falseKEY: boolean = false
+  authRequest: any
+  constructor(private userService: UserService, private router: Router,
+    private formBuilder: FormBuilder) {
 
-  ngOnInit(): void {
   }
 
-  connexion(){
-    this.userService.connexion(this.privateKey).subscribe((data)=>{
-     if(data != null) {
-      this.globalvarService.setCompany(data)
-      this.location.replaceState('/')
-      this.router.navigate(['/dashboard'])
-     } else {
-       this.falseKEY=true
-     }
-     
+  ngOnInit(): void {
+    this.authRequest = this.formBuilder.group({
+      username: this.formBuilder.control(""),
+      privateKey: this.formBuilder.control(""),
     })
   }
 
-  keyInput(e:any){
-    this.privateKey = e.srcElement.value
+  connexion() {
+    this.userService.authenticate(this.authRequest.value).subscribe((data: any) => {
+      if (data != null) {
+        localStorage.setItem('accessToken', data.jwtAccessToken);
+        localStorage.setItem('organisation', data.organisation);
+        this.router.navigate(['/dashboard'])
+      } else {
+        this.falseKEY = true
+      }
+
+    })
   }
 
 }
