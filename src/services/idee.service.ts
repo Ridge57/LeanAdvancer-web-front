@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { HostService } from 'src/services/host.service';
 
 @Injectable({
@@ -8,51 +8,63 @@ import { HostService } from 'src/services/host.service';
 export class IdeeService {
 
 
-  constructor(private http:HttpClient,private hostServ:HostService) { }
+  constructor(private http: HttpClient, private hostServ: HostService) { }
 
-  addIdee(idee:any):any{
-    return this.http.post(this.hostServ.host+"/addIdee",idee)
-  }
-
-  getLast():any{
-    return this.http.get(this.hostServ.host+"/derniereIdee")
+  addIdee(idee: any): any {
+    const headers = new HttpHeaders().set("Authorization", "Bearer " + localStorage.getItem("accessToken"))
+    return this.http.post(this.hostServ.host + "/addIdee", idee, { headers })
   }
 
-  getAll():any{
-    return this.http.get(this.hostServ.host+"/idees")
-  }
-  findIdee(SearchParam:any):any{
-    return this.http.post(this.hostServ.host+"/findIdee",SearchParam)
+  getLast(): any {
+    const headers = new HttpHeaders().set("Authorization", "Bearer " + localStorage.getItem("accessToken"))
+    return this.http.get(this.hostServ.host + "/derniereIdee", { headers })
   }
 
-  getTotalToday():any{
-    return this.http.get(this.hostServ.host+"/getTotalTodayIdee")
+  getAll(): any {
+    const headers = new HttpHeaders().set("Authorization", "Bearer " + localStorage.getItem("accessToken"))
+    return this.http.get(this.hostServ.host + "/idees", { headers })
+  }
+  findIdee(SearchParam: any): any {
+    const headers = new HttpHeaders().set("Authorization", "Bearer " + localStorage.getItem("accessToken"))
+    return this.http.post(this.hostServ.host + "/findIdee", SearchParam, { headers })
   }
 
-  getSuggestionsProcessingRate():any{
-    return this.http.get(this.hostServ.host+"/getSuggestionsProcessingRate")
+  getTotalToday(): any {
+    const headers = new HttpHeaders().set("Authorization", "Bearer " + localStorage.getItem("accessToken"))
+    return this.http.get(this.hostServ.host + "/getTotalTodayIdee", { headers })
   }
 
-  getNbreIdeesParMois(year:number){
-    return this.http.get(this.hostServ.host+"/getNbreIdeesParMois/"+year)
-  }
-  
-  getIdeesCurrentYear(year:number){
-    return this.http.get(this.hostServ.host+"/getIdeesCurrentYear/"+year)
-  }
-  findIdeasByStatus(status:any):any{
-    return this.http.post(this.hostServ.host+"/findIdeasByStatus",status)
+  getSuggestionsProcessingRate(): any {
+    const headers = new HttpHeaders().set("Authorization", "Bearer " + localStorage.getItem("accessToken"))
+    return this.http.get(this.hostServ.host + "/getSuggestionsProcessingRate", { headers })
   }
 
-  getIdeaStatusList():any{
-    return this.http.get(this.hostServ.host+"/getIdeaStatusList")
+  getNbreIdeesParMois(year: number) {
+    const headers = new HttpHeaders().set("Authorization", "Bearer " + localStorage.getItem("accessToken"))
+    return this.http.get(this.hostServ.host + "/getNbreIdeesParMois/" + year, { headers })
   }
 
-  getClosedIdeas():any {
-     return this.http.get(this.hostServ.host+"/getClosedIdeas")
+  getIdeesCurrentYear(year: number) {
+    const headers = new HttpHeaders().set("Authorization", "Bearer " + localStorage.getItem("accessToken"))
+    return this.http.get(this.hostServ.host + "/getIdeesCurrentYear/" + year, { headers })
   }
- 
-  updateIdeeStatus(idee:any):any{
-    return this.http.post(this.hostServ.host+"/updateIdeeStatus",idee)
+  findIdeasByStatus(status: any): any {
+    const headers = new HttpHeaders().set("Authorization", "Bearer " + localStorage.getItem("accessToken"))
+    return this.http.post(this.hostServ.host + "/findIdeasByStatus", status, { headers })
+  }
+
+  getIdeaStatusList(): any {
+    const headers = new HttpHeaders().set("Authorization", "Bearer " + localStorage.getItem("accessToken"))
+    return this.http.get(this.hostServ.host + "/getIdeaStatusList", { headers })
+  }
+
+  getClosedIdeas(): any {
+    const headers = new HttpHeaders().set("Authorization", "Bearer " + localStorage.getItem("accessToken"))
+    return this.http.get(this.hostServ.host + "/getClosedIdeas", { headers })
+  }
+
+  updateIdeeStatus(idee: any): any {
+    const headers = new HttpHeaders().set("Authorization", "Bearer " + localStorage.getItem("accessToken"))
+    return this.http.post(this.hostServ.host + "/updateIdeeStatus", idee, { headers })
   }
 }

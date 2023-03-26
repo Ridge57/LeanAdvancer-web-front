@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { HostService } from 'src/services/host.service';
 
 @Injectable({
@@ -10,73 +10,91 @@ export class IrritantService {
   constructor(private http: HttpClient, private hostServ: HostService) { }
 
   addIrritant(irr: any): any {
-    return this.http.post(this.hostServ.host + "/Irritant", irr)
+    const headers = new HttpHeaders().set("Authorization", "Bearer " + localStorage.getItem("accessToken"))
+    return this.http.post(this.hostServ.host + "/Irritant", irr, { headers })
   }
 
   getAll() {
-    return this.http.get(this.hostServ.host + "/irritants")
+    const headers = new HttpHeaders().set("Authorization", "Bearer " + localStorage.getItem("accessToken"))
+    return this.http.get(this.hostServ.host + "/irritants", { headers })
   }
 
   findByStatus(status: any): any {
-    return this.http.post(this.hostServ.host + "/findByStatus", status)
+    const headers = new HttpHeaders().set("Authorization", "Bearer " + localStorage.getItem("accessToken"))
+    return this.http.post(this.hostServ.host + "/findByStatus", status, { headers })
   }
 
   getIrritantsCurrentYear(year: number) {
-    return this.http.get(this.hostServ.host + "/getIrritantsCurrentYear/" + year)
+    const headers = new HttpHeaders().set("Authorization", "Bearer " + localStorage.getItem("accessToken"))
+    return this.http.get(this.hostServ.host + "/getIrritantsCurrentYear/" + year, { headers })
   }
 
   findIrritant(SearchParam: any): any {
-    return this.http.post(this.hostServ.host + "/findIrritant", SearchParam)
+    const headers = new HttpHeaders().set("Authorization", "Bearer " + localStorage.getItem("accessToken"))
+    return this.http.post(this.hostServ.host + "/findIrritant", SearchParam, { headers })
   }
 
   filtrerIrritants(SearchParam: any): any {
-    return this.http.post(this.hostServ.host + "/filtrerIrritants", SearchParam)
+    const headers = new HttpHeaders().set("Authorization", "Bearer " + localStorage.getItem("accessToken"))
+    return this.http.post(this.hostServ.host + "/filtrerIrritants", SearchParam), { headers }
   }
 
   getZones(): any {
-    return this.http.get(this.hostServ.host + "/zones")
+    const headers = new HttpHeaders().set("Authorization", "Bearer " + localStorage.getItem("accessToken"))
+    return this.http.get(this.hostServ.host + "/zones", { headers })
   }
 
   getLast(): any {
-    return this.http.get(this.hostServ.host + "/dernier")
+    const headers = new HttpHeaders().set("Authorization", "Bearer " + localStorage.getItem("accessToken"))
+    return this.http.get(this.hostServ.host + "/dernier", { headers })
   }
 
   getStatusList(): any {
-    return this.http.get(this.hostServ.host + "/getStatusList")
+    const headers = new HttpHeaders().set("Authorization", "Bearer " + localStorage.getItem("accessToken"))
+    return this.http.get(this.hostServ.host + "/getStatusList", { headers })
   }
 
   updateIrritantStatus(irritant: any): any {
-    return this.http.post(this.hostServ.host + "/updateIrritantStatus", irritant)
+    const headers = new HttpHeaders().set("Authorization", "Bearer " + localStorage.getItem("accessToken"))
+    return this.http.post(this.hostServ.host + "/updateIrritantStatus", irritant, { headers })
   }
 
   getCategories(): any {
-    return this.http.get(this.hostServ.host + "/categories")
+    const headers = new HttpHeaders().set("Authorization", "Bearer " + localStorage.getItem("accessToken"))
+    return this.http.get(this.hostServ.host + "/categories", { headers })
   }
 
   addCategorie(cat: any) {
-    return this.http.post(this.hostServ.host + "/Categorie", cat)
+    const headers = new HttpHeaders().set("Authorization", "Bearer " + localStorage.getItem("accessToken"))
+    return this.http.post(this.hostServ.host + "/Categorie", cat, { headers })
   }
 
   deleteCat(idCat: number) {
-    return this.http.delete(this.hostServ.host + "/deleteCat/" + idCat)
+    const headers = new HttpHeaders().set("Authorization", "Bearer " + localStorage.getItem("accessToken"))
+    return this.http.delete(this.hostServ.host + "/deleteCat/" + idCat, { headers })
   }
 
   deleteIrritant(id: number) {
-    return this.http.delete(this.hostServ.host + "/deleteIrritant/" + id)
+    const headers = new HttpHeaders().set("Authorization", "Bearer " + localStorage.getItem("accessToken"))
+    return this.http.delete(this.hostServ.host + "/deleteIrritant/" + id, { headers })
   }
 
   getTotalToday(): any {
-    return this.http.get(this.hostServ.host + "/getTotalToday")
+    const headers = new HttpHeaders().set("Authorization", "Bearer " + localStorage.getItem("accessToken"))
+    return this.http.get(this.hostServ.host + "/getTotalToday", { headers })
   }
 
   getIrritantProcessingRate() {
-    return this.http.get(this.hostServ.host + "/getIrrProcessingRate")
+    const headers = new HttpHeaders().set("Authorization", "Bearer " + localStorage.getItem("accessToken"))
+    return this.http.get(this.hostServ.host + "/getIrrProcessingRate", { headers })
   }
   getNbreIrritantsParMois(year: number): any {
-    return this.http.get(this.hostServ.host + "/getNbreIrritantsParMois/" + year)
+    const headers = new HttpHeaders().set("Authorization", "Bearer " + localStorage.getItem("accessToken"))
+    return this.http.get(this.hostServ.host + "/getNbreIrritantsParMois/" + year, { headers })
   }
 
   getSortedCategoriesIrritant(year: number): any {
-    return this.http.get(this.hostServ.host + "/getSortedCategoriesIrritant/" + year)
+    const headers = new HttpHeaders().set("Authorization", "Bearer " + localStorage.getItem("accessToken"))
+    return this.http.get(this.hostServ.host + "/getSortedCategoriesIrritant/" + year, { headers })
   }
 }
