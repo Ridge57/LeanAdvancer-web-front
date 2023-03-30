@@ -7,12 +7,14 @@ import { StandardService } from 'src/services/standard.service';
 import { ZoneService } from 'src/services/zone.service';
 import { DataBaseService } from 'src/services/database.service';
 import { Router } from '@angular/router';
+import { MessageService } from 'primeng/api';
 
 
 @Component({
     selector: 'app-dashboard',
     templateUrl: './dashboard.component.html',
-    styleUrls: ['./dashboard.component.css']
+    styleUrls: ['./dashboard.component.css'],
+    providers: [MessageService]
 })
 export class DashboardComponent implements OnInit, AfterViewInit {
     @ViewChild('irritantAreaChart') irritantAreaChart!: ElementRef<HTMLCanvasElement>;
@@ -84,10 +86,10 @@ export class DashboardComponent implements OnInit, AfterViewInit {
         private ideeService: IdeeService,
         private standardService: StandardService,
         private zoneService: ZoneService,
-        private dataBaseService: DataBaseService, private router: Router) {
-        if (localStorage.getItem("accessToken") == null) {
-            this.router.navigate(['/home'])
-        }
+        private dataBaseService: DataBaseService,
+        private messageService: MessageService,
+        private router: Router) {
+
     }
 
 
@@ -101,13 +103,36 @@ export class DashboardComponent implements OnInit, AfterViewInit {
 
     ngOnInit(): void {
         this.currentYear = new Date().getFullYear()
-        this.getNombreTachesATraiter()
-        this.getProcesingRate()
-        this.getSuggestionsProcessingRate()
-        this.getStandardsMoisCourant()
-        this.anneesListInit()
-        this.getSortedCategoriesIrritant(this.currentYear)
+        this.initValues()
+    }
 
+    /* initialisation */
+    initValues() {
+
+        this.checklistServ.getNombreTachesATraiter()
+            .subscribe(
+                (data) => {
+                    this.colorManagement(data, 'tache')
+                    this.getProcesingRate()
+                    this.getSuggestionsProcessingRate()
+                    this.getStandardsMoisCourant()
+                    this.anneesListInit()
+                    this.getSortedCategoriesIrritant(this.currentYear)
+                },
+                async (error) => {
+                    console.log(error);
+                    if (error.status == 403) {
+                        this.messageService.add({ severity: 'error', summary: 'connexion expiré' });
+                        await this.delay(2500);
+                        localStorage.removeItem("accessToken")
+                        localStorage.removeItem('organisation')
+                        this.router.navigate(['/home'])
+                    }
+                })
+    }
+
+    delay(ms: number) {
+        return new Promise(resolve => setTimeout(resolve, ms));
     }
 
     /* liste les années sélectionnables */
@@ -153,9 +178,15 @@ export class DashboardComponent implements OnInit, AfterViewInit {
 
     /* nombre de taches à traiter issues des checklist de ctrl*/
     getNombreTachesATraiter() {
-        this.checklistServ.getNombreTachesATraiter().subscribe((data) => {
-            this.colorManagement(data, 'tache')
-        })
+        this.checklistServ.getNombreTachesATraiter()
+            .subscribe(
+                (data) => {
+                    this.colorManagement(data, 'tache')
+                },
+                (error) => {
+                    console.error('error caught in component')
+                    console.log(error);
+                })
     }
 
 
