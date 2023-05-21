@@ -13,7 +13,12 @@ p-calendar {
     overflow-y: auto;
 }
 
-#userFiltreSelection {
+.userFiltreSelection {
     height: 20vh;
+    overflow-y: auto;
+}
+
+.userFiltreSelectionDetailModal {
+    height: 30vh;
     overflow-y: auto;
 }

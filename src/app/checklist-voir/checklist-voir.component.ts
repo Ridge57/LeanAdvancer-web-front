@@ -5,6 +5,7 @@ import { FormBuilder, FormGroup } from '@angular/forms';
 import { ChangeDetectorRef } from '@angular/core';
 import { MessageService } from 'primeng/api';
 import { Router } from '@angular/router';
+import { DomSanitizer } from '@angular/platform-browser';
 declare let $: any;
 
 @Component({
@@ -33,19 +34,21 @@ export class ChecklistVoirComponent implements OnInit {
   numberTaskByPeriod = new Map<string, number>()
   formTache: FormGroup;
   chargeTableView: boolean = false;
-  defaultImg = "src\assets\img\no-image.png"
+  defaultImg = "../../assets/img/no-image.png"
   initialValueOfChangePeriodModal: any
   typeTache = ""
+  imageTacheName = null
+  imageTache: any
   constructor(private zoneService: ZoneService, private checklistService: ChecklistService,
     private formBuilder: FormBuilder, private changeDetectorRef: ChangeDetectorRef,
-    private messageService: MessageService, private router: Router) {
+    private messageService: MessageService, private router: Router, private sanitizer: DomSanitizer) {
     if (localStorage.getItem("accessToken") == null) {
       this.router.navigate(['/home'])
     }
   }
 
   ngOnInit(): void {
-    this.defaultImg = "src\assets\img\no-image.png"
+    this.defaultImg = "../../assets/img/no-image.png"
     this.isVisible = false;
     this.selectedZone = null
     this.getAllZones()
@@ -138,6 +141,7 @@ export class ChecklistVoirComponent implements OnInit {
     this.isVisible = true
     this.formTache.get('zone.idZone').setValue(this.selectedZoneID)
     this.getTachesByZone(this.selectedZone)
+
   }
 
   handleChange(e: any) {
@@ -171,6 +175,11 @@ export class ChecklistVoirComponent implements OnInit {
     this.changeDetectorRef.detectChanges();
   }
 
+  showAjoutModal() {
+    this.selectedPeriods = []
+    $('#ajoutTacheModal').modal('show');
+  }
+
   resetAjoutIrrForm() {
     this.formTache.reset()
     this.initForm()
@@ -178,6 +187,8 @@ export class ChecklistVoirComponent implements OnInit {
     this.selectedPeriods = []
     this.base64File = ""
     this.typeTache = ""
+    this.imageTache = null
+    this.imageTacheName = null
     this.setInitialValue()
     $('#ajoutTacheModal').modal('hide');
   }
@@ -207,8 +218,8 @@ export class ChecklistVoirComponent implements OnInit {
 
 
   async setNewImageForNewTache(event: any) {
-    this.base64File = await this.toBase64(event.target.files[0])
-    this.formTache.controls['photo'].setValue(this.base64File)
+    this.imageTache = event.target.files[0]
+    this.imageTacheName = event.target.files[0].name
   }
 
   addNewTask() {
@@ -224,14 +235,27 @@ export class ChecklistVoirComponent implements OnInit {
       this.formTache.get('periods').setValue(this.selectedPeriods)
       this.formTache.get('type').setValue(this.typeTache)
       this.formTache.get('photo').setValue("")
-      this.checklistService.addNewTask(this.formTache.value).subscribe(() => {
+
+      let data: FormData = new FormData()
+
+      data.append('idTache', "-1")
+      data.append('titre', this.newTitleForSelectedTache)
+      data.append('description', this.newDescriptionForSelectedTache)
+      data.append('idZone', this.selectedZoneID)
+      data.append('periods', this.selectedPeriods.toString())
+      data.append('type', this.typeTache)
+      data.append('file', this.imageTache)
+
+      this.checklistService.saveTask(data).subscribe(() => {
         this.getTachesByZone(this.selectedZone)
-        this.messageService.add({ severity: 'success', summary: 'suvegardé ' });
+        this.messageService.add({ severity: 'success', summary: 'sauvegardé ' });
         this.resetAjoutIrrForm()
       })
     }
 
   }
+
+
   getAllZones() {
     this.zoneService.getAllZones().subscribe((data) => {
       this.zones = data
@@ -284,7 +308,6 @@ export class ChecklistVoirComponent implements OnInit {
 
   setEditMode(tache: any) {
     this.editMode = true
-    //this.editModeGlobal=true
     this.selectedTache = tache
     this.selectedPeriods = tache.periods
     this.selectedTacheID = tache.idTache
@@ -297,7 +320,11 @@ export class ChecklistVoirComponent implements OnInit {
   }
 
   deleteTask() {
-    this.checklistService.deleteTache(this.selectedTache.idTache).subscribe(() => {
+    var supprimerTaskReq = {
+      "idTache": this.selectedTache.idTache,
+      "keyName": this.selectedTache.keyName
+    }
+    this.checklistService.deleteTache(supprimerTaskReq).subscribe(() => {
       this.getTachesByZone(this.selectedZone)
     })
   }
@@ -332,15 +359,34 @@ export class ChecklistVoirComponent implements OnInit {
 
   saveTaskChange() {
 
-    /*enregistrement des changements dans les titres et les descriptions*/
+    /*enregistrement des changements dans 
+    le titre, 
+    la description, 
+    le type de tache,
+    les periodes (methode changePeriods() )
+    */
 
     this.selectedTache.titre = this.newTitleForSelectedTache
     this.selectedTache.description = this.newDescriptionForSelectedTache
     if (this.typeTache.length > 0) {
       this.selectedTache.type = this.typeTache
     }
-    this.checklistService.saveTache(this.selectedTache).subscribe(() => {
+    // this.checklistService.saveTache(this.selectedTache).subscribe(() => {
+    //   this.getTachesByZone(this.selectedZone)
+    // })
+
+    let data: FormData = new FormData()
+    data.append('idTache', this.selectedTacheID)
+    data.append('titre', this.selectedTache.titre)
+    data.append('type', this.selectedTache.type)
+    data.append('periods', this.selectedTache.periods)
+    data.append('description', this.selectedTache.description)
+    data.append('idZone', this.selectedZoneID)
+    data.append('file', this.imageTache)
+
+    this.checklistService.saveTask(data).subscribe(() => {
       this.getTachesByZone(this.selectedZone)
+      this.messageService.add({ severity: 'success', summary: 'mise à jour ' });
     })
 
     /*enregistrement de la nouvelle image*/

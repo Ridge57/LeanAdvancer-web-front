@@ -59,14 +59,14 @@ export class ChecklistService {
     return this.http.post(this.hostServ.host + "/manyTachesToDelete", tachesToDeleteTab, { headers })
   }
 
-  deleteTache(idTache: any) {
+  deleteTache(supprimerTaskReq: any) {
     const headers = new HttpHeaders().set("Authorization", "Bearer " + localStorage.getItem("accessToken"))
-    return this.http.delete(this.hostServ.host + "/deleteTache/" + idTache, { headers })
+    return this.http.post(this.hostServ.host + "/deleteTache", supprimerTaskReq, { headers })
   }
 
-  addNewTask(task: any) {
+  saveTask(dataTask: any) {
     const headers = new HttpHeaders().set("Authorization", "Bearer " + localStorage.getItem("accessToken"))
-    return this.http.post(this.hostServ.host + "/addNewTask", task, { headers })
+    return this.http.post(this.hostServ.host + "/saveTask", dataTask, { headers })
   }
 
   getTraitementTachesStatusAtraiterEtSolde() {

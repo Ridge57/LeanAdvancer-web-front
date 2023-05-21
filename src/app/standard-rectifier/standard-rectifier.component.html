@@ -1,4 +1,3 @@
-
 <!-- Page Wrapper -->
 <div id="wrapper">
 
@@ -15,41 +14,188 @@
             <!-- Topbar -->
             <app-top-navigation></app-top-navigation>
             <!-- End of Topbar -->
-            <div class="container-fluid">
+            <div class="container-fluid col-sm-12 col-lg-10 mx-auto">
                 <!-- Page Heading -->
                 <div class="mb-4">
-                    <h3 class="h3 mb-0 text-gray-800">Gestion des standards | <small>gérer les demandes de rectifications</small></h3>
+                    <h3 class="h3 mb-0 text-gray-800">Gestion des modes opératoires | <small>modifier</small></h3>
                 </div>
                 <app-standard-tabmenu></app-standard-tabmenu>
-                <div class="row d-flex justify-content-around">
-                <div class="col-sm-7 card shadow py-3">
-                    <p-accordion>
-                        <div class="row d-flex justify-content-around">
-                            <p-accordionTab header="vérifier la pression du compresseur"  class="col-sm-10">
-                                Mafia family, overseeshis daughter's wedding. His beloved son ichael has just come home from the war, but does not intend to become part of his father's business. T hrough Michael's life the nature of the family business becomes clear. The business of the family is just like the head of the family, kind and benevolent to those who give respect, but given to ruthless violence whenever anything stands against the good of the family.
-                            </p-accordionTab>
-                            <i class="pi pi-exclamation-circle text-danger" style="font-size: 2em;"></i>
+
+                <p-toast [style]="{marginTop: '20px'}"></p-toast>
+
+
+                <!-- debut modifier SOP -->
+                <div class="card shadow">
+                    <form>
+                        <!-- annuler | sauvegarder -->
+                        <div class="mx-3 my-3 row">
+                            <button pButton pRipple label="Annuler" icon="pi pi-trash" class="p-button-warning mr-4"
+                                (click)="annuler()"></button>
+                            <button pButton pRipple label="Sauvegarder" icon="pi pi-save" class="p-button-success"
+                                (click)="sauvegarder()"></button>
                         </div>
-                        <div class="row d-flex justify-content-around">
-                            <p-accordionTab header="Godfather II" class="col-sm-10">
-                                Mafia family, overseeshis daughter's wedding. His beloved son ichael has just come home from the war, but does not intend to become part of his father's business. T hrough Michael's life the nature of the family business becomes clear. The business of the family is just like the head of the family, kind and benevolent to those who give respect, but given to ruthless violence whenever anything stands against the good of the family.
-                            </p-accordionTab>
-                            <i class="pi pi-exclamation-circle text-danger" style="font-size: 2em;"></i>
+
+                        <!-- titre du mode opératoire | zone du mode opératoire -->
+                        <div class="row mx-3">
+                            <div class="form-group col-sm-6">
+                                <input type="text" class="form-control" pInputText
+                                    (input)="titleChange($event.target.value)" placeholder="titre du mode opératoire"
+                                    value="{{this.titre}}">
+                            </div>
                         </div>
-                        <div class="row d-flex justify-content-around">
-                            <p-accordionTab header="Godfather III" class="col-sm-10">
-                                Mafia family, overseeshis daughter's wedding. His beloved son ichael has just come home from the war, but does not intend to become part of his father's business. T hrough Michael's life the nature of the family business becomes clear. The business of the family is just like the head of the family, kind and benevolent to those who give respect, but given to ruthless violence whenever anything stands against the good of the family.
-                            </p-accordionTab>
-                            <i class="pi pi-exclamation-circle text-danger" style="font-size: 2em;"></i>
-                        </div>
-                        
-                        
-                    </p-accordion>
+                    </form>
                 </div>
-                <div  class="col-sm-4 card shadow py-3">
-                    filtrer la liste : émetteur, zone, date
+
+                <!-- liste des étapes -->
+                <div class="card mt-2">
+                    <p-toolbar styleClass="mb-4">
+                        <ng-template pTemplate="left">
+                            <button pButton pRipple label="Ajouter une étape" icon="pi pi-plus"
+                                class="p-button-primary mx-2" (click)="openNew()"></button>
+                            <button pButton pRipple label="Supprimer" icon="pi pi-trash" class="p-button-danger"
+                                (click)="deleteSelectedEtapes()"
+                                [disabled]="!selectedEtapes || !selectedEtapes.length"></button>
+                        </ng-template>
+                    </p-toolbar>
+
+                    <p-table #dt [value]="etapes" [rows]="100" [(selection)]="selectedEtapes" [rowHover]="true"
+                        dataKey="id">
+
+                        <ng-template pTemplate="header">
+                            <tr>
+                                <th>
+                                    <p-tableHeaderCheckbox></p-tableHeaderCheckbox>
+                                </th>
+                                <th>Description</th>
+                                <th class="mx-auto">Média</th>
+                                <th></th>
+                            </tr>
+                        </ng-template>
+                        <ng-template pTemplate="body" let-etape>
+                            <tr>
+                                <td>
+                                    <p-tableCheckbox [value]="etape"></p-tableCheckbox>
+                                </td>
+                                <td>{{etape.description}}</td>
+                                <td>
+                                    <p-image *ngIf="isIMG(etape.fileLink) && !etape.imgUrl" class="mx-auto"
+                                        [src]="etape.fileLink" alt=" Image" width="120" [preview]="true"
+                                        class="shadow-4"></p-image>
+                                    <p-image *ngIf="etape.imgUrl" class="mx-auto" [src]="etape.imgUrl" alt=" Image"
+                                        width="120" [preview]="true" class="shadow-4"></p-image>
+                                    <p-image *ngIf="isVID(etape.fileLink) && !etape.vidUrl" class="mx-auto"
+                                        src="../../assets/img/video.jpg" alt="video" width="120"
+                                        (click)="showDisplayVideoDialog(etape)"></p-image>
+                                    <p-image *ngIf="etape.vidUrl" class="mx-auto" src="../../assets/img/video.jpg"
+                                        alt="video" width="120" (click)="showDisplayVideoDialog(etape)"></p-image>
+                                    <div *ngIf="!isIMG(etape.fileLink) && !isVID(etape.fileLink)">
+                                        <i class="pi pi-minus" class="mx-auto"></i>
+                                    </div>
+                                </td>
+                                <td>
+                                    <button pButton pRipple icon="pi pi-pencil"
+                                        class="p-button-rounded p-button-primary mr-2"
+                                        (click)="editEtape(etape)"></button>
+                                    <button pButton pRipple icon="pi pi-trash" class="p-button-rounded p-button-warning"
+                                        (click)="deleteEtape(etape)"></button>
+                                </td>
+                            </tr>
+                        </ng-template>
+                        <ng-template pTemplate="summary">
+                            <div class="flex align-items-center justify-content-between">
+                                <!-- {{etapes ? etapes.length : 0 }} étapes. -->
+                                {{etapes.length}} {{etapes.length>1 ? 'étapes' : 'étape' }}
+                            </div>
+                        </ng-template>
+                    </p-table>
                 </div>
-            </div>
+
+
+                <!-- dialog ajout d'une nouvelle étape -->
+                <p-dialog [(visible)]="etapeDialog" [style]="{width: '450px'}" header="Etape {{etapes.length+1}}"
+                    [modal]="true" styleClass="p-fluid">
+                    <ng-template pTemplate="content">
+
+                        <!-- description -->
+                        <div class="form-group mt-2">
+                            <textarea class="form-control" id="exampleFormControlTextarea1" rows="3"
+                                [(ngModel)]="etape.description" placeholder="description"></textarea>
+                        </div>
+
+                        <!-- choix du media -->
+                        <p-selectButton class="my-2" [options]="mediaOptions" [(ngModel)]="selectedMedia"
+                            optionValue="value" optionLabel="icon" (onChange)="selectionMediaChange()">
+                            <ng-template let-item>
+                                <i [class]="item.icon"></i>
+                            </ng-template>
+                        </p-selectButton>
+
+
+                        <!-- integrer une image -->
+                        <span *ngIf="selectedMedia==='img'">
+                            <div class="input-group my-2">
+                                <div class="input-group-prepend">
+                                    <span class="input-group-text">optionnel</span>
+                                </div>
+                                <div class="custom-file">
+                                    <input type="file" accept="image/*" class="custom-file-input" id="uploadImg"
+                                        (change)="onUpload($event,'img')">
+                                    <label class="custom-file-label" for="uploadImg">{{etape.file ?
+                                        etape.file.name
+                                        : 'choisir une
+                                        photo'}}</label>
+                                </div>
+                            </div>
+                            <div class="d-flex justify-content-center" *ngIf="etape.imgUrl">
+                                <img [src]="etape.imgUrl" width="100%" alt="..." />
+                            </div>
+                        </span>
+
+                        <!-- intégrer une vidéo -->
+                        <span *ngIf="selectedMedia==='vid'">
+                            <div class="input-group my-2">
+                                <div class="input-group-prepend">
+                                    <span class="input-group-text">optionnel</span>
+                                </div>
+                                <div class="custom-file">
+                                    <input type="file" accept="video/*" class="custom-file-input" id="uploadVid"
+                                        (change)="onUpload($event,'vid')">
+
+                                    <label class="custom-file-label" for="uploadVid">{{etape.file ?
+                                        etape.file.name
+                                        : 'charger une
+                                        vidéo'}}</label>
+                                </div>
+                            </div>
+                            <div class="d-flex justify-content-center" *ngIf="etape.vidUrl">
+                                <video width="320" height="240">
+                                    <source [src]="etape.vidUrl" type="video/mp4">
+                                    Format non supporté (.mp4 uniquement).
+                                </video>
+                            </div>
+                        </span>
+                    </ng-template>
+
+                    <!-- cancel & save -->
+                    <ng-template pTemplate="footer">
+                        <button pButton pRipple label="Cancel" icon="pi pi-times" class="p-button-text"
+                            (click)="hideDialog()"></button>
+                        <button pButton pRipple label="Save" icon="pi pi-check" class="p-button-text"
+                            (click)="saveEtape()"></button>
+                    </ng-template>
+                </p-dialog>
+
+
+                <!-- confirmation dialog -->
+                <p-confirmDialog [style]="{width: '450px'}"></p-confirmDialog>
+
+                <!-- affichage de la vidéo -->
+                <p-dialog header="" [(visible)]="isDisplayVideoVisible" [style]="{width: '50vw'}">
+                    <video class="w-100" controls autoplay>
+                        <source [src]="etape ? (etape.vidUrl?etape.vidUrl:etape.fileLink) : ''" type="video/mp4">
+                    </video>
+                    <p class="text-muted">{{etape ? etape.description : ''}}</p>
+                </p-dialog>
             </div>
         </div>
     </div>

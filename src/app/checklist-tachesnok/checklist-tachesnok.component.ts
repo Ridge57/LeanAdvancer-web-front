@@ -14,6 +14,7 @@ export class ChecklistTachesnokComponent implements OnInit {
   selectedTask: any
   statusTasks; any
   displaySaveButton: boolean = false
+  traitementTemp: any
 
   constructor(private checklistService: ChecklistService, private router: Router) {
     this.noImgSource = "../../assets/img/no-image.png"
@@ -39,11 +40,12 @@ export class ChecklistTachesnokComponent implements OnInit {
 
   showTaskDetails(data: any) {
     this.selectedTask = data
+    this.traitementTemp = this.selectedTask.traitement
     this.displaySaveButton = false
   }
 
   setResolution(res: any) {
-    this.selectedTask.traitement = res
+    this.traitementTemp = res
     this.displaySaveButton = true
   }
 
@@ -54,6 +56,7 @@ export class ChecklistTachesnokComponent implements OnInit {
   }
 
   saveChanges() {
+    this.selectedTask.traitement = this.traitementTemp
     this.checklistService.updateHistoriqTache(this.selectedTask).subscribe(() => {
       document.location.reload()
     })

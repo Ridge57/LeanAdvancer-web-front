@@ -30,7 +30,7 @@ export class ConnexionComponent implements OnInit {
   connexion() {
     if (this.authRequest.get('username').value.length == 0) {
       this.messageService.add({ severity: 'warn', summary: 'saisie obligatoire : ', detail: "organisation" });
-    } if (this.authRequest.get('privateKey').value.length == 0) {
+    } else if (this.authRequest.get('privateKey').value.length == 0) {
       this.messageService.add({ severity: 'warn', summary: 'saisie obligatoire : ', detail: "clé de connexion" });
     } else {
       this.userService.authenticate(this.authRequest.value)
@@ -48,9 +48,10 @@ export class ConnexionComponent implements OnInit {
 
           },
           (error: any) => {
-            console.log(error);
             if (error.status == 401) {
-              this.messageService.add({ severity: 'error', summary: 'erreur connexion', detail: error.error });
+              this.messageService.add({ severity: 'error', summary: 'identifiants invalides', detail: error.error });
+            } else {
+              this.messageService.add({ severity: 'error', summary: 'une erreur est survenue' });
             }
           })
     }

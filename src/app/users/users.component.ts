@@ -19,7 +19,7 @@ export class UsersComponent implements OnInit {
   actionButtonIsVisible: boolean
   formUser: FormGroup;
 
-  constructor(private userService: UserService,
+  constructor(private userService: UserService, private messageService: MessageService,
     private formBuilder: FormBuilder, private router: Router) {
     if (localStorage.getItem("accessToken") == null) {
       this.router.navigate(['/home'])
@@ -62,10 +62,16 @@ export class UsersComponent implements OnInit {
   }
 
   ajouter() {
-    this.userService.saveUser(this.formUser.value).subscribe(() => {
-      this.formUser.reset()
-      this.nouveauUser = ""
-      document.location.reload()
+    this.userService.saveUser(this.formUser.value).subscribe((data) => {
+      if (data == 0) {
+        this.formUser.reset()
+        this.nouveauUser = ""
+        document.location.reload()
+      } else if (data == 1) {
+        this.messageService.add({ severity: 'warn', summary: 'Sauvegarde impossible : ', detail: "un utilisateur avec ce nom est déjà enregistré" });
+      } else {
+        this.messageService.add({ severity: 'error', summary: 'erreur : ', detail: "une erreur est survenue" });
+      }
     })
   }
 

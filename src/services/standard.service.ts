@@ -24,9 +24,19 @@ export class StandardService {
     return this.http.get(this.hostServ.host + "/standards", { headers })
   }
 
-  saveStandard(etapes: any, titre: string, idZone: number): any {
+  getStandardById(id: number) {
     const headers = new HttpHeaders().set("Authorization", "Bearer " + localStorage.getItem("accessToken"))
-    return this.http.post(this.hostServ.host + "/saveStandard/" + titre + "/" + idZone, etapes, { headers })
+    return this.http.get(this.hostServ.host + "/getStandard/" + id, { headers })
+  }
+
+  getAllStandardSteps(idStd: number): any {
+    const headers = new HttpHeaders().set("Authorization", "Bearer " + localStorage.getItem("accessToken"))
+    return this.http.get(this.hostServ.host + "/standardsteps/" + idStd, { headers })
+  }
+
+  saveStandard(data: any): any {
+    const headers = new HttpHeaders().set("Authorization", "Bearer " + localStorage.getItem("accessToken"))
+    return this.http.post(this.hostServ.host + "/saveStandard", data, { headers })
   }
 
   deleteStandard(id: number): any {

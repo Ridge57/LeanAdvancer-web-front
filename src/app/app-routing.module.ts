@@ -28,7 +28,7 @@ const routes: Routes = [
   { path: 'irritants', component: IrritantsComponent },
   { path: 'standardAjouter', component: StandardAjouterComponent },
   { path: 'standardVoir', component: StandardVoirComponent },
-  { path: 'standardRectifier', component: StandardRectifierComponent },
+  { path: 'standardRectifier/:selectedStandardID', component: StandardRectifierComponent },
   { path: 'suggestionATraiter', component: SuggestionAtraiterComponent },
   { path: 'suggestionEnCours', component: SuggestionEncoursComponent },
   { path: 'suggestionSoldes', component: SuggestionSoldesComponent },

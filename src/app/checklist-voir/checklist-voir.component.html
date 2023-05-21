@@ -30,18 +30,15 @@
 
         <div class="row form-group">
           <select (change)="setVisible($event.target.value)" class="form-control col-sm-3">
-            <option disabled selected value class="font-italic"> -- selectionner une zone -- </option>
+            <option disabled selected value class="font-italic">selectionner une zone</option>
             <option *ngFor="let zone of zones" value={{zone.idZone}}>{{zone.nomZone}}</option>
           </select>
-          <div class="row col-sm-9" *ngIf="isVisible">
-            <button type="button" class="btn btn-primary col-sm-3 mx-3" data-toggle="modal"
-              data-target="#ajoutTacheModal">
-              <i class="fas fa-plus-circle mr-2"></i>ajouter une tache
-            </button>
-            <p-cascadeSelect [options]="periods" optionLabel="cname" optionGroupLabel="jour"
-              [optionGroupChildren]="['equipe']" [style]="{'minWidth': '14rem'}" placeholder="periode"
-              (onChange)="filtrerLesTaches($event)"></p-cascadeSelect>
-          </div>
+          <button *ngIf="isVisible" type="button" class="btn btn-primary col-sm-3 mx-3" (click)="showAjoutModal()">
+            <i class="fas fa-plus-circle mr-2"></i>ajouter une tache
+          </button>
+          <p-cascadeSelect *ngIf="isVisible" [options]="periods" optionLabel="cname" optionGroupLabel="jour"
+            [optionGroupChildren]="['equipe']" placeholder="periode"
+            (onChange)="filtrerLesTaches($event)"></p-cascadeSelect>
         </div>
 
 
@@ -53,10 +50,13 @@
 
               <!-- photo -->
               <div class="col-sm-3 col my-2">
-                <img *ngIf="tache.photo && !imgChangedMap.get(tache.idTache)" src={{tache.photo}} alt="..."
-                  style="width: 70%;">
-                <img *ngIf="imgChangedMap.get(tache.idTache)" [src]="imgChangedMap.get(tache.idTache)" alt="..."
-                  style="width: 70%;">
+                <p-image *ngIf="tache.fileLink && !imgChangedMap.get(tache.idTache)" class="mx-auto"
+                  [src]="tache.fileLink" alt="..." width="170" [preview]="true" class="shadow-4"></p-image>
+                <p-image *ngIf="!tache.fileLink && !imgChangedMap.get(tache.idTache)" class="mx-auto" [src]="defaultImg"
+                  alt="..." width="170" [preview]="true" class="shadow-4"></p-image>
+                <p-image *ngIf="imgChangedMap.get(tache.idTache)" class="mx-auto"
+                  [src]="imgChangedMap.get(tache.idTache)" alt="..." width="170" [preview]="true"
+                  class="shadow-4"></p-image>
                 <div *ngIf="editMode" class="input-group-sm">
                   <div class="custom-file mt-2">
                     <input type="file" class="custom-file-input" id="inputGroupFile01" (change)=setNewImage($event)>
@@ -230,9 +230,10 @@
 
               <div class="mt-2">
                 <span class="custom-file">
-                  <input type="file" class="custom-file-input" id="inputGroupFile01"
+                  <input type="file" accept="image/*" class="custom-file-input" id="inputGroupFile01"
                     (change)=setNewImageForNewTache($event)>
-                  <label class="custom-file-label" for="inputGroupFile01">Image ..</label></span>
+                  <label class="custom-file-label" for="inputGroupFile01">{{imageTacheName ? imageTacheName : 'Image
+                    ..'}}</label></span>
               </div>
 
               <!-- Periodicité -->
@@ -249,77 +250,101 @@
                     <th scope="col">Dim</th>
                   </tr>
                 </thead>
+
+
+                <!-- periodicité -->
                 <tbody>
                   <tr>
                     <th scope="row">Matin</th>
                     <td>
-                      <input type='checkbox' value='lundi-M' (change)="handleChange($event);">
+                      <input type='checkbox' value='lundi-M' [checked]="selectedPeriods.indexOf('lundi-M')>-1"
+                        (change)="handleChange($event);">
                     </td>
                     <td>
-                      <input type='checkbox' value='mardi-M' (change)="handleChange($event);">
+                      <input type='checkbox' value='mardi-M' [checked]="selectedPeriods.indexOf('mardi-M') > -1"
+                        (change)="handleChange($event);">
                     </td>
                     <td>
-                      <input type='checkbox' value='mercredi-M' (change)="handleChange($event);">
+                      <input type='checkbox' value='mercredi-M' [checked]="selectedPeriods.indexOf('mercredi-M') > -1"
+                        (change)="handleChange($event);">
                     </td>
                     <td>
-                      <input type='checkbox' value='jeudi-M' (change)="handleChange($event);">
+                      <input type='checkbox' value='jeudi-M' [checked]="selectedPeriods.indexOf('jeudi-M') > -1"
+                        (change)="handleChange($event);">
                     </td>
                     <td>
-                      <input type='checkbox' value='vendredi-M' (change)="handleChange($event);">
+                      <input type='checkbox' value='vendredi-M' [checked]="selectedPeriods.indexOf('vendredi-M') > -1"
+                        (change)="handleChange($event);">
                     </td>
                     <td>
-                      <input type='checkbox' value='samedi-M' (change)="handleChange($event);">
+                      <input type='checkbox' value='samedi-M' [checked]="selectedPeriods.indexOf('samedi-M') > -1"
+                        (change)="handleChange($event);">
                     </td>
                     <td>
-                      <input type='checkbox' value='dimanche-M' (change)="handleChange($event);">
+                      <input type='checkbox' value='dimanche-M' [checked]="selectedPeriods.indexOf('dimanche-M') > -1"
+                        (change)="handleChange($event);">
                     </td>
                   </tr>
                   <tr>
                     <th scope="row">Soir</th>
                     <td>
-                      <input type='checkbox' value='lundi-S' (change)="handleChange($event);">
+                      <input type='checkbox' value='lundi-S' [checked]="selectedPeriods.indexOf('lundi-S') > -1"
+                        (change)="handleChange($event);">
                     </td>
                     <td>
-                      <input type='checkbox' value='mardi-S' (change)="handleChange($event);">
+                      <input type='checkbox' value='mardi-S' [checked]="selectedPeriods.indexOf('mardi-S') > -1"
+                        (change)="handleChange($event);">
                     </td>
                     <td>
-                      <input type='checkbox' value='mercredi-S' (change)="handleChange($event);">
+                      <input type='checkbox' value='mercredi-S' [checked]="selectedPeriods.indexOf('mercredi-S') > -1"
+                        (change)="handleChange($event);">
                     </td>
                     <td>
-                      <input type='checkbox' value='jeudi-S' (change)="handleChange($event);">
+                      <input type='checkbox' value='jeudi-S' [checked]="selectedPeriods.indexOf('jeudi-S') > -1"
+                        (change)="handleChange($event);">
                     </td>
                     <td>
-                      <input type='checkbox' value='vendredi-S' (change)="handleChange($event);">
+                      <input type='checkbox' value='vendredi-S' [checked]="selectedPeriods.indexOf('vendredi-S') > -1"
+                        (change)="handleChange($event);">
                     </td>
                     <td>
-                      <input type='checkbox' value='samedi-S' (change)="handleChange($event);">
+                      <input type='checkbox' value='samedi-S' [checked]="selectedPeriods.indexOf('samedi-S') > -1"
+                        (change)="handleChange($event);">
                     </td>
                     <td>
-                      <input type='checkbox' value='dimanche-S' (change)="handleChange($event);">
+                      <input type='checkbox' value='dimanche-S' [checked]="selectedPeriods.indexOf('dimanche-S') > -1"
+                        (change)="handleChange($event);">
                     </td>
                   </tr>
                   <tr>
                     <th scope="row">Nuit</th>
                     <td>
-                      <input type='checkbox' value='lundi-N' (change)="handleChange($event);">
+                      <input type='checkbox' value='lundi-N' [checked]="selectedPeriods.indexOf('lundi-N') > -1"
+                        (change)="handleChange($event);">
                     </td>
                     <td>
-                      <input type='checkbox' value='mardi-N' (change)="handleChange($event);">
+                      <input type='checkbox' value='mardi-N' [checked]="selectedPeriods.indexOf('mardi-N') > -1"
+                        (change)="handleChange($event);">
                     </td>
                     <td>
-                      <input type='checkbox' value='mercredi-N' (change)="handleChange($event);">
+                      <input type='checkbox' value='mercredi-N' [checked]="selectedPeriods.indexOf('mercredi-N') > -1"
+                        (change)="handleChange($event);">
                     </td>
                     <td>
-                      <input type='checkbox' value='jeudi-N' (change)="handleChange($event);">
+                      <input type='checkbox' value='jeudi-N' [checked]="selectedPeriods.indexOf('jeudi-N') > -1"
+                        (change)="handleChange($event);">
                     </td>
                     <td>
-                      <input type='checkbox' value='vendredi-N' (change)="handleChange($event);">
+                      <input type='checkbox' value='vendredi-N' [checked]="selectedPeriods.indexOf('vendredi-N') > -1"
+                        (change)="handleChange($event);">
                     </td>
                     <td>
-                      <input type='checkbox' value='samedi-N' (change)="handleChange($event);">
+                      <input type='checkbox' value='samedi-N' [checked]="selectedPeriods.indexOf('samedi-N') > -1"
+                        (change)="handleChange($event);">
                     </td>
                     <td>
-                      <input type='checkbox' value='dimanche-N' (change)="handleChange($event);">
+                      <input type='checkbox' value='dimanche-N' [checked]="selectedPeriods.indexOf('dimanche-N') > -1"
+                        (change)="handleChange($event);">
                     </td>
                   </tr>
                 </tbody>
@@ -468,7 +493,7 @@
                     <th scope="row">Matin</th>
                     <td>
                       <input type='checkbox' value='lundi-M'
-                        [checked]="selectedTache === undefined ? false : selectedPeriods.indexOf('lundi-M')>-1"
+                        [checked]="selectedTache ? false : selectedPeriods.indexOf('lundi-M')>-1"
                         (change)="handleChange($event);">
                     </td>
                     <td>

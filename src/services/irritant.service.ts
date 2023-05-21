@@ -74,9 +74,9 @@ export class IrritantService {
     return this.http.delete(this.hostServ.host + "/deleteCat/" + idCat, { headers })
   }
 
-  deleteIrritant(id: number) {
+  deleteIrritant(deleteReq: any) {
     const headers = new HttpHeaders().set("Authorization", "Bearer " + localStorage.getItem("accessToken"))
-    return this.http.delete(this.hostServ.host + "/deleteIrritant/" + id, { headers })
+    return this.http.post(this.hostServ.host + "/deleteIrritant", deleteReq, { headers })
   }
 
   getTotalToday(): any {

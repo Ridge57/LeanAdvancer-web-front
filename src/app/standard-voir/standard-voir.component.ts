@@ -1,18 +1,22 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { Router } from '@angular/router';
-import { SortEvent } from 'primeng/api';
+import { MessageService, SortEvent } from 'primeng/api';
 import { StandardService } from 'src/services/standard.service';
 import { ZoneService } from 'src/services/zone.service';
 
 @Component({
   selector: 'app-standard-voir',
   templateUrl: './standard-voir.component.html',
-  styleUrls: ['./standard-voir.component.css']
+  styleUrls: ['./standard-voir.component.css'],
+  providers: [MessageService]
 })
 export class StandardVoirComponent implements OnInit {
-  cars1: any[];
   cols: any[]
+  afficherStd: boolean = false
+  etapes: any
+
+
   zones: any
   standards: any
   selectedStandardID: number
@@ -20,8 +24,12 @@ export class StandardVoirComponent implements OnInit {
   formStd: FormGroup
   uploadedFile: any
   base64File: any
+  videoFileLink: string
+  videoDescription: string
+  isDisplayVideoVisible: boolean = false
   constructor(private standardService: StandardService,
-    private formBuilder: FormBuilder, private zoneService: ZoneService, private router: Router) {
+    private formBuilder: FormBuilder, private zoneService: ZoneService, private router: Router,
+    private messageService: MessageService) {
     if (localStorage.getItem("accessToken") == null) {
       this.router.navigate(['/home'])
     }
@@ -29,8 +37,6 @@ export class StandardVoirComponent implements OnInit {
 
   ngOnInit(): void {
     this.getAllStandards()
-    this.getZones()
-    this.initForm()
     this.cols = [
       { field: 'zone', subfield: 'nomZone', header: 'Zone' },
       { field: 'titre', header: 'Titre' }]
@@ -42,6 +48,18 @@ export class StandardVoirComponent implements OnInit {
     })
   }
 
+  afficherStandard(idStd: number) {
+    this.standardService.getAllStandardSteps(idStd).subscribe((data) => {
+      this.etapes = data;
+      this.afficherStd = true
+    })
+
+  }
+
+  fermerStandard() {
+    this.afficherStd = false
+  }
+
   getZones() {
     this.zoneService.getAllZones().subscribe((data) => {
       this.zones = data
@@ -51,12 +69,6 @@ export class StandardVoirComponent implements OnInit {
   getSelectedStandard(standard: any) {
     this.selectedStandard = standard
     this.selectedStandardID = standard.idStandard
-    this.uploadedFile = ""
-    this.formStd.get('idStandard').setValue(standard.idStandard)
-    this.formStd.get('titre').setValue(standard.titre)
-    this.formStd.get('date').setValue(standard.date)
-    this.formStd.get('lien').setValue(standard.lien)
-    this.formStd.get('zone.idZone').setValue(standard.zone.idZone)
   }
 
   initForm() {
@@ -73,6 +85,37 @@ export class StandardVoirComponent implements OnInit {
 
   titleChange(val: any) {
     this.formStd.get('titre').setValue(val)
+  }
+
+  isIMG(fileLink: string): boolean {
+    if (fileLink) {
+      var s = fileLink.split("?")[0]
+      var lastIndex = s.lastIndexOf(".")
+      var sub = s.substring(lastIndex + 1, s.length)
+      const img = ['jpg', 'jpeg', 'png'];
+      return img.indexOf(sub.toLowerCase()) >= 0
+    } else {
+      return false
+    }
+  }
+
+  isVID(fileLink: string): boolean {
+    if (fileLink) {
+      var s = fileLink.split("?")[0]
+      var lastIndex = s.lastIndexOf(".")
+      var sub = s.substring(lastIndex + 1, s.length)
+      const vid = ['mp4', 'avi', 'flv', 'mpg', 'mpeg'];
+      return vid.indexOf(sub.toLowerCase()) >= 0
+    } else {
+      return false
+    }
+
+  }
+
+  showDisplayVideoDialog(fileLink: string, description: string) {
+    this.videoFileLink = fileLink
+    this.videoDescription = description
+    this.isDisplayVideoVisible = true
   }
 
   zoneChange(val: any) {
@@ -92,13 +135,6 @@ export class StandardVoirComponent implements OnInit {
     reader.onerror = error => reject(error);
   })
 
-  sauvegarder() {
-    //  this.standardService.saveStandard(this.formStd.value).subscribe(()=>{
-    //     this.uploadedFile=""
-    //     this.formStd.reset()
-    //     document.location.reload()
-    //   })
-  }
 
   annuler() {
     this.uploadedFile = ""
@@ -107,28 +143,12 @@ export class StandardVoirComponent implements OnInit {
 
   deleteStandard() {
     this.standardService.deleteStandard(this.selectedStandardID).subscribe(() => {
-      document.location.reload()
+      this.messageService.add({ severity: 'success', detail: 'mode opértoire supprimé', life: 1500 });
+      setTimeout(() => {
+        document.location.reload()
+      }, 1500);
+
     })
   }
 
-  customSort(event: SortEvent) {
-    event.data.sort((data1, data2) => {
-      let value1 = data1[event.field];
-      let value2 = data2[event.field];
-      let result = null;
-
-      if (value1 == null && value2 != null)
-        result = -1;
-      else if (value1 != null && value2 == null)
-        result = 1;
-      else if (value1 == null && value2 == null)
-        result = 0;
-      else if (typeof value1 === 'string' && typeof value2 === 'string')
-        result = value1.localeCompare(value2);
-      else
-        result = (value1 < value2) ? -1 : (value1 > value2) ? 1 : 0;
-
-      return (event.order * result);
-    });
-  }
 }

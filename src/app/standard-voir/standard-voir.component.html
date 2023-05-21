@@ -21,6 +21,9 @@
                             opératoire</small></h3>
                 </div>
                 <app-standard-tabmenu></app-standard-tabmenu>
+                <p-toast [style]="{marginTop: '20px'}"></p-toast>
+
+                <!-- Liste des standards -->
                 <p-table [columns]="cols" [value]="standards" selectionMode="single" class="mb-4 card shadow"
                     [paginator]="true" [rows]="10" [showCurrentPageReport]="true"
                     currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries" class="text-center">
@@ -60,8 +63,8 @@
                                 </ng-template>
                             </td>
                             <td>
-                                <a class="btn btn-info" href="{{selectedStandard.lien}}" target="_blank" role="button"
-                                    *ngIf="selectedStandardID==rowData.idStandard">
+                                <a class="btn btn-info" role="button" *ngIf="selectedStandardID==rowData.idStandard"
+                                    (click)="afficherStandard(selectedStandardID)">
                                     <i class="fas fa-search" style="font-size: 1.2em;"></i>
                                 </a>
                                 <a class="btn btn-info" role="button" *ngIf="selectedStandardID!=rowData.idStandard"
@@ -71,8 +74,7 @@
                             </td>
                             <td>
                                 <a class="btn btn-warning" role="button" *ngIf="selectedStandardID==rowData.idStandard"
-                                    data-toggle="tooltip" data-placement="top" data-toggle="modal"
-                                    data-target="#ajoutStandardModal">
+                                    [routerLink]="['/standardRectifier', selectedStandardID]">
                                     <i class="fas fa-edit" style="font-size: 1.2em;"></i>
                                 </a>
                                 <a class="btn btn-warning" role="button" *ngIf="selectedStandardID!=rowData.idStandard"
@@ -94,61 +96,69 @@
                         </tr>
                     </ng-template>
                 </p-table>
+
+
+
+                <!-- Modal dialog -->
+                <p-dialog [(visible)]="afficherStd" header="{{selectedStandard?selectedStandard.titre:''}}"
+                    [modal]="true" styleClass="p-fluid" [style]="{width: '70%'}">
+                    <ng-template pTemplate="content">
+                        <p-accordion [multiple]="true" [activeIndex]="[0]">
+                            <p-accordionTab *ngFor="let etape of etapes" header="Etape {{etapes.indexOf(etape) +1}}">
+                                <div class="col-sm-12 row border-bottom mx-auto text-muted" style="font-size: 14px;">
+                                    <div class="col-sm-3 col my-2">
+                                        <!-- photo -->
+                                        <span *ngIf="isIMG(etape.fileLink)">
+                                            <p-image *ngIf="etape.fileLink" class="mx-auto" [src]="etape.fileLink"
+                                                alt="..." width="170" [preview]="true" class="shadow-4"></p-image>
+                                            <p-image *ngIf="!(etape.fileLink)" class="mx-auto"
+                                                src="../../assets/img/no-image.png" alt="..." width="170"
+                                                [preview]="true" class="shadow-4"></p-image>
+                                        </span>
+
+                                        <!-- vidéo -->
+                                        <span *ngIf="isVID(etape.fileLink)">
+                                            <img src="../../assets/img/video.jpg" alt="..." style="width: 70%;"
+                                                (click)="showDisplayVideoDialog(etape.fileLink,etape.description)">
+                                        </span>
+
+                                        <!-- no image and no vidéo -->
+                                        <span *ngIf="!etape.fileLink">
+                                            <img src="../../assets/img/no-image.png" alt="..." style="width: 70%;">
+                                        </span>
+
+                                    </div>
+
+                                    <!-- titre | description | -->
+                                    <div class="col-sm-5">
+                                        <span class="font-weight-bolder">Description : </span><br />
+                                        <p>{{etape.description}}</p>
+                                    </div>
+                                </div>
+                            </p-accordionTab>
+                        </p-accordion>
+                    </ng-template>
+
+                    <!-- cancel -->
+                    <ng-template pTemplate="footer">
+                        <button pButton pRipple label="Cancel" icon="pi pi-times" class="p-button-text"
+                            (click)="fermerStandard()"></button>
+                    </ng-template>
+                </p-dialog>
+
+
+                <!-- affichage de la vidéo -->
+                <p-dialog header="" [(visible)]="isDisplayVideoVisible" [style]="{width: '50vw'}">
+                    <video class="w-100" controls autoplay>
+                        <source [src]="videoFileLink" type="video/mp4">
+                    </video>
+                    <p class="text-muted">{{videoDescription}}</p>
+                </p-dialog>
             </div>
         </div>
     </div>
 </div>
 
-
-<!-- Ajout Standard Modal -->
-<div *ngIf="selectedStandard" class="modal fade" id="ajoutStandardModal" tabindex="-1" role="dialog"
-    aria-labelledby="ModalLabel" aria-hidden="true">
-    <div class="modal-dialog" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="ModalLabel"><span style="color: #007AD9;"><i
-                            class="far fa-edit mx-2"></i></span>Modifier le standard</h5><br />
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
-
-
-            <div class="modal-body">
-                <div class="form-group col-sm-12">
-                    <p><span style="color: #007AD9;"><i
-                                class="fas fa-file-alt mx-2"></i></span>{{selectedStandard.titre}}</p>
-                </div>
-                <form>
-                    <div class="form-group col-sm-12">
-                        <label>Titre du standard</label>
-                        <input type="text" class="form-control" (input)="titleChange($event.target.value)">
-                    </div>
-                    <div class="form-group col-sm-12">
-                        <label>Zone </label>
-                        <select class="form-control" (change)="zoneChange($event.target.value)">
-                            <option disabled selected value class="font-italic"> -- selectionner une zone -- </option>
-                            <option *ngFor='let zone of zones' value={{zone.idZone}}>{{zone.nomZone}}</option>
-                        </select>
-                    </div>
-                    <div class="form-group col-sm-12">
-                        <label>Fichier du standard</label>
-                        <div class="custom-file">
-                            <input type="file" class="form-control custom-file-input" (change)="fileChange($event)">
-                            <label class="custom-file-label">{{uploadedFile ? uploadedFile : 'choisir le
-                                fichier'}}</label>
-                        </div>
-                    </div>
-                </form>
-            </div>
-            <div class="modal-footer">
-                <button type="button" (click)="annuler()" class="btn btn-warning" data-dismiss="modal">Annuler</button>
-                <button type="button" (click)="sauvegarder()" class="btn btn-primary"
-                    data-dismiss="modal">Modifier</button>
-            </div>
-        </div>
-    </div>
-</div>
 
 <!-- Confirmation Modal -->
 <div *ngIf="selectedStandard" class="modal fade" id="confirmationModal" tabindex="-1" role="dialog"

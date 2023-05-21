@@ -155,7 +155,7 @@
               <div class="bg-warning text-white" style="height:10px">
               </div>
               <div class="modal-header">
-                <h5 class="modal-title" id="filtrerModalLabel">Filtrer la liste</h5>
+                <h5 class="modal-title" id="filtrerModalLabel">Filtrer les irritants</h5>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                   <span aria-hidden="true">&times;</span>
                 </button>
@@ -191,9 +191,9 @@
                       </label>
                       <input type="text" #inputSearchUserFilterIrritant class="form-control" id="userFiltre"
                         placeholder="rechercher un nom" (input)="filtrerUserList($event)">
-                      <div id="userFiltreSelection">
+                      <div class="userFiltreSelection">
                         <table class="table table-hover table-sm">
-                          <caption>utilisateurs</caption>
+                          <caption></caption>
                           <thead>
                             <th></th>
                           </thead>
@@ -214,9 +214,6 @@
                     </div>
                   </div>
                 </form>
-
-
-
               </div>
               <div class="modal-footer">
                 <button type="button" class="btn btn-outline-secondary" data-dismiss="modal"
@@ -291,9 +288,6 @@
           </ng-template>
         </p-table>
         <!-- Fin liste des irritants -->
-
-
-
       </div>
     </div>
   </div>
@@ -306,7 +300,7 @@
   <div class="modal-dialog modal-lg">
     <div class="modal-content">
       <div class="modal-header alert alert-primary" role="alert">
-        <div class="text-center">
+        <div class="text-center row">
           <span class="mr-3">
             <i class="fas fa-map-marker-alt" style="color: #4e73df;"></i> {{selectedIrritant.zone.nomZone}}
           </span>
@@ -316,74 +310,71 @@
           <span class="mr-3">
             <i class="fas fa-user" style="color:#1cc88a;"></i> {{selectedIrritant.user.userName}}
           </span>
+          <h5><span *ngIf="this.selectedIrritant.status===statusList[0]" class="badge badge-danger">A traiter</span>
+          </h5>
+          <h5><span *ngIf="this.selectedIrritant.status===statusList[1]" class="badge badge-primary">En cours</span>
+          </h5>
+          <h5><span *ngIf="this.selectedIrritant.status===statusList[2]" class="badge badge-success">Soldé</span>
+          </h5>
         </div>
         <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
             aria-hidden="true">&times;</span></button>
       </div>
       <div class="modal-body">
-        <div class="form-group container">
-          <div>
-            <ul class="list-group">
-              <li class="list-group-item">
-                <div class="col-sm-12 row">
-                  <div class="col-sm-4 col">
-                    <img *ngIf='selectedIrritant.photo' src="{{selectedIrritant.photo}}" style="width: 80%;">
-                    <img *ngIf='!selectedIrritant.photo' alt="...">
-                  </div>
-                  <div class="col-sm-5 col text-muted" style="font-size: 15px;">
-                    <div>
-                      <span class="font-weight-bolder">Catégorie : </span><br />
-                      <p>{{selectedIrritant.categorie.nomCat}}</p>
-                    </div>
+        <div class="col-sm-12 row">
+          <div class="col-sm-4">
+            <img *ngIf='selectedIrritant.fileLink' src="{{selectedIrritant.fileLink}}" style="width: 100%;" alt="...">
+            <img *ngIf='!selectedIrritant.fileLink' src="../../assets/img/no-image.png" style="width: 100%;" alt="..">
+          </div>
+          <div class="col-sm-4 col text-muted" style="font-size: 13px;">
+            <div>
+              <span class="font-weight-bolder">Catégorie : </span>
+              <p>{{selectedIrritant.categorie.nomCat}}</p>
+            </div>
 
-                    <div>
-                      <span class="font-weight-bolder">Description : </span><br />
-                      <p>{{selectedIrritant.description}}</p>
-                    </div>
-                    <div>
-                      <span class="font-weight-bolder">Par : </span>{{selectedIrritant.user.userName}}<br />
-                    </div>
-                    <br />
-                    <div>
-                      <span class="font-weight-bolder">Commentaires : </span><br />
-                      <p>{{selectedIrritant.commentaires}}</p>
-                    </div>
-
-                  </div>
-                  <div class="col-sm-3 col container">
-                    <div class="row">
-                      <div class="form-group">
-                        <select (change)="setStatus($event.target.value)" class="form-control">
-                          <option *ngFor="let status of statusList" value='{{status}}'>{{status}}</option>
-                        </select>
-                      </div>
-                    </div>
-                    <br />
-                    <br />
-                    <div class="row">
-                      <div *ngIf="this.selectedIrritant.status===statusList[0]" class="alert alert-danger" role="alert">
-                        A TRAITER
-                      </div>
-                      <div *ngIf="this.selectedIrritant.status===statusList[1]" class="alert alert-primary"
-                        role="alert">
-                        EN COURS
-                      </div>
-                      <div *ngIf="this.selectedIrritant.status===statusList[2]" class="alert alert-success"
-                        role="alert">
-                        SOLDÉ
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </li>
-            </ul>
+            <div>
+              <span class="font-weight-bolder">Description : </span>
+              <p>{{selectedIrritant.description}}</p>
+            </div>
+            <div>
+              <span class="font-weight-bolder">Remonté par : </span>
+              <p>{{selectedIrritant.user.userName}}</p>
+            </div>
+            <div>
+              <span class="font-weight-bolder">Pris en charge par : </span>
+              <p>{{selectedIrritant.responsable}}</p>
+            </div>
+            <div>
+              <span class="font-weight-bolder">Commentaires : </span><br />
+              <p>{{selectedIrritant.commentaires}}</p>
+            </div>
+          </div>
+          <div class="col-sm-4" style="font-size: 13px;">
+            <label for="userFiltre">Prise en charge</label>
+            <h5><span class="badge badge-secondary">{{selectedUserName}}</span></h5>
+            <input type="text" #inputSearchUserFilterIrritant class="form-control" id="userFiltre"
+              placeholder="rechercher un nom" (input)="filtrerUserList($event)" style="font-size: 13px;">
+            <div class="userFiltreSelectionDetailModal" style="width: 100%;">
+              <table class="table table-hover table-sm">
+                <caption></caption>
+                <thead>
+                  <th></th>
+                </thead>
+                <tbody>
+                  <tr *ngFor="let user of usersTmp" (click)="selectResponsableDeAction(user)">
+                    <td>{{user.userName}}</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
           </div>
         </div>
       </div>
       <div class="modal-footer">
         <button *ngIf="displaySaveButton" (click)="saveChanges()" type="button"
           class="btn btn-success">Sauvegarder</button>
-        <button type="button" class="btn btn-secondary" data-dismiss="modal">Fermer</button>
+        <button type="button" class="btn btn-secondary" data-dismiss="modal"
+          (click)="resetModalDetails()">Fermer</button>
       </div>
     </div>
   </div>

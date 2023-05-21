@@ -36,7 +36,14 @@ export class StandardAjouterComponent implements OnInit {
   isDisplayVideoVisible: boolean
 
   submitted: boolean;
-  constructor(private sanitizer: DomSanitizer, private zoneService: ZoneService, private standardService: StandardService,
+
+  formStd = this.formBuilder.group({
+    idStd: 0,
+    titre: '',
+    idZone: 0,
+    etapes: this.formBuilder.array([])
+  })
+  constructor(private formBuilder: FormBuilder, private sanitizer: DomSanitizer, private zoneService: ZoneService, private standardService: StandardService,
     private confirmationService: ConfirmationService,
     private messageService: MessageService, private router: Router) {
     if (localStorage.getItem("accessToken") == null) {
@@ -55,6 +62,7 @@ export class StandardAjouterComponent implements OnInit {
     ];
   }
 
+
   showDisplayVideoDialog(etape: any) {
     this.etape = { ...etape };
     this.isDisplayVideoVisible = true
@@ -69,6 +77,7 @@ export class StandardAjouterComponent implements OnInit {
 
   onUpload(event: any, typ: string) {
     this.etape.file = event.target.files[0]
+
     if (typ === "img") {
       this.etape.imgUrl = this.sanitizer.bypassSecurityTrustUrl(URL.createObjectURL(this.etape.file))
     } else if (typ === "vid") {
@@ -82,6 +91,9 @@ export class StandardAjouterComponent implements OnInit {
     this.etape.file = null
   }
 
+  get steps() {
+    return this.formStd.controls["etapes"] as FormArray;
+  }
 
   toBase64 = file => new Promise((resolve, reject) => {
     const reader = new FileReader();
@@ -91,37 +103,20 @@ export class StandardAjouterComponent implements OnInit {
   })
 
 
-
-  readFile = file => new Promise((resolve, reject) => {
-    // Create file reader
-    let reader = new FileReader()
-
-    // Register event listeners
-    reader.addEventListener("loadend", e => resolve(e.target.result))
-    reader.addEventListener("error", reject)
-
-    // Read file
-    reader.readAsArrayBuffer(file)
-  })
-
-  async getAsByteArray(file) {
-    return new Uint8Array(<ArrayBuffer>await this.readFile(file))
-  }
-
-
-
   async sauvegarder() {
-    var data: FormData = new FormData()
+    this.formStd.get('idStd').setValue(-1)
+    this.formStd.get('titre').setValue(this.titre)
+    this.formStd.get('idZone').setValue(this.idZone)
     for (const etape of this.etapes) {
-      if (etape.file) {
-        data.append('descriptions/FileNames', etape.description + "-split-string-description-fileName-" + etape.file.name)
-        data.append('files', etape.file)
-      } else {
-        data.append('descriptions/FileNames', etape.description)
-      }
+      var objForm = this.formBuilder.group({
+        idEtape: 0,
+        description: etape.description,
+        fileType: etape.file ? etape.file.type : null,
+        base64File: etape.file ? await this.toBase64(etape.file) : null
+      });
+      this.steps.push(objForm);
     }
-
-    this.standardService.saveStandard(data, this.titre, this.idZone).subscribe(() => {
+    this.standardService.saveStandard(this.formStd.value).subscribe(() => {
       this.etapes = []
       this.annuler()
       this.messageService.add({ severity: 'success', detail: 'mode opértoire crée', life: 3000 });

@@ -38,7 +38,6 @@ export class IrritantsComponent implements OnInit {
   selectedUser: any
   selectedUserName: any
 
-
   constructor(private irritantService: IrritantService,
     private userService: UserService, private formBuilder: FormBuilder,
     private messageService: MessageService, private router: Router) {
@@ -132,6 +131,16 @@ export class IrritantsComponent implements OnInit {
     this.selectedUserName = user.userName
   }
 
+  selectResponsableDeAction(user: any) {
+    this.selectedUser = user
+    this.selectedUserName = user.userName
+    this.displaySaveButton = true
+  }
+  resetModalDetails() {
+    this.selectedUser = null
+    this.selectedUserName = null
+  }
+
 
 
   ajouterIrritant() {
@@ -206,12 +215,6 @@ export class IrritantsComponent implements OnInit {
   }
 
 
-
-  setStatus(status: any) {
-    this.selectedIrritant.status = status
-    this.displaySaveButton = true
-  }
-
   getSelectedIrritant(irritant: any) {
     this.selectedIrritant = irritant
     this.selectedIrritantID = irritant.idIrritant
@@ -219,13 +222,18 @@ export class IrritantsComponent implements OnInit {
   }
 
   saveChanges() {
+    this.selectedIrritant.responsable = this.selectedUserName
     this.irritantService.updateIrritantStatus(this.selectedIrritant).subscribe(() => {
       document.location.reload()
     })
   }
 
   supprimerIrritant() {
-    this.irritantService.deleteIrritant(this.selectedIrritantID).subscribe(() => {
+    var deleteReq = {
+      "idIrritant": this.selectedIrritantID,
+      "keyName": this.selectedIrritant.keyName
+    }
+    this.irritantService.deleteIrritant(deleteReq).subscribe(() => {
       document.location.reload()
     })
   }

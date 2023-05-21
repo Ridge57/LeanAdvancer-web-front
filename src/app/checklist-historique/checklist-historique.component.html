@@ -117,10 +117,13 @@
                       <span class="font-weight-bolder">Activité à réaliser : </span><br />
                       <p>{{tache.titre}}</p>
                     </div>
-                    <br />
                     <div>
                       <span class="font-weight-bolder">Description : </span><br />
                       <p>{{tache.description}}</p>
+                    </div>
+                    <div *ngIf="tache.commentaires">
+                      <span class="font-weight-bolder">Commentaires : </span><br />
+                      <p>{{tache.commentaires}}</p>
                     </div>
                   </div>
                 </div>

@@ -127,19 +127,17 @@
                     <div class="row">
                       <div class="form-group">
                         <select (change)="setResolution($event.target.value)" class="form-control">
-                          <option *ngFor="let status of statusTasks" value='{{status}}'>{{status}}</option>
+                          <option *ngFor="let status of statusTasks">{{status}}</option>
                         </select>
                       </div>
                     </div>
                     <br />
                     <br />
                     <div class="row">
-                      <div *ngIf="this.selectedTask.traitement===statusTasks[0]" class="alert alert-danger"
-                        role="alert">
+                      <div *ngIf="traitementTemp===statusTasks[0]" class="alert alert-danger" role="alert">
                         A TRAITER
                       </div>
-                      <div *ngIf="this.selectedTask.traitement===statusTasks[1]" class="alert alert-success"
-                        role="alert">
+                      <div *ngIf="traitementTemp===statusTasks[1]" class="alert alert-success" role="alert">
                         SOLDÉ
                       </div>
                     </div>
