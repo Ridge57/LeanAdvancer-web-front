@@ -7,6 +7,6 @@ export class HostService {
 
   constructor() { }
 
-  //host = "https://lean-foundation-back.herokuapp.com/"
+  //host = "https://lean-advancer-back.herokuapp.com/"
   host = "http://localhost:8080"
 }

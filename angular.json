@@ -8,7 +8,7 @@
   },
   "newProjectRoot": "projects",
   "projects": {
-    "LeanFoundations-web-front": {
+    "LeanAdvancer-web-front": {
       "projectType": "application",
       "schematics": {},
       "root": "",
@@ -18,7 +18,7 @@
         "build": {
           "builder": "@angular-devkit/build-angular:browser",
           "options": {
-            "outputPath": "dist/LeanFoundations-web-front",
+            "outputPath": "dist/LeanAdvancer-web-front",
             "index": "src/index.html",
             "main": "src/main.ts",
             "polyfills": "src/polyfills.ts",
@@ -73,18 +73,18 @@
         "serve": {
           "builder": "@angular-devkit/build-angular:dev-server",
           "options": {
-            "browserTarget": "LeanFoundations-web-front:build"
+            "browserTarget": "LeanAdvancer-web-front:build"
           },
           "configurations": {
             "production": {
-              "browserTarget": "LeanFoundations-web-front:build:production"
+              "browserTarget": "LeanAdvancer-web-front:build:production"
             }
           }
         },
         "extract-i18n": {
           "builder": "@angular-devkit/build-angular:extract-i18n",
           "options": {
-            "browserTarget": "LeanFoundations-web-front:build"
+            "browserTarget": "LeanAdvancer-web-front:build"
           }
         },
         "test": {
@@ -121,16 +121,16 @@
           "builder": "@angular-devkit/build-angular:protractor",
           "options": {
             "protractorConfig": "e2e/protractor.conf.js",
-            "devServerTarget": "LeanFoundations-web-front:serve"
+            "devServerTarget": "LeanAdvancer-web-front:serve"
           },
           "configurations": {
             "production": {
-              "devServerTarget": "LeanFoundations-web-front:serve:production"
+              "devServerTarget": "LeanAdvancer-web-front:serve:production"
             }
           }
         }
       }
     }
   },
-  "defaultProject": "LeanFoundations-web-front"
+  "defaultProject": "LeanAdvancer-web-front"
 }
