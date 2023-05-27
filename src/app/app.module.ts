@@ -20,7 +20,7 @@ import { SelectButtonModule } from 'primeng/selectbutton';
 import { AccordionModule } from 'primeng/accordion'
 import { ImageModule } from 'primeng/image';
 import { ButtonModule } from 'primeng/button';
-import { registerLocaleData, LocationStrategy, Location, PathLocationStrategy } from '@angular/common';
+import { registerLocaleData, LocationStrategy, Location, PathLocationStrategy, HashLocationStrategy } from '@angular/common';
 import localeFr from '@angular/common/locales/fr';
 registerLocaleData(localeFr, 'fr');
 import { ChecklistTachesnokComponent } from './checklist-tachesnok/checklist-tachesnok.component';
@@ -104,7 +104,7 @@ import { ConnexionComponent } from './connexion/connexion.component';
   ],
   providers: [
     { provide: LOCALE_ID, useValue: 'fr' },
-    Location, { provide: LocationStrategy, useClass: PathLocationStrategy }
+    Location, { provide: LocationStrategy, useClass: HashLocationStrategy }
   ],
   bootstrap: [AppComponent]
 })
