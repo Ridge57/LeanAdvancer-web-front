@@ -24,7 +24,6 @@
 
                 <p-toast [style]="{marginTop: '20px'}"></p-toast>
 
-
                 <!-- debut ajout d'un nouvel SOP -->
                 <div class="card shadow">
                     <form>
@@ -200,6 +199,15 @@
                         <source [src]="etape ? etape.vidUrl : ''" type="video/mp4">
                     </video>
                     <p class="text-muted">{{etape ? etape.description : ''}}</p>
+                </p-dialog>
+
+                <!-- affichage de la vidéo -->
+                <p-dialog header="Sauvegarde en cours" [(visible)]="isSpinnerVisible" [style]="{width: '50vw'}"
+                    [modal]="true">
+                    <div class="d-flex justify-content-center">
+                        <p-progressSpinner></p-progressSpinner>
+                    </div>
+
                 </p-dialog>
             </div>
         </div>

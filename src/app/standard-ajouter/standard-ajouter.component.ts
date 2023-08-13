@@ -34,6 +34,7 @@ export class StandardAjouterComponent implements OnInit {
   mediaOptions: any[];
   selectedMedia = ""
   isDisplayVideoVisible: boolean
+  isSpinnerVisible: boolean = false
 
   submitted: boolean;
 
@@ -102,8 +103,16 @@ export class StandardAjouterComponent implements OnInit {
     reader.onerror = error => reject(error);
   })
 
+  showSpinner() {
+    this.isSpinnerVisible = true
+  }
+
+  hideSpinner() {
+    this.isSpinnerVisible = false
+  }
 
   async sauvegarder() {
+    this.showSpinner()
     this.formStd.get('idStd').setValue(-1)
     this.formStd.get('titre').setValue(this.titre)
     this.formStd.get('idZone').setValue(this.idZone)
@@ -117,6 +126,7 @@ export class StandardAjouterComponent implements OnInit {
       this.steps.push(objForm);
     }
     this.standardService.saveStandard(this.formStd.value).subscribe(() => {
+      this.hideSpinner()
       this.etapes = []
       this.annuler()
       this.messageService.add({ severity: 'success', detail: 'mode opértoire crée', life: 3000 });

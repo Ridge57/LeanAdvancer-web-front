@@ -13,6 +13,7 @@ import { ConfirmDialogModule } from 'primeng/confirmdialog';
 import { CascadeSelectModule } from 'primeng/cascadeselect';
 import { MenuModule } from 'primeng/menu';
 import { CalendarModule } from 'primeng/calendar';
+import { ProgressSpinnerModule } from 'primeng/progressspinner';
 import { TabMenuModule } from 'primeng/tabmenu';
 import { TagModule } from 'primeng/tag';
 import { InputSwitchModule } from 'primeng/inputswitch';
@@ -100,7 +101,8 @@ import { ConnexionComponent } from './connexion/connexion.component';
     FileUploadModule,
     AccordionModule,
     HttpClientModule,
-    HttpClientJsonpModule
+    HttpClientJsonpModule,
+    ProgressSpinnerModule
   ],
   providers: [
     { provide: LOCALE_ID, useValue: 'fr' },

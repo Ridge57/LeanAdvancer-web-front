@@ -245,6 +245,8 @@ export class ChecklistVoirComponent implements OnInit {
       data.append('periods', this.selectedPeriods.toString())
       data.append('type', this.typeTache)
       data.append('file', this.imageTache)
+      console.log(this.imageTache);
+
 
       this.checklistService.saveTask(data).subscribe(() => {
         this.getTachesByZone(this.selectedZone)
@@ -302,7 +304,6 @@ export class ChecklistVoirComponent implements OnInit {
       for (const period of tache.periods) {
         this.numberTaskByPeriod.set(period, this.numberTaskByPeriod.get(period) + 1)
       }
-
     }
   }
 
@@ -313,6 +314,7 @@ export class ChecklistVoirComponent implements OnInit {
     this.selectedTacheID = tache.idTache
     this.newTitleForSelectedTache = tache.titre
     this.newDescriptionForSelectedTache = tache.description
+    this.typeTache = tache.type
   }
 
   launchDeleteModal(tache: any) {
@@ -348,6 +350,9 @@ export class ChecklistVoirComponent implements OnInit {
     this.base64File = await this.toBase64(event.target.files[0])
     this.imgChangedMap.set(this.selectedTacheID, this.base64File)
 
+    this.imageTache = event.target.files[0]
+    this.imageTacheName = event.target.files[0].name
+
   }
 
   toBase64 = file => new Promise((resolve, reject) => {
@@ -371,9 +376,7 @@ export class ChecklistVoirComponent implements OnInit {
     if (this.typeTache.length > 0) {
       this.selectedTache.type = this.typeTache
     }
-    // this.checklistService.saveTache(this.selectedTache).subscribe(() => {
-    //   this.getTachesByZone(this.selectedZone)
-    // })
+
 
     let data: FormData = new FormData()
     data.append('idTache', this.selectedTacheID)
@@ -382,22 +385,13 @@ export class ChecklistVoirComponent implements OnInit {
     data.append('periods', this.selectedTache.periods)
     data.append('description', this.selectedTache.description)
     data.append('idZone', this.selectedZoneID)
+
     data.append('file', this.imageTache)
 
     this.checklistService.saveTask(data).subscribe(() => {
       this.getTachesByZone(this.selectedZone)
       this.messageService.add({ severity: 'success', summary: 'mise à jour ' });
     })
-
-    /*enregistrement de la nouvelle image*/
-    // const convMap = {};
-    // this.imgChangedMap.forEach((val: string, key: number) => {
-    //   convMap[key] = val;
-    // });
-    // this.checklistService.updateImageForTask(convMap).subscribe(() => {
-    //   this.imgChangedMap.clear()
-    //   this.getTachesByZone(this.selectedZone)
-    // })
     this.editMode = false
   }
 
