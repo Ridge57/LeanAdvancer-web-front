@@ -35,7 +35,7 @@ export class DashboardComponent implements OnInit, AfterViewInit {
     @ViewChild('suggestionPieChart') suggestionPieChart!: ElementRef<HTMLCanvasElement>;
     sgChartPie!: Chart;
 
-    nombreTachesATraiter: any;
+    nombreTachesATraiter: number;
     processingRateIrritant: any;
     bgColorTypeIrritant: any;
     borderTypeIrritant: any;
