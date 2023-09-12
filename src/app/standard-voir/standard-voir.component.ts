@@ -44,12 +44,16 @@ export class StandardVoirComponent implements OnInit {
 
   getAllStandards() {
     this.standardService.getAllStandards().subscribe((data) => {
+      console.log(data);
+
       this.standards = data
     })
   }
 
   afficherStandard(idStd: number) {
     this.standardService.getAllStandardSteps(idStd).subscribe((data) => {
+      console.log(data);
+
       this.etapes = data;
       this.afficherStd = true
     })

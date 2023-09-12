@@ -8,7 +8,7 @@ import { ChecklistService } from 'src/services/checklist.service';
   styleUrls: ['./checklist-tachesnok.component.css'],
 })
 export class ChecklistTachesnokComponent implements OnInit {
-  noImgSource: String
+  defaultImg = "../../assets/img/no-image.png"
   taches: any
   cols: any
   selectedTask: any
@@ -17,13 +17,13 @@ export class ChecklistTachesnokComponent implements OnInit {
   traitementTemp: any
 
   constructor(private checklistService: ChecklistService, private router: Router) {
-    this.noImgSource = "../../assets/img/no-image.png"
     if (localStorage.getItem("accessToken") == null) {
       this.router.navigate(['/home'])
     }
   }
 
   ngOnInit(): void {
+    this.defaultImg = "../../assets/img/no-image.png"
     this.getTachesATraiter()
     this.getTraitementTachesStatusAtraiterEtSolde()
     this.cols = [

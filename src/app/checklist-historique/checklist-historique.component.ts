@@ -11,7 +11,7 @@ import { ChecklistService } from 'src/services/checklist.service';
 export class ChecklistHistoriqueComponent implements OnInit {
   cars1: any[];
   cols: any[];
-  defaultImg = "src\assets\img\no-image.png"
+  defaultImg = "../../assets/img/no-image.png"
   AllHistoriqChecklist: any
   selectedHistoriqChecklistID: number
   selectedHistoriqChecklist: any
@@ -24,6 +24,7 @@ export class ChecklistHistoriqueComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    this.defaultImg = "../../assets/img/no-image.png"
     this.getAllHistoriqChecklist()
     this.cols = [
       { field: 'zone', subfield: 'nomZone', header: 'Zone' },
